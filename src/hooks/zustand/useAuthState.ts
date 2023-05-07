@@ -1,0 +1,23 @@
+import { create } from "zustand";
+
+interface AuthState {
+  currentPassword: string;
+  isLoggedIn: boolean;
+
+  isLoginError: boolean;
+  login: () => void;
+  updatePassword: (password: string) => void;
+}
+
+export const useLogin = create<AuthState>((set) => ({
+  currentPassword: "",
+  isLoggedIn: false,
+  isLoginError: false,
+
+  updatePassword: (password) => set(() => ({ currentPassword: password })),
+  login: () =>
+    set((state) => ({
+      isLoginError: state.currentPassword.length ? false : true,
+      isLoggedIn: state.currentPassword.length ? true : false,
+    })),
+}));
