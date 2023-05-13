@@ -1,9 +1,10 @@
 import { LogInForm } from "../components/Apps/LogInForm";
+import { EmptyComponent } from "../components/shared/EmptyComponent";
 
 export type WindowPosition = {
   x: number;
   y: number;
-}
+};
 
 export interface WindowSetup {
   name: AppType;
@@ -17,25 +18,27 @@ export interface Window extends WindowSetup {
   isFocused: boolean;
 }
 
-export const AppConfs: WindowSetup[] = [{
-  name: "logInForm",
-  allowMultipleInstances: true,
-  z: 20,
-  pos: {
-    x: 0,
-    y: 0,
-  }
-}]
+export const AppConfs: WindowSetup[] = [
+  {
+    name: "logInForm",
+    allowMultipleInstances: true,
+    z: 20,
+    pos: {
+      x: 0,
+      y: 0,
+    },
+  },
+];
 
-export type AppType = "logInForm";
+export type AppType = "logInForm" | "windowsUpdate";
 
-export const apps = {
+export const APPS = {
   logInForm: {
     component: LogInForm,
     defaultTitle: "Welcome to Windows",
-    appTitle: 'Notepad',
+    appTitle: "Notepad",
     useDefaultExtraActions: false,
-    defaultPosition: 'center',
+    defaultPosition: "center",
 
     width: 555,
     height: 154,
@@ -43,135 +46,207 @@ export const apps = {
     isResizable: false,
     isDraggable: true,
 
-    desctopLogo: '',
-    minimizedLogo: '/assets/images/notepad-small.png'
+    icons: [
+      "/assets/images/notepad-small.png", // small -> minimized icons
+      "/assets/images/notepad-small.png", // medium -> other stuffs
+      "/assets/images/notepad-small.png", // large -> desktop icon
+    ],
+  },
+  windowsUpdate: {
+    component: EmptyComponent,
+    appTitle: "Windows Update",
+
+    icons: [
+      "/assets/images/medium/windows-update.png",
+      "/assets/images/medium/windows-update.png",
+      "/assets/images/medium/windows-update.png",
+    ],
+  },
+  programs: {
+    component: EmptyComponent,
+    appTitle: "Programs",
+
+    icons: [
+      "/assets/images/medium/programs.png",
+      "/assets/images/medium/programs.png",
+      "/assets/images/medium/programs.png",
+    ],
+  },
+  favorites: {
+    component: EmptyComponent,
+    appTitle: "Favorites",
+
+    icons: [
+      "/assets/images/medium/favorites.png",
+      "/assets/images/medium/favorites.png",
+      "/assets/images/medium/favorites.png",
+    ],
+  },
+  documents: {
+    component: EmptyComponent,
+    appTitle: "Documents",
+
+    icons: [
+      "/assets/images/medium/directory_open.png",
+      "/assets/images/medium/directory_open.png",
+      "/assets/images/medium/directory_open.png",
+    ],
+  },
+  settings: {
+    component: EmptyComponent,
+    appTitle: "Settings",
+
+    icons: [
+      "/assets/images/medium/settings_gear.png",
+      "/assets/images/medium/settings_gear.png",
+      "/assets/images/medium/settings_gear.png",
+    ],
+  },
+  find: {
+    component: EmptyComponent,
+    appTitle: "Find",
+
+    icons: [
+      "/assets/images/medium/search_file_2.png",
+      "/assets/images/medium/search_file_2.png",
+      "/assets/images/medium/search_file_2.png",
+    ],
+  },
+  help: {
+    component: EmptyComponent,
+    appTitle: "Help",
+
+    icons: [
+      "/assets/images/medium/help_book_small.png",
+      "/assets/images/medium/help_book_small.png",
+      "/assets/images/medium/help_book_small.png",
+    ],
+  },
+  run: {
+    component: EmptyComponent,
+    appTitle: "Run",
+
+    icons: [
+      "/assets/images/medium/application_hourglass_small.png",
+      "/assets/images/medium/application_hourglass_small.png",
+      "/assets/images/medium/application_hourglass_small.png",
+    ],
+  },
+  logOff: {
+    component: EmptyComponent,
+    appTitle: "Log Off...",
+
+    icons: [
+      "/assets/images/medium/key_win.png",
+      "/assets/images/medium/key_win.png",
+      "/assets/images/medium/key_win.png",
+    ],
+  },
+  shutDown: {
+    component: EmptyComponent,
+    appTitle: "Shut down...",
+
+    icons: [
+      "/assets/images/medium/shut_down_normal.png",
+      "/assets/images/medium/shut_down_normal.png",
+      "/assets/images/medium/shut_down_normal.png",
+    ],
   },
 };
 
 export const START_MENU_LIST = [
   [
     {
-      title: 'Windows Update',
-      icon: '/assets/images/windows-update-logo.png',
-      appName: 'logInForm',
-      isDisabled: true
-    }
+      appName: "windowsUpdate",
+      isDisabled: true,
+      children: [
+        {
+          appName: "logInForm",
+        },
+        {
+          appName: "logInForm",
+        },
+      ],
+    },
   ],
   [
     {
-      title: 'Programs',
-      icon: '/assets/images/dir-programs-logo.png',
-      appName: 'logInForm',
+      appName: "programs",
       isDisabled: false,
       children: [
         {
-          title: 'Notepad',
-          icon: '/assets/images/notepad-small.png',
-          appName: 'logInForm'
+          appName: "logInForm",
         },
         {
-          title: 'Notepad',
-          icon: '/assets/images/dir-programs-logo.png',
-          appName: 'logInForm'
-        }
-      ]
+          appName: "logInForm",
+        },
+      ],
     },
     {
-      title: 'Favorites',
-      icon: '/assets/images/dir-favorites-logo.png',
-      appName: 'logInForm',
+      appName: "favorites",
       isDisabled: true,
       children: [
         {
-          title: 'Notepad',
-          icon: '/assets/images/dir-programs-logo.png',
-          appName: 'logInForm'
-        }
-      ]
+          appName: "logInForm",
+        },
+      ],
     },
     {
-      title: 'Documents',
-      icon: '/assets/images/dir-favorites-logo.png',
-      appName: 'logInForm',
+      appName: "documents",
       isDisabled: true,
       children: [
         {
-          title: 'Notepad',
-          icon: '/assets/images/dir-programs-logo.png',
-          appName: 'logInForm'
-        }
-      ]
+          appName: "logInForm",
+        },
+      ],
     },
     {
-      title: 'Settings',
-      icon: '/assets/images/dir-favorites-logo.png',
-      appName: 'logInForm',
+      appName: "settings",
       isDisabled: true,
       children: [
         {
-          title: 'Notepad',
-          icon: '/assets/images/dir-programs-logo.png',
-          appName: 'logInForm'
-        }
-      ]
+          appName: "logInForm",
+        },
+      ],
     },
     {
-      title: 'Find',
-      icon: '/assets/images/dir-favorites-logo.png',
-      appName: 'logInForm',
+      appName: "find",
       isDisabled: true,
       children: [
         {
-          title: 'Notepad',
-          icon: '/assets/images/dir-programs-logo.png',
-          appName: 'logInForm'
-        }
-      ]
+          appName: "logInForm",
+        },
+      ],
     },
     {
-      title: 'Help',
-      icon: '/assets/images/dir-favorites-logo.png',
-      appName: 'logInForm',
+      appName: "help",
       isDisabled: true,
     },
     {
-      title: 'Run',
-      icon: '/assets/images/dir-favorites-logo.png',
-      appName: 'logInForm',
-      isDisabled: true,
-    }
+      appName: "run",
+      isDisabled: false,
+    },
   ],
   [
     {
-      title: 'Windows Update',
-      icon: '/assets/images/windows-update-logo.png',
-      appName: 'logInForm',
-      isDisabled: true
+      appName: "logOff",
+      isDisabled: true,
     },
     {
-      title: 'Windows Update',
-      icon: '/assets/images/windows-update-logo.png',
-      appName: 'logInForm',
-      isDisabled: true
-    }
+      appName: "shutDown",
+      isDisabled: true,
+    },
   ],
-]
+];
 
 export const QUICK_LAUNCH_LIST = [
   {
-    title: 'Notepad',
-    icon: '/assets/images/notepad-small.png',
-    appName: 'logInForm'
+    appName: "logInForm",
   },
   {
-    title: 'Notepad',
-    icon: '/assets/images/notepad-small.png',
-    appName: 'logInForm'
+    appName: "logInForm",
   },
-{
-    title: 'Notepad',
-    icon: '/assets/images/notepad-small.png',
-    appName: 'logInForm'
-  }
-]
-
+  {
+    appName: "logInForm",
+  },
+];

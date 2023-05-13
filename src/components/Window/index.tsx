@@ -1,6 +1,6 @@
 import { FC, ComponentType, useRef, memo, useMemo } from "react";
 import styled from "styled-components";
-import { apps, AppType } from "../../configs";
+import { APPS, AppType } from "../../configs";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { NOOP } from "../../utils";
@@ -20,7 +20,7 @@ const getComponentByName = (name: AppType) => {
       useDefaultExtraActions: boolean;
       component: ComponentType<any>;
     };
-  } = apps;
+  } = APPS;
   return components[name].component;
 };
 
@@ -32,7 +32,7 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
   const windowInstance = activeWindows.find(v => v.windowId === windowId)
   // useOutsideAlerter(windowRef, () => changeFocus("nofocus"));
 
-  const appConfig = apps[name];
+  const appConfig = APPS[name];
 
   const Component = getComponentByName(name);
 
@@ -100,8 +100,8 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
         <TopBar
           windowId={windowId}
           name={name}
-          useDefaultExtraActions={apps[name].useDefaultExtraActions}
-          title={apps[name].defaultTitle}
+          useDefaultExtraActions={APPS[name].useDefaultExtraActions}
+          title={APPS[name].defaultTitle}
           handleClose={() => closeWindowById(windowId)}
           handleMinimize={NOOP}
           handleFullScreen={NOOP}

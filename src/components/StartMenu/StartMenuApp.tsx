@@ -1,27 +1,21 @@
 import { useState } from "react"
 import styled from "styled-components"
-import { AppType } from "../../configs"
+import { APPS, AppType } from "../../configs"
 import { useStartMenu } from "../../hooks/zustand/useStartMenu"
 import { useWindowState } from "../../hooks/zustand/useWindowState"
 
 export interface App {
-  title: string
-  icon: string
   appName: AppType
   isDisabled: boolean
-}
-
-interface StartMenuAppProps extends App {
   children?: App[]
 }
 
+
 export const StartMenuApp = ({
-  title,
-  icon,
   appName,
   isDisabled,
   children,
-}: StartMenuAppProps) => {
+}: App) => {
   const { openWindow } = useWindowState()
   const { changeStartMenu } = useStartMenu()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -41,10 +35,10 @@ export const StartMenuApp = ({
       onMouseOver={() => {
         setIsDropdownOpen(true)
       }}>
-      <img src={icon} alt={title} width={30} height={30} />
+      <img src={APPS[appName].icons[0]} alt={APPS[appName].appTitle} width={30} height={30} />
       {isDisabled ?
-        <Text className="title" style={{ color: 'grey', textShadow: '1px 1px #fff' }}>{title}</Text> :
-        <Text className="title"><u>{title.charAt(0)}</u>{title.slice(1, title.length)}</Text>
+        <Text className="title" style={{ color: 'grey', textShadow: '1px 1px #fff' }}>{APPS[appName].appTitle}</Text> :
+        <Text className="title"><u>{APPS[appName].appTitle.charAt(0)}</u>{APPS[appName].appTitle.slice(1, APPS[appName].appTitle.length)}</Text>
       }
       {
         children?.length &&
@@ -56,13 +50,13 @@ export const StartMenuApp = ({
       {
         isDropdownOpen && children?.length && !isDisabled && (
           <Dropdown>
-            {children.map(v => (
-              <DropdownItem onClick={() => {
+            {children.map((v, i) => (
+              <DropdownItem key={i} onClick={() => {
                 openWindow(v.appName)
                 changeStartMenu(false)
               }}>
-                <img src={v.icon} alt={v.title} width={16} height={16} />
-                <span>{v.title}</span>
+                <img src={APPS[v.appName].icons[0]} alt={APPS[v.appName].appTitle} width={16} height={16} />
+                <span>{APPS[v.appName].appTitle}</span>
               </DropdownItem>
             ))}
           </Dropdown>

@@ -1,6 +1,6 @@
 import { Children, forwardRef, RefObject, useRef } from "react";
 import styled from "styled-components"
-import { AppType, START_MENU_LIST } from "../../configs";
+import { APPS, AppType, START_MENU_LIST } from "../../configs";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter"
 import { useStartMenu } from "../../hooks/zustand/useStartMenu";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
@@ -19,12 +19,11 @@ export const StartMenu = forwardRef<HTMLDivElement>((props, ref) => {
         {
           START_MENU_LIST.map((v, parentIdx) => {
             return (
-              <div>
+              <div key={parentIdx}>
                 {
-                  v.map(menu => (
+                  v.map((menu, idx) => (
                     <StartMenuApp
-                      title={menu.title}
-                      icon={menu.icon}
+                      key={idx}
                       appName={menu.appName as AppType}
                       isDisabled={menu.isDisabled}
                       children={menu.children as App[]}

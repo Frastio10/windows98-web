@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { apps } from "../../configs"
+import { APPS } from "../../configs"
 import { useWindowState } from "../../hooks/zustand/useWindowState"
 
 export const Tasks = () => {
@@ -9,9 +9,9 @@ export const Tasks = () => {
     <Wrapper>
       <Inner>
         {
-          activeWindows.map(v => (
-            <Task>
-              <img src={apps[v.name].minimizedLogo} />
+          activeWindows.map((v, i) => (
+            <Task key={i}>
+              <img src={APPS[v.name].icons[0]} />
               <span>{v.name} {v.windowId}</span>
             </Task>
           ))
