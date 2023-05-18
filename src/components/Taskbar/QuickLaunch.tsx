@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { APPS, AppType, QUICK_LAUNCH_LIST } from "../../configs";
+import { QUICK_LAUNCH_LIST, getApp } from "../../configs";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { LongDivider, ThickDivider } from "../shared/Dividers";
+import { AppName } from "../../types";
 
 export const QuickLaunch = () => {
   const { openWindow } = useWindowState();
@@ -13,11 +14,11 @@ export const QuickLaunch = () => {
           {QUICK_LAUNCH_LIST.map((v, i) => (
             <img
               key={i}
-              onClick={() => openWindow(v.appName as AppType)}
+              onClick={() => openWindow(v.appName as AppName)}
               height="14"
               width="14"
-              src={APPS[v.appName as AppType].icons[0]}
-              alt={APPS[v.appName as AppType].appTitle}
+              src={getApp(v.appName as AppName)?.icons[0]}
+              alt={getApp(v.appName as AppName)?.appTitle}
             />
           ))}
         </Items>

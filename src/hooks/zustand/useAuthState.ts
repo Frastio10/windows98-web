@@ -11,13 +11,16 @@ interface AuthState {
 
 export const useLogin = create<AuthState>((set) => ({
   currentPassword: "",
-  isLoggedIn: false,
+  isLoggedIn: localStorage.getItem("loggedIn") === "1" || false,
   isLoginError: false,
 
   updatePassword: (password) => set(() => ({ currentPassword: password })),
-  login: () =>
+  login: () => {
     set((state) => ({
       isLoginError: state.currentPassword.length ? false : true,
       isLoggedIn: state.currentPassword.length ? true : false,
-    })),
+    }));
+
+    localStorage.setItem("loggedIn", "1");
+  },
 }));

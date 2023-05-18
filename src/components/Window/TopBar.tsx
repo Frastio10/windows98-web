@@ -1,13 +1,13 @@
 import { ComponentType } from "react";
 import styled from "styled-components";
-import { AppType } from "../../configs";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { DefaultButton } from "../shared/Button";
+import { AppName } from "../../types";
 
 interface TopBarProps {
   title: string;
   windowId: string;
-  name: AppType;
+  name: AppName;
   extraActions?: ComponentType<any>[];
   useDefaultExtraActions: boolean;
   handleClose: (args: unknown) => void;
@@ -25,11 +25,17 @@ export const TopBar = ({
   handleMinimize,
   handleFullScreen,
 }: TopBarProps) => {
-  const { activeWindows } = useWindowState()
+  const { activeWindows } = useWindowState();
   return (
     <TopBarWrapper className="top-bar">
-      <Bar isFocus={activeWindows.find((v) => v.windowId === windowId)?.isFocused || false}>
-        <TextTitle>{title} {windowId}</TextTitle>
+      <Bar
+        isFocus={
+          activeWindows.find((v) => v.windowId === windowId)?.isFocused || false
+        }
+      >
+        <TextTitle>
+          {title} {windowId}
+        </TextTitle>
         <Actions>
           {useDefaultExtraActions ? (
             <DefaultButton style={{ marginLeft: "2px" }}>
@@ -79,7 +85,10 @@ export const TopBar = ({
 export const TopBarWrapper = styled.div``;
 
 export const Bar = styled.div<{ isFocus: boolean }>`
-  background: ${({ theme, isFocus }) => isFocus ? theme.windowTopBarBackgroundPrimary : theme.windowTopBarBackgroundSecondary};
+  background: ${({ theme, isFocus }) =>
+    isFocus
+      ? theme.windowTopBarBackgroundPrimary
+      : theme.windowTopBarBackgroundSecondary};
   padding: 2px;
   display: flex;
   justify-content: space-between;
@@ -90,7 +99,7 @@ const TextTitle = styled.p`
   font-weight: bold;
   color: #fff;
   font-size: 13px;
-`
+`;
 
 export const Actions = styled.div`
   display: flex;
