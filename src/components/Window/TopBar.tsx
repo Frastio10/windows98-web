@@ -40,8 +40,8 @@ export const TopBar = ({
           {useDefaultExtraActions ? (
             <DefaultButton style={{ marginLeft: "2px" }}>
               <svg
-                width="8"
-                height="7"
+                width="10"
+                height="9"
                 viewBox="0 0 8 7"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -58,12 +58,12 @@ export const TopBar = ({
             <></>
           )}
           <DefaultButton
-            style={{ marginLeft: "2px", padding: "6px" }}
+            style={{ marginLeft: "2px", padding: "4px" }}
             onClick={handleClose}
           >
             <svg
-              width="8"
-              height="7"
+              width="10"
+              height="9"
               viewBox="0 0 8 7"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

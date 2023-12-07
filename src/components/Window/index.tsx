@@ -70,7 +70,7 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
         ),
         y: Math.round(
           window.innerHeight / 2 -
-            (appConfig?.height || DEFAULT_WINDOW_HEIGHT) / 2
+          (appConfig?.height || DEFAULT_WINDOW_HEIGHT) / 2
         ),
       };
     }
@@ -87,9 +87,9 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
       x: Math.round(window.innerWidth / 2 - DEFAULT_WINDOW_WIDTH / 2),
       y: Math.round(window.innerHeight / 2 - DEFAULT_WINDOW_HEIGHT / 2),
     };
+
   }, [name, windowInstance, activeWindows]);
 
-  console.log(windowId, windowInstance?.pos);
 
   return (
     <Rnd
@@ -99,6 +99,7 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
       dragHandleClassName="top-bar"
       enableResizing={appConfig?.isResizable ? resizeConfig : false}
       disableDragging={!appConfig?.isDraggable}
+      bounds=".bounds"
       default={{
         ...windowPosition,
         width: (appConfig?.width || DEFAULT_WINDOW_WIDTH) + "px",
@@ -116,7 +117,9 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
           )}px, ${Math.round(d.y)}px)`;
         }
 
-        setWindowPos(windowId, { x: d.x, y: d.y });
+        console.log(windowId, d)
+
+        setWindowPos(windowId, { x: d.lastX, y: d.lastY });
       }}
     >
       <WindowWrapper ref={windowRef} onClick={() => changeFocus(windowId)}>
@@ -139,5 +142,5 @@ const WindowWrapper = styled.div`
   height: 100%;
   box-shadow: ${({ theme }) => theme.windowPixelatedBorder};
   background: ${({ theme }) => theme.elementDefaultBackground};
-  padding: 6px;
+  padding: 4px;
 `;

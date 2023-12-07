@@ -1,6 +1,8 @@
 import { AppName, App, WindowSetup } from "../types";
 import { LogInForm } from "../components/Apps/LogInForm";
 import { EmptyComponent } from "../components/shared/EmptyComponent";
+import { Run } from "../components/Apps/Run";
+import { DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH } from "./constants";
 
 export const getApp = (appName: AppName) => {
   const app = APP_LIST.find((app) => app.appName === appName);
@@ -18,6 +20,15 @@ export const windowConfs: WindowSetup[] = [
       y: 0,
     },
   },
+  {
+    appName: "run",
+    z: 20,
+    pos: {
+      x: window.innerWidth,
+      y: window.innerHeight,
+    },
+  },
+
 ];
 
 export const APP_LIST: App[] = [
@@ -37,6 +48,23 @@ export const APP_LIST: App[] = [
       "/assets/images/notepad-small.png", // small -> minimized icons
       "/assets/images/notepad-small.png", // medium -> other stuffs
       "/assets/images/notepad-small.png", // large -> desktop icon
+    ],
+  },
+  {
+    appName: "run",
+    component: Run,
+    appTitle: "Run",
+    width: 390,
+    height: 170,
+
+    defaultPosition: `0 ${window.innerHeight - 170 - 30}`,
+    allowMultipleInstances: false,
+    isResizable: false,
+    isDraggable: true,
+    icons: [
+      "/assets/images/medium/application_hourglass_small.png",
+      "/assets/images/medium/application_hourglass_small.png",
+      "/assets/images/medium/application_hourglass_small.png",
     ],
   },
   {
@@ -107,16 +135,6 @@ export const APP_LIST: App[] = [
       "/assets/images/medium/help_book_small.png",
       "/assets/images/medium/help_book_small.png",
       "/assets/images/medium/help_book_small.png",
-    ],
-  },
-  {
-    appName: "run",
-    component: EmptyComponent,
-    appTitle: "Run",
-    icons: [
-      "/assets/images/medium/application_hourglass_small.png",
-      "/assets/images/medium/application_hourglass_small.png",
-      "/assets/images/medium/application_hourglass_small.png",
     ],
   },
   {
