@@ -25,6 +25,7 @@ const GlobalStyles = createGlobalStyle`
     font-size: 100%;
     font: inherit;
     vertical-align: baseline;
+    line-height:normal;
   }
   pre {
     white-space: pre-wrap;
@@ -51,13 +52,14 @@ const GlobalStyles = createGlobalStyle`
   html, body, #root { height: 100% }
   body {
     font-family: 'MS Sans Serif', 'Segoe UI', 'sans-serif';
-    line-height: 1;
+    line-height: normal;
     overflow: hidden;
   }
 
   * {
     font-family: 'MS Sans Serif', 'Segoe UI', 'sans-serif';
     font-size: 12px;
+    line-height: normal;
   }
 
   button:focus {

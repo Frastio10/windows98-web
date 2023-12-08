@@ -9,7 +9,7 @@ export const ClearButton = styled.button`
 `;
 
 export const DefaultButton = styled.button`
-  background: ${({ theme }) => theme.elementDefaultBacground};
+  background: ${({ theme }) => theme.elementDefaultBackground};
   box-shadow: ${({ theme }) => theme.buttonPixelatedBorder};
   border: none;
   outline: none;

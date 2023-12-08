@@ -4,21 +4,19 @@ import { useWindowState } from "../hooks/zustand/useWindowState";
 import { Window } from "./Window";
 
 export const LoggedOutView = () => {
-  const { activeWindows, openWindow } = useWindowState()
+  const { activeWindows, openWindow } = useWindowState();
 
   useEffect(() => {
     if (!activeWindows.length) {
-      openWindow('logInForm')
+      openWindow("logInForm");
     }
-  }, [activeWindows])
+  }, [activeWindows]);
 
   return (
     <Wrapper>
-      {
-        activeWindows.map((w, i) => (
-          <Window key={i} windowId={w.windowId} name={w.name} />
-        ))
-      }
+      {activeWindows.map((w, i) => (
+        <Window key={i} windowId={w.windowId} name={w.appName} />
+      ))}
     </Wrapper>
   );
 };
