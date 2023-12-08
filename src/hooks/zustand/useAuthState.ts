@@ -6,6 +6,7 @@ interface AuthState {
 
   isLoginError: boolean;
   login: () => void;
+  logOut: () => void;
   updatePassword: (password: string) => void;
 }
 
@@ -22,5 +23,13 @@ export const useLogin = create<AuthState>((set) => ({
     }));
 
     localStorage.setItem("loggedIn", "1");
+  },
+
+  logOut: () => {
+    localStorage.setItem("loggedIn", "0");
+    set((state) => ({
+      isLoggedIn: false,
+    }));
+    console.log('set')
   },
 }));

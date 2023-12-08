@@ -18,7 +18,7 @@ interface WindowProps {
   windowId: string;
 }
 
-const getComponentByName = (name: AppName) => {
+const getComponentByName = (name: AppName)=> {
   // const components: {
   //   [K in AppType]: {
   //     defaultTitle: string;
@@ -27,7 +27,7 @@ const getComponentByName = (name: AppName) => {
   //   };
   // } = APPS;,
 
-  return getApp(name)?.component;
+  return getApp(name)?.component as any;
 };
 
 export const Window: FC<WindowProps> = ({ name, windowId }) => {
@@ -108,7 +108,9 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
       style={{
         zIndex: activeWindows.find((win) => win.windowId === windowId)?.z,
       }}
-      onDragStart={() => changeFocus(windowId)}
+      onDragStart={(event) => {
+        changeFocus(windowId)
+      }}
       onResizeStart={() => changeFocus(windowId)}
       onDragStop={(_, d) => {
         if (rndRef.current?.resizableElement.current) {
@@ -132,7 +134,7 @@ export const Window: FC<WindowProps> = ({ name, windowId }) => {
           handleMinimize={NOOP}
           handleFullScreen={NOOP}
         />
-        {Component && <Component />}
+        {Component && <Component windowId={windowId}/>}
       </WindowWrapper>
     </Rnd>
   );

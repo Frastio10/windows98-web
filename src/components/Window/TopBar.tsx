@@ -34,7 +34,7 @@ export const TopBar = ({
         }
       >
         <TextTitle>
-          {title} {windowId}
+          {title} 
         </TextTitle>
         <Actions>
           {useDefaultExtraActions ? (

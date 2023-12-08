@@ -3,6 +3,7 @@ import { LogInForm } from "../components/Apps/LogInForm";
 import { EmptyComponent } from "../components/shared/EmptyComponent";
 import { Run } from "../components/Apps/Run";
 import { DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH } from "./constants";
+import { ShutDown } from "../components/Apps/ShutDown";
 
 export const getApp = (appName: AppName) => {
   const app = APP_LIST.find((app) => app.appName === appName);
@@ -28,7 +29,14 @@ export const windowConfs: WindowSetup[] = [
       y: window.innerHeight,
     },
   },
-
+  {
+    appName: "shutDown",
+    z: 20,
+    pos: {
+      x: 0,
+      y: 0,
+    },
+  },
 ];
 
 export const APP_LIST: App[] = [
@@ -149,7 +157,8 @@ export const APP_LIST: App[] = [
   },
   {
     appName: "shutDown",
-    component: EmptyComponent,
+    defaultTitle: "Shutting down...",
+    component: ShutDown,
     appTitle: "Shut down...",
     icons: [
       "/assets/images/medium/shut_down_normal.png",
@@ -239,7 +248,7 @@ export const START_MENU_LIST = [
     },
     {
       appName: "shutDown",
-      isDisabled: true,
+      isDisabled: false,
     },
   ],
 ];

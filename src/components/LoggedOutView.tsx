@@ -13,10 +13,10 @@ export const LoggedOutView = () => {
   }, [activeWindows]);
 
   return (
-    <Wrapper>
-      {activeWindows.map((w, i) => (
-        <Window key={i} windowId={w.windowId} name={w.appName} />
-      ))}
+    <Wrapper className="bounds">
+        {activeWindows.map((w, i) => (
+          <Window key={i} windowId={w.windowId} name={w.appName} />
+        ))}
     </Wrapper>
   );
 };
@@ -28,3 +28,5 @@ const Wrapper = styled.div`
   background: #007380;
   height: 100%;
 `;
+
+

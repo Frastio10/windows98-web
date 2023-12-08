@@ -14,12 +14,18 @@ interface WindowState {
   closeWindow: (windowName: AppName) => void;
   closeWindowById: (windowId: string) => void;
   changeStartMenu: (isOpen?: boolean) => void;
+
+  closeAllWindows: () => void;
 }
 
 export const useWindowState = create<WindowState>((set, get) => ({
   activeWindows: [],
   minimizedWindows: [],
   isStartMenuOpen: false,
+
+  closeAllWindows: () => {
+    set({ activeWindows: [] });
+  },
 
   changeStartMenu: (isOpen) => {
     set({ isStartMenuOpen: isOpen || !get().isStartMenuOpen });
@@ -29,7 +35,7 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const appConfig = windowConfs.find((v) => v.appName === windowName);
     const currentWindows = get().activeWindows;
     const isWindowAlreadyOpened = currentWindows.find(
-      (win) => win.appName === windowName
+      (win) => win.appName === windowName,
     );
 
     const randomNumbers = Math.floor(Math.random() * 9000) + 1000;
@@ -80,10 +86,10 @@ export const useWindowState = create<WindowState>((set, get) => ({
   setWindowPos: (windowId, newPos) => {
     const currentWindows = get().activeWindows;
     const currentPos = get().activeWindows.find(
-      (win) => win.windowId === windowId
+      (win) => win.windowId === windowId,
     )?.pos;
     currentWindows.forEach((v) => {
-      console.log(v.isFocused, v.windowId, v.pos, 'new', newPos);
+      console.log(v.isFocused, v.windowId, v.pos, "new", newPos);
       if (v.windowId === windowId) {
         v.pos.x = newPos.x;
         v.pos.y = newPos.y;
@@ -106,9 +112,9 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const currentWindows = get().activeWindows;
     // get().changeFocus(windowId);
     // console.log("curra", windowId, currentWindows);
-    console.log("abb",currentWindows)
     const filtered = currentWindows.filter((v) => v.windowId !== windowId);
-    console.log("bba",filtered)
+    console.log("closing", windowId);
+    // console.log("bba",filtered)
 
     set({
       activeWindows: filtered,
