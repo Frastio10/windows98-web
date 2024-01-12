@@ -13,7 +13,7 @@ export const LoggedInView = () => {
     <Wrapper>
       <Main className="bounds">
       {activeWindows.map((w, i) => (
-        <Window key={i} windowId={w.windowId} name={w.appName} />
+        <Window key={w.windowId} windowData={w} />
       ))}
       </Main>
       <Bottom>

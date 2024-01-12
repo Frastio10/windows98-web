@@ -3,15 +3,20 @@ export type WindowPosition = {
   y: number;
 };
 
+export interface AppProps  {
+  windowData: WindowData;
+}
+
 export interface WindowSetup {
   appName: AppName;
   z: number;
   pos: WindowPosition;
 }
 
-export interface Window extends WindowSetup {
+export interface WindowData extends WindowSetup {
   windowId: string;
   isFocused: boolean;
+  title: string;
 }
 
 export type AppName =
@@ -25,11 +30,12 @@ export type AppName =
   | "help"
   | "run"
   | "logOff"
+  | "notepad"
   | "shutDown";
 
 export interface App {
   appName: string;
-  component: () => JSX.Element;
+  component: ({ windowData }: AppProps) => JSX.Element;
   appTitle: string;
   icons: [string, string, string];
   allowMultipleInstances?: boolean;

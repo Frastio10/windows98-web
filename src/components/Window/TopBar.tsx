@@ -33,9 +33,7 @@ export const TopBar = ({
           activeWindows.find((v) => v.windowId === windowId)?.isFocused || false
         }
       >
-        <TextTitle>
-          {title} {windowId}
-        </TextTitle>
+        <TextTitle>{title}</TextTitle>
         <Actions>
           {useDefaultExtraActions ? (
             <DefaultButton style={{ marginLeft: "2px" }}>
@@ -82,7 +80,9 @@ export const TopBar = ({
   );
 };
 
-export const TopBarWrapper = styled.div``;
+export const TopBarWrapper = styled.div`
+  user-select: none;
+`;
 
 export const Bar = styled.div<{ isFocus: boolean }>`
   background: ${({ theme, isFocus }) =>

@@ -1,16 +1,17 @@
 import styled from "styled-components";
 import { useLogin } from "../../hooks/zustand/useAuthState";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
+import { AppProps } from "../../types";
 import { DefaultButton } from "../shared/Button";
 
-export const LogInForm = () => {
+export const LogInForm = ({ windowData }: AppProps) => {
   const { updatePassword, login } = useLogin();
-  const { closeWindow } = useWindowState()
+  const { closeWindow } = useWindowState();
 
   const handleLogin = () => {
-    login()
-    closeWindow('logInForm')
-  }
+    login();
+    closeWindow("logInForm");
+  };
   return (
     <Wrapper>
       <div
@@ -42,7 +43,7 @@ export const LogInForm = () => {
       </div>
       <Actions>
         <LoginButton onClick={handleLogin}>OK</LoginButton>
-        <LoginButton onClick={() => { }}>Cancel</LoginButton>
+        <LoginButton onClick={() => {}}>Cancel</LoginButton>
       </Actions>
     </Wrapper>
   );
@@ -55,6 +56,7 @@ const Actions = styled.div`
 `;
 
 const Wrapper = styled.div`
+  user-select: none !important;
   display: flex;
   font-size: 12px;
   gap: 20px;

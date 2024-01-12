@@ -1,20 +1,23 @@
 import { AppName, App, WindowSetup } from "../types";
-import { LogInForm } from "../components/Apps/LogInForm";
 import { EmptyComponent } from "../components/shared/EmptyComponent";
-import { Run } from "../components/Apps/Run";
-import { DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH } from "./constants";
+import { Run, LogInForm, ShutDown, Notepad } from "../components/Apps";
+import {
+  DEFAULT_WINDOW_HEIGHT,
+  DEFAULT_WINDOW_WIDTH,
+  INITIAL_Z_INDEX,
+} from "./constants";
 
-export const getApp = (appName: AppName) => {
-  const app = APP_LIST.find((app) => app.appName === appName);
-  if (!app) return console.log(`${appName} is not a valid app!`);
+export const getApp = (appName: AppName): App => {
+  const app = APP_LIST.find((app) => app.appName === appName)!;
+  // if (!app) return console.log(`${appName} is not a valid app!`);
 
   return app;
 };
 
-export const windowConfs: WindowSetup[] = [
+export const APP_WINDOW_CONFIG: WindowSetup[] = [
   {
     appName: "logInForm",
-    z: 20,
+    z: INITIAL_Z_INDEX,
     pos: {
       x: 0,
       y: 0,
@@ -22,13 +25,28 @@ export const windowConfs: WindowSetup[] = [
   },
   {
     appName: "run",
-    z: 20,
+    z: INITIAL_Z_INDEX,
     pos: {
       x: window.innerWidth,
       y: window.innerHeight,
     },
   },
-
+  {
+    appName: "shutDown",
+    z: INITIAL_Z_INDEX,
+    pos: {
+      x: 0,
+      y: 0,
+    },
+  },
+  {
+    appName: "notepad",
+    z: INITIAL_Z_INDEX,
+    pos: {
+      x: 0,
+      y: 0,
+    },
+  },
 ];
 
 export const APP_LIST: App[] = [
@@ -42,6 +60,24 @@ export const APP_LIST: App[] = [
     allowMultipleInstances: true,
     width: 555,
     height: 154,
+    isResizable: false,
+    isDraggable: true,
+    icons: [
+      "/assets/images/notepad-small.png", // small -> minimized icons
+      "/assets/images/notepad-small.png", // medium -> other stuffs
+      "/assets/images/notepad-small.png", // large -> desktop icon
+    ],
+  },
+  {
+    appName: "notepad",
+    component: Notepad,
+    defaultTitle: "Untitled",
+    appTitle: "Notepad",
+    useDefaultExtraActions: false,
+    defaultPosition: "center",
+    allowMultipleInstances: true,
+    width: 500,
+    height: 600,
     isResizable: false,
     isDraggable: true,
     icons: [
@@ -149,7 +185,8 @@ export const APP_LIST: App[] = [
   },
   {
     appName: "shutDown",
-    component: EmptyComponent,
+    defaultTitle: "Shutting down...",
+    component: ShutDown,
     appTitle: "Shut down...",
     icons: [
       "/assets/images/medium/shut_down_normal.png",
@@ -239,14 +276,14 @@ export const START_MENU_LIST = [
     },
     {
       appName: "shutDown",
-      isDisabled: true,
+      isDisabled: false,
     },
   ],
 ];
 
 export const QUICK_LAUNCH_LIST = [
   {
-    appName: "logInForm",
+    appName: "notepad",
   },
   {
     appName: "logInForm",

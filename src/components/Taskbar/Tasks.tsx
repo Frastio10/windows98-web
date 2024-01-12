@@ -7,18 +7,19 @@ export const Tasks = () => {
   return (
     <Wrapper>
       <Inner>
-        {activeWindows.map((v, i) => (
-          <Task
-            key={i}
-            isFocused={v.isFocused}
-            onClick={() => changeFocus(v.windowId)}
-          >
-            <img src={getApp(v.appName)?.icons[0]} />
-            <span>
-              {v.appName} {v.windowId}
-            </span>
-          </Task>
-        ))}
+        {activeWindows.map((v, i) => {
+          const app = getApp(v.appName)
+          return (
+            <Task
+              key={v.windowId}
+              isFocused={v.isFocused}
+              onClick={() => changeFocus(v.windowId)}
+            >
+              <img src={app?.icons[0]} />
+              <span>{v.title}</span>
+            </Task>
+          );
+        })}
       </Inner>
     </Wrapper>
   );
@@ -30,6 +31,7 @@ const Wrapper = styled.div`
   padding-right: 5px;
   display: flex;
   align-items: center;
+  user-select: none;
 `;
 
 const Inner = styled.div`
@@ -45,6 +47,9 @@ const Task = styled.div<{ isFocused: boolean }>`
 
   box-shadow: ${({ isFocused }) =>
     isFocused ? "-1px -1px #000" : "1px 1px #000"};
+
+  font-weight: ${({ isFocused }) =>
+    isFocused ? "700" : ""};
 
   font-size: 12px;
   height: 100%;
