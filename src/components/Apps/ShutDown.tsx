@@ -1,25 +1,20 @@
 import { useEffect } from "react";
-import styled from "styled-components";
 import { useLogin } from "../../hooks/zustand/useAuthState";
 import { useSystemState } from "../../hooks/zustand/useSystemState";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
-import { DefaultButton } from "../shared/Button";
+import { AppProps } from "../../types";
 
-interface AppProps {
-  windowId: string;
-}
-
-export const ShutDown = ({ windowId }: AppProps) => {
+export const ShutDown = ({ windowData }: AppProps) => {
   const { shutDown } = useSystemState();
   const { closeWindowById, closeAllWindows } = useWindowState();
   const { logOut } = useLogin();
 
   useEffect(() => {
-    closeAllWindows()
+    closeAllWindows();
     shutDown();
     logOut();
-    closeWindowById(windowId);
+    closeWindowById(windowData.windowId);
   }, []);
 
-  return <></>;
+  return <div></div>;
 };

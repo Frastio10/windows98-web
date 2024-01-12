@@ -1,7 +1,9 @@
 import { DefaultTheme } from "styled-components";
 
-export const themeStyles: DefaultTheme = {
+export const themeStyles = {
   defaultBackground: "#007379",
+  checkerBackground:
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC",
 
   // 1px equal 2pixels
   windowPixelatedBorder: `-2px -2px black inset, 
@@ -11,13 +13,12 @@ export const themeStyles: DefaultTheme = {
                            0 0 0 4px #bfbfbf inset;`,
   // windowTopBarBackgroundPrimary: "linear-gradient(to right, #08216b 0%, #a5cef7 100%)",
   // windowTopBarBackgroundSecondary: "linear-gradient(to right, #808080 0%, #C0C0C0 100%)",
-  
-  windowTopBarBackgroundPrimary: "linear-gradient(to right, rgb(0,0,128) 0%, rgb(16, 132, 208) 100%)",
-  windowTopBarBackgroundSecondary: "#85898D",
 
-
-  // windowTopBarBackgroundPrimary: "#0000AA",
+  // windowTopBarBackgroundPrimary: "linear-gradient(to right, rgb(0,0,128) 0%, rgb(16, 132, 208) 100%)",
   // windowTopBarBackgroundSecondary: "#85898D",
+
+  windowTopBarBackgroundPrimary: "#0000AA",
+  windowTopBarBackgroundSecondary: "#85898D",
 
   elementDefaultBackground: "#C2C6CA",
 
@@ -30,4 +31,7 @@ export const themeStyles: DefaultTheme = {
                          -1px -1px #808080 inset, 
                           1px 1px #000 inset,
                           0 0 0 2px #bfbfbf inset`,
+
+  scrollbarButtonInnerSize: 9,
+  scrollbarSize: '13px'
 };

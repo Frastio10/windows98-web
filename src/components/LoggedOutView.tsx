@@ -15,7 +15,7 @@ export const LoggedOutView = () => {
   return (
     <Wrapper className="bounds">
         {activeWindows.map((w, i) => (
-          <Window key={i} windowId={w.windowId} name={w.appName} />
+          <Window key={i} windowData={w} />
         ))}
     </Wrapper>
   );
