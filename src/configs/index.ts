@@ -55,6 +55,7 @@ export const APP_LIST: App[] = [
     component: LogInForm,
     defaultTitle: "Welcome to Windows",
     appTitle: "Notepad",
+    showTopBarIcon: false,
     useDefaultExtraActions: false,
     defaultPosition: "center",
     allowMultipleInstances: true,

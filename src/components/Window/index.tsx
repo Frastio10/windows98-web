@@ -49,7 +49,6 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
 
   const windowPosition = useMemo(() => {
     if (windowInstance?.pos.x && windowInstance.pos.y) {
-      console.log("here");
       return {
         x: windowInstance.pos.x,
         y: windowInstance.pos.y,
