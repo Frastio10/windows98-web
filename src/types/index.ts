@@ -3,7 +3,12 @@ export type WindowPosition = {
   y: number;
 };
 
-export interface AppProps  {
+export type Vector2D = {
+  x: number;
+  y: number;
+}
+
+export interface AppProps {
   windowData: WindowData;
 }
 
@@ -36,6 +41,7 @@ export type AppName =
 export interface App {
   appName: string;
   component: ({ windowData }: AppProps) => JSX.Element;
+  showTopBarIcon?: boolean;
   appTitle: string;
   icons: [string, string, string];
   allowMultipleInstances?: boolean;

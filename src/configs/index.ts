@@ -55,6 +55,7 @@ export const APP_LIST: App[] = [
     component: LogInForm,
     defaultTitle: "Welcome to Windows",
     appTitle: "Notepad",
+    showTopBarIcon: false,
     useDefaultExtraActions: false,
     defaultPosition: "center",
     allowMultipleInstances: true,
@@ -78,7 +79,7 @@ export const APP_LIST: App[] = [
     allowMultipleInstances: true,
     width: 500,
     height: 600,
-    isResizable: false,
+    isResizable: true,
     isDraggable: true,
     icons: [
       "/assets/images/notepad-small.png", // small -> minimized icons

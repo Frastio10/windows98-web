@@ -6,6 +6,9 @@ import GlobalStyles from "./components/shared/GlobalStyles";
 import { themeStyles } from "./components/shared/theme";
 
 const App: FC = () => {
+  document.addEventListener("contextmenu", (event)=> {
+    event.preventDefault()
+  })
   return (
     <>
       <ThemeProvider theme={themeStyles}>

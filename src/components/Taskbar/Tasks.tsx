@@ -42,6 +42,7 @@ const Inner = styled.div`
 `;
 
 const Task = styled.div<{ isFocused: boolean }>`
+  min-width: 180px;
   border: ${({ isFocused }) =>
     isFocused ? "2px inset #fff" : "2px outset #fff"};
 

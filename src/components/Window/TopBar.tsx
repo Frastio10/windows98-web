@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { DefaultButton } from "../shared/Button";
 import { AppName } from "../../types";
+import { getApp } from "../../configs";
 
 interface TopBarProps {
   title: string;
@@ -26,6 +27,7 @@ export const TopBar = ({
   handleFullScreen,
 }: TopBarProps) => {
   const { activeWindows } = useWindowState();
+  const app = getApp(name);
   return (
     <TopBarWrapper className="top-bar">
       <Bar
@@ -33,7 +35,10 @@ export const TopBar = ({
           activeWindows.find((v) => v.windowId === windowId)?.isFocused || false
         }
       >
-        <TextTitle>{title}</TextTitle>
+        <LeftBar>
+          {app.showTopBarIcon === false ? null : <AppIcon src={app.icons[0]} />}
+          <TextTitle>{title}</TextTitle>
+        </LeftBar>
         <Actions>
           {useDefaultExtraActions ? (
             <DefaultButton style={{ marginLeft: "2px" }}>
@@ -84,6 +89,12 @@ export const TopBarWrapper = styled.div`
   user-select: none;
 `;
 
+const LeftBar = styled.div`
+  display: flex;
+  gap: 4px;
+  padding-left: 2px;
+`;
+
 export const Bar = styled.div<{ isFocus: boolean }>`
   background: ${({ theme, isFocus }) =>
     isFocus
@@ -93,6 +104,11 @@ export const Bar = styled.div<{ isFocus: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const AppIcon = styled.img`
+  width: 16px;
+  height: 16px;
 `;
 
 const TextTitle = styled.p`

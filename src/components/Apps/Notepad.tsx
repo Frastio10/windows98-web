@@ -1,15 +1,64 @@
 import styled from "styled-components";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { AppProps } from "../../types";
-import { DefaultButton } from "../shared/Button";
+import {
+  TopBarAction,
+  TopBarActions,
+  TopBarActionsProps,
+} from "../Window/TopBarActions";
 
 export const Notepad = ({ windowData }: AppProps) => {
+  const topBarActions: TopBarAction[] = [
+    {
+      title: "File",
+      children: [
+        {
+          title: "File",
+          onAction: () => console.log("pepo"),
+        },
+        {
+          title: "Open...",
+          onAction: () => console.log("hellopeppoep"),
+        },
+        {
+          title: "Save",
+          onAction: () => console.log("hellopeppoep"),
+        },
+        {
+          title: "Save As",
+          shortcutLetter: "A",
+          onAction: () => console.log("hellopeppoep"),
+        },
+      ],
+    },
+    {
+      title: "Open",
+      onAction: () => console.log("hellopeppoep"),
+    },
+    {
+      title: "Save",
+      onAction: () => console.log("hellopeppoep"),
+    },
+    {
+      title: "Save As",
+      onAction: () => console.log("hellopeppoep"),
+    },
+  ];
   return (
     <Wrapper>
-      <TextArea></TextArea>
+      <TopBarActions actions={topBarActions} />
+      <TextAreaWrapper>
+        <TextArea></TextArea>
+      </TextAreaWrapper>
     </Wrapper>
   );
 };
+
+const TextAreaWrapper = styled.div`
+  box-shadow: ${({ theme }) => theme.insetPixelatedBorder};
+  width: 100%;
+  padding: 2px;
+  height: 100%;
+`;
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -19,7 +68,6 @@ const TextArea = styled.textarea`
   resize: none;
   overflow: scroll;
   white-space: pre;
-  box-shadow: ${({ theme }) => theme.insetPixelatedBorder};
   padding-right: calc(${({ theme }) => theme.scrollbarSize} + 2px);
   padding-bottom: ${({ theme }) => theme.scrollbarSize};
 `;
@@ -27,7 +75,8 @@ const TextArea = styled.textarea`
 const Wrapper = styled.div`
   display: flex;
   font-size: 12px;
-  gap: 16px;
+  gap: 2px;
   height: 100%;
-  padding: 8px;
+  padding: 2px;
+  flex-direction: column;
 `;

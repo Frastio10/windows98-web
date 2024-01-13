@@ -49,7 +49,6 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
 
   const windowPosition = useMemo(() => {
     if (windowInstance?.pos.x && windowInstance.pos.y) {
-      console.log("here");
       return {
         x: windowInstance.pos.x,
         y: windowInstance.pos.y,
@@ -105,6 +104,8 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
       onDragStart={(event) => {
         changeFocus(windowData.windowId);
       }}
+      minWidth={appConfig.width}
+      minHeight={appConfig.height}
       onResizeStart={() => changeFocus(windowData.windowId)}
       onDragStop={(_, d) => {
         if (rndRef.current?.resizableElement.current) {
