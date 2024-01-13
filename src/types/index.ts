@@ -3,6 +3,11 @@ export type WindowPosition = {
   y: number;
 };
 
+export type Vector2D = {
+  x: number;
+  y: number;
+}
+
 export interface AppProps {
   windowData: WindowData;
 }
