@@ -6,15 +6,15 @@ import { Window } from "./Window";
 
 export const LoggedInView = () => {
   const { activeWindows } = useWindowState();
-  useEffect(()=> {
-    console.log(activeWindows)
-  }, [activeWindows])
+  useEffect(() => {
+    console.log(activeWindows);
+  }, [activeWindows]);
   return (
     <Wrapper>
       <Main className="bounds">
-      {activeWindows.map((w, i) => (
-        <Window key={w.windowId} windowData={w} />
-      ))}
+        {activeWindows.map((w, i) => (
+          <Window key={w.windowId} windowData={w} />
+        ))}
       </Main>
       <Bottom>
         <Taskbar />
@@ -33,12 +33,10 @@ const Wrapper = styled.div`
 `;
 
 const Bottom = styled.div`
-position: relative;
-height: 25px;
-
-`
+  position: relative;
+  height: 25px;
+`;
 
 const Main = styled.div`
- flex: 1 1 0;
-  
-`
+  flex: 1 1 0;
+`;

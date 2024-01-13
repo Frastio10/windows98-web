@@ -1,5 +1,14 @@
 import styled from "styled-components";
 
+export const HoverButton = styled.button`
+  border: none;
+
+  &:hover {
+    background: ${({ theme }) => theme.windowTopBarBackgroundPrimary};
+    color: #fff;
+  }
+`;
+
 export const ClearButton = styled.button`
   background: none;
   border: none;

@@ -76,7 +76,7 @@ const GlobalStyles = createGlobalStyle`
     height: 13px;
     background-repeat: no-repeat;
     background-size: 36px 9px;
-    box-shadow: ${themeStyles.buttonPixelatedBorder} 
+    box-shadow: ${themeStyles.buttonPixelatedBorder};
   }
 
   ::-webkit-scrollbar-button:vertical:increment {
