@@ -23,6 +23,7 @@ export const LoggedInView = () => {
       <Main className="bounds">
         <EventHandlerOverlay
           onContextMenu={(ev) => {
+            setShortcutBoxCoordinate(null)
             setShortcutBoxCoordinate({ x: ev.clientX, y: ev.clientY });
           }}
         />
@@ -36,7 +37,7 @@ export const LoggedInView = () => {
               top: shortcutBoxCoordinate.y,
               left: shortcutBoxCoordinate.x,
               position: "absolute",
-              width: "300px",
+              width: "200px",
             }}
           >Window</Box>
         )}

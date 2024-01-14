@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { APP_LIST, getApp, APP_WINDOW_CONFIG } from "../../configs";
 import { INITIAL_Z_INDEX } from "../../configs/constants";
-import { AppName, WindowData, WindowPosition } from "../../types";
+import { AppName, Vector2D, WindowData } from "../../types";
 
 interface WindowState {
   activeWindows: WindowData[];
   minimizedWindows: WindowData[];
   isStartMenuOpen: boolean;
 
-  changeFocus: (windowId: string | "nofocus") => void;
-  setWindowPos: (windowId: string, newPos: WindowPosition) => void;
+  changeFocus: (windowId: string | null) => void;
+  setWindowPos: (windowId: string, newPos: Vector2D) => void;
   openWindow: (windowName: AppName) => void;
   minimizeWindow: (windowId: string) => void;
   closeWindow: (windowName: AppName) => void;
@@ -44,7 +44,8 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const app = getApp(windowName);
     const title = app.defaultTitle || app.appTitle;
 
-    if (!appConfig || !app) return console.log(`App '${windowName}' is not found`);
+    if (!appConfig || !app)
+      return console.log(`App '${windowName}' is not found`);
     if (!app.allowMultipleInstances && isWindowAlreadyOpened) return;
 
     currentWindows.push({
@@ -63,22 +64,27 @@ export const useWindowState = create<WindowState>((set, get) => ({
     // console.log('closedWindowii', JSON.stringify(windows.map(v => ({ id: v.windowId, x: v.pos.x, y: v.pos.y }))), windowId)
     const maxZ = Math.max(...windows.map((win) => win.z), INITIAL_Z_INDEX);
 
-    const currentWindow = windows.find((win) => win.windowId === windowId);
+    if (windowId) {
+      const currentWindow = windows.find((win) => win.windowId === windowId);
 
-    if (!currentWindow) return console.log(`Window ${windowId} is not found`);
-    if (currentWindow.isFocused) return 
+      if (!currentWindow) return console.log(`Window ${windowId} is not found`);
+      if (currentWindow.isFocused) return;
+    }
+
 
     // currentWindow.z = maxZ + 1;
     // currentWindow.isFocused = true;
     windows.forEach((win) => {
       win.isFocused = false;
 
-      if (win.windowId === windowId) {
+      if (windowId && win.windowId === windowId) {
         win.windowId = windowId;
         win.isFocused = true;
         win.z = maxZ + 1;
       }
     });
+
+    console.log(windows.map(v=>v.isFocused))
 
     set({ activeWindows: windows });
   },

@@ -93,7 +93,7 @@ export const APP_LIST: App[] = [
     appTitle: "Run",
     width: 390,
     height: 170,
-
+    useDefaultExtraActions: true,
     defaultPosition: `0 ${window.innerHeight - 170 - 30}`,
     allowMultipleInstances: false,
     isResizable: false,

@@ -31,15 +31,15 @@ export const Notepad = ({ windowData }: AppProps) => {
       ],
     },
     {
-      title: "Open",
+      title: "Edit",
       onAction: () => console.log("hellopeppoep"),
     },
     {
-      title: "Save",
+      title: "Search",
       onAction: () => console.log("hellopeppoep"),
     },
     {
-      title: "Save As",
+      title: "Help",
       onAction: () => console.log("hellopeppoep"),
     },
   ];

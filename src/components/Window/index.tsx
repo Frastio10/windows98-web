@@ -1,13 +1,13 @@
-import { FC, ComponentType, useRef, memo, useMemo } from "react";
+import { FC, ComponentType, useRef, memo, useMemo, useState } from "react";
 import styled from "styled-components";
 import { getApp } from "../../configs";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
-import { NOOP } from "../../utils";
+import { extractCssTranslateProperty, NOOP } from "../../utils";
 import { TopBar } from "./TopBar";
 // import Draggable from 'react-draggable'
 import { Rnd } from "react-rnd";
-import { AppName, WindowData } from "../../types";
+import { AppName, Size, WindowData } from "../../types";
 import {
   DEFAULT_WINDOW_HEIGHT,
   DEFAULT_WINDOW_WIDTH,
@@ -30,6 +30,13 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
   const windowInstance = activeWindows.find(
     (v) => v.windowId === windowData.windowId,
   );
+
+  const [previousDimension, setPreviousDimension] = useState<{
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  } | null>(null);
   // useOutsideAlerter(windowRef, () => changeFocus("nofocus"));
 
   const appConfig = getApp(windowData.appName);
@@ -82,6 +89,58 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     };
   }, [name, windowInstance, activeWindows]);
 
+  const fullScreenOrRestore = (isFullScreen: boolean) => {
+    if (!rndRef.current) return;
+    updatePreviousDimension();
+
+    if (!isFullScreen) maximize();
+    else restoreMaximize();
+  };
+
+  const updatePreviousDimension = () => {
+    const element = rndRef.current?.resizableElement.current!;
+    if (!element) return;
+
+    element.style.transition = "1s ease-in all";
+    element.style.transitionProperty = "width, height, transform";
+
+    setPreviousDimension({
+      x: extractCssTranslateProperty(element.style.transform).x,
+      y: extractCssTranslateProperty(element.style.transform).y,
+      width: element.clientWidth,
+      height: element.clientHeight,
+    });
+  };
+
+  const maximize = () => {
+    rndRef.current?.updateSize({ width: "100%", height: "100%" });
+    rndRef.current?.updatePosition({ x: 0, y: 0 });
+  };
+
+  const minimize = () => {
+    updatePreviousDimension();
+    rndRef.current?.updatePosition({
+      x: 0,
+      y: window.innerHeight,
+    });
+  };
+
+  const restoreMaximize = () => {
+    rndRef.current?.updateSize({
+      width: previousDimension!.width,
+      height: previousDimension!.height,
+    });
+    rndRef.current?.updatePosition({
+      x: previousDimension!.x,
+      y: previousDimension!.y,
+    });
+  };
+
+  const disableTransition = () => {
+    if (!rndRef.current || !rndRef.current.resizableElement.current) return;
+    rndRef.current.resizableElement.current!.style.transition = "none";
+  };
+
   return (
     <Rnd
       ref={(c) => {
@@ -101,12 +160,16 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
           (win) => win.windowId === windowData.windowId,
         )?.z,
       }}
-      onDragStart={(event) => {
+      onDragStart={() => {
         changeFocus(windowData.windowId);
+        disableTransition();
       }}
       minWidth={appConfig.width}
       minHeight={appConfig.height}
-      onResizeStart={() => changeFocus(windowData.windowId)}
+      onResizeStart={() => {
+        changeFocus(windowData.windowId);
+        disableTransition();
+      }}
       onDragStop={(_, d) => {
         if (rndRef.current?.resizableElement.current) {
           rndRef.current.resizableElement.current.style.transform = `translate(${Math.round(
@@ -127,8 +190,16 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
           useDefaultExtraActions={appConfig?.useDefaultExtraActions || false}
           title={windowData.title}
           handleClose={() => closeWindowById(windowData.windowId)}
-          handleMinimize={NOOP}
-          handleFullScreen={NOOP}
+          handleFullScreen={(isFullScreen) => {
+            if (!rndRef.current) return;
+
+            fullScreenOrRestore(isFullScreen);
+          }}
+          handleMinimize={() => {
+            minimize();
+            changeFocus(null);
+            console.log('changed focus')
+          }}
         />
         <WindowContentWrapper>
           {Component && <Component windowData={windowData} />}

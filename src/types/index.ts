@@ -1,12 +1,9 @@
-export type WindowPosition = {
+export type Vector2D = {
   x: number;
   y: number;
 };
 
-export type Vector2D = {
-  x: number;
-  y: number;
-}
+export type Size = Vector2D;
 
 export interface AppProps {
   windowData: WindowData;
@@ -15,7 +12,7 @@ export interface AppProps {
 export interface WindowSetup {
   appName: AppName;
   z: number;
-  pos: WindowPosition;
+  pos: Vector2D;
 }
 
 export interface WindowData extends WindowSetup {
