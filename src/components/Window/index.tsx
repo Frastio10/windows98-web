@@ -101,7 +101,7 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     const element = rndRef.current?.resizableElement.current!;
     if (!element) return;
 
-    element.style.transition = "1s ease-in all";
+    element.style.transition = "0.5s ease-in all";
     element.style.transitionProperty = "width, height, transform";
 
     setPreviousDimension({
@@ -119,8 +119,9 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
 
   const minimize = () => {
     updatePreviousDimension();
+    rndRef.current!.resizableElement.current!.style.opacity = '0.2'
     rndRef.current?.updatePosition({
-      x: 0,
+      x: -rndRef.current.resizableElement.current!.clientWidth,
       y: window.innerHeight,
     });
   };

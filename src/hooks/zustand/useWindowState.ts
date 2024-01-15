@@ -84,7 +84,7 @@ export const useWindowState = create<WindowState>((set, get) => ({
       }
     });
 
-    console.log(windows.map(v=>v.isFocused))
+    console.log('changing focus',windowId,'lah',windows.map(v=>v.isFocused))
 
     set({ activeWindows: windows });
   },

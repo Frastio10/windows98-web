@@ -69,7 +69,10 @@ export const TopBar = ({
             <>
               <CloseButton
                 style={{ marginLeft: "2px", padding: "4px" }}
-                onClick={handleMinimize}
+                onClick={(ev: MouseEvent)=>{
+                    ev.stopPropagation()
+                    handleMinimize(ev)
+                  }}
               />
 
               <CloseButton
