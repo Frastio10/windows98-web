@@ -17,7 +17,6 @@ export const TextShortcut = ({ text, shortcutLetter }: TextShortcutProps) => {
         );
       }
     }
-    // If shortcutLetter is not defined or not found, underline the first letter
     return (
       <p>
         <u>{text.charAt(0)}</u>

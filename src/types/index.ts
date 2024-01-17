@@ -18,6 +18,7 @@ export interface WindowSetup {
 export interface WindowData extends WindowSetup {
   windowId: string;
   isFocused: boolean;
+  isMinimized: boolean;
   title: string;
 }
 

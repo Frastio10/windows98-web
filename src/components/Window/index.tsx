@@ -1,7 +1,14 @@
-import { FC, ComponentType, useRef, memo, useMemo, useState } from "react";
+import {
+  FC,
+  ComponentType,
+  useRef,
+  memo,
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
 import styled from "styled-components";
 import { getApp } from "../../configs";
-import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { extractCssTranslateProperty, NOOP } from "../../utils";
 import { TopBar } from "./TopBar";
@@ -22,8 +29,13 @@ const getComponentByName = (name: AppName) => {
 };
 
 export const Window: FC<WindowProps> = ({ windowData }) => {
-  const { closeWindowById, setWindowPos, changeFocus, activeWindows } =
-    useWindowState();
+  const {
+    closeWindowById,
+    setWindowPos,
+    changeFocus,
+    activeWindows,
+    minimizeWindow,
+  } = useWindowState();
 
   const windowRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);
@@ -37,6 +49,15 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     x: number;
     y: number;
   } | null>(null);
+
+  const [windowedDimension, setWindowedDimension] = useState<{
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  } | null>(null);
+
+  const [hasMinimzed, setHasMinimized] = useState<boolean>(false);
   // useOutsideAlerter(windowRef, () => changeFocus("nofocus"));
 
   const appConfig = getApp(windowData.appName);
@@ -93,18 +114,33 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     if (!rndRef.current) return;
     updatePreviousDimension();
 
-    if (!isFullScreen) maximize();
-    else restoreMaximize();
+    if (isFullScreen) return restoreMaximize();
+
+    updateWindowedDimension();
+    maximize();
   };
 
   const updatePreviousDimension = () => {
     const element = rndRef.current?.resizableElement.current!;
     if (!element) return;
 
-    element.style.transition = "0.5s ease-in all";
-    element.style.transitionProperty = "width, height, transform";
+    enableTransition();
 
     setPreviousDimension({
+      x: extractCssTranslateProperty(element.style.transform).x,
+      y: extractCssTranslateProperty(element.style.transform).y,
+      width: element.clientWidth,
+      height: element.clientHeight,
+    });
+  };
+
+  const updateWindowedDimension = () => {
+    const element = rndRef.current?.resizableElement.current!;
+    if (!element) return;
+
+    enableTransition();
+
+    setWindowedDimension({
       x: extractCssTranslateProperty(element.style.transform).x,
       y: extractCssTranslateProperty(element.style.transform).y,
       width: element.clientWidth,
@@ -119,14 +155,28 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
 
   const minimize = () => {
     updatePreviousDimension();
-    rndRef.current!.resizableElement.current!.style.opacity = '0.2'
+    setVisibility(false);
     rndRef.current?.updatePosition({
       x: -rndRef.current.resizableElement.current!.clientWidth,
       y: window.innerHeight,
     });
+
+    minimizeWindow(windowData.windowId);
   };
 
-  const restoreMaximize = () => {
+  useEffect(() => {
+    if (windowInstance?.isMinimized) {
+      setHasMinimized(true);
+    }
+
+    if (!windowInstance?.isMinimized && hasMinimzed) {
+      restoreToPreviousDimension();
+    }
+  }, [windowInstance?.isMinimized]);
+
+  const restoreToPreviousDimension = () => {
+    enableTransition();
+    setVisibility(true, false);
     rndRef.current?.updateSize({
       width: previousDimension!.width,
       height: previousDimension!.height,
@@ -135,6 +185,45 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
       x: previousDimension!.x,
       y: previousDimension!.y,
     });
+  };
+
+  const setVisibility = (isVisible: boolean, delayDisplayNone = true) => {
+    let opacity = "0.2";
+    let visibility = "hidden";
+
+    if (isVisible) {
+      opacity = "1";
+      visibility = "visible";
+    }
+
+    // setTimeout(() => {
+    rndRef.current!.resizableElement.current!.style.opacity = opacity;
+    // }, 500);
+    setTimeout(
+      () => {
+        rndRef.current!.resizableElement.current!.style.visibility = visibility;
+      },
+      delayDisplayNone ? 500 : 0,
+    );
+  };
+
+  const restoreMaximize = () => {
+    rndRef.current?.updateSize({
+      width: windowedDimension!.width,
+      height: windowedDimension!.height,
+    });
+    rndRef.current?.updatePosition({
+      x: windowedDimension!.x,
+      y: windowedDimension!.y,
+    });
+  };
+
+  const enableTransition = () => {
+    const element = rndRef.current?.resizableElement.current!;
+    if (!element) return;
+
+    element.style.transition = "0.5s ease-in all";
+    element.style.transitionProperty = "width, height, transform";
   };
 
   const disableTransition = () => {
@@ -199,7 +288,6 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
           handleMinimize={() => {
             minimize();
             changeFocus(null);
-            console.log('changed focus')
           }}
         />
         <WindowContentWrapper>

@@ -35,8 +35,9 @@ export const TopBarActions = ({ actions }: TopBarActionsProps) => {
                 top: "110%",
               }}
             >
-              {action.children.map((child) => (
+              {action.children.map((child, indx) => (
                 <HoverButton
+                  key={indx}
                   style={{
                     width: "100%",
                     paddingLeft: "30px",
@@ -64,7 +65,7 @@ const Wrapper = styled.div`
   gap: 0px;
 `;
 
-const ParentAction = styled.button`
+const ParentAction = styled.div`
   border: 2px outset transparent;
   background: none;
   margin: 0;

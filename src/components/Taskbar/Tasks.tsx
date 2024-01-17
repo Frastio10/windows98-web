@@ -32,7 +32,7 @@ export const Tasks = () => {
                       tasksWrapperRef.current!.clientWidth,
                       activeWindows.length,
                     ) -
-                    3.2 +
+                    3.14 +
                     "px",
                 }}
               >

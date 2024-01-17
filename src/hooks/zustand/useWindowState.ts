@@ -51,6 +51,7 @@ export const useWindowState = create<WindowState>((set, get) => ({
     currentWindows.push({
       ...appConfig,
       isFocused: false,
+      isMinimized: false,
       windowId,
       title,
       pos: { x: 0, y: 0 },
@@ -71,7 +72,6 @@ export const useWindowState = create<WindowState>((set, get) => ({
       if (currentWindow.isFocused) return;
     }
 
-
     // currentWindow.z = maxZ + 1;
     // currentWindow.isFocused = true;
     windows.forEach((win) => {
@@ -81,10 +81,17 @@ export const useWindowState = create<WindowState>((set, get) => ({
         win.windowId = windowId;
         win.isFocused = true;
         win.z = maxZ + 1;
+
+        if (win.isMinimized) win.isMinimized = false;
       }
     });
 
-    console.log('changing focus',windowId,'lah',windows.map(v=>v.isFocused))
+    // console.log(
+    //   "changing focus",
+    //   windowId,
+    //   "lah",
+    //   windows.map((v) => v.isFocused),
+    // );
 
     set({ activeWindows: windows });
   },
@@ -94,11 +101,30 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const currentActiveWindows = get().activeWindows;
 
     const windowName = windowId.split("_")[0];
+    const app = getApp(windowName as AppName);
 
     const appConfig = APP_WINDOW_CONFIG.find((v) => v.appName === windowName);
-    if (!appConfig) return console.log("App not found");
+    if (!appConfig || !app) return console.log("App not found");
 
-    // currentMinimizedWindows.push({ ...appConfig, isFocused: false});
+    currentMinimizedWindows.push({
+      ...appConfig,
+      isFocused: false,
+      isMinimized: true,
+      windowId,
+      title: app.appTitle || app.defaultTitle!,
+    });
+
+    currentActiveWindows.forEach((win) => {
+      if (win.windowId === windowId) {
+        win.isMinimized = true;
+        win.isFocused = false;
+      }
+    });
+
+    set({
+      minimizedWindows: currentMinimizedWindows,
+      activeWindows: currentActiveWindows,
+    });
   },
 
   setWindowPos: (windowId, newPos) => {
@@ -107,7 +133,7 @@ export const useWindowState = create<WindowState>((set, get) => ({
       (win) => win.windowId === windowId,
     )?.pos;
     currentWindows.forEach((v) => {
-      console.log(v.isFocused, v.windowId, v.pos, "new", newPos);
+      // console.log(v.isFocused, v.windowId, v.pos, "new", newPos);
       if (v.windowId === windowId) {
         v.pos.x = newPos.x;
         v.pos.y = newPos.y;
