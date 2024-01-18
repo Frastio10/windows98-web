@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { APP_LIST, getApp, APP_WINDOW_CONFIG } from "../../configs";
 import { INITIAL_Z_INDEX } from "../../configs/constants";
-import { AppName, WindowData, WindowPosition } from "../../types";
+import { AppName, Vector2D, WindowData } from "../../types";
 
 interface WindowState {
   activeWindows: WindowData[];
   minimizedWindows: WindowData[];
   isStartMenuOpen: boolean;
 
-  changeFocus: (windowId: string | "nofocus") => void;
-  setWindowPos: (windowId: string, newPos: WindowPosition) => void;
+  changeFocus: (windowId: string | null) => void;
+  setWindowPos: (windowId: string, newPos: Vector2D) => void;
   openWindow: (windowName: AppName) => void;
   minimizeWindow: (windowId: string) => void;
   closeWindow: (windowName: AppName) => void;
@@ -44,12 +44,14 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const app = getApp(windowName);
     const title = app.defaultTitle || app.appTitle;
 
-    if (!appConfig || !app) return console.log(`App '${windowName}' is not found`);
+    if (!appConfig || !app)
+      return console.log(`App '${windowName}' is not found`);
     if (!app.allowMultipleInstances && isWindowAlreadyOpened) return;
 
     currentWindows.push({
       ...appConfig,
       isFocused: false,
+      isMinimized: false,
       windowId,
       title,
       pos: { x: 0, y: 0 },
@@ -63,22 +65,33 @@ export const useWindowState = create<WindowState>((set, get) => ({
     // console.log('closedWindowii', JSON.stringify(windows.map(v => ({ id: v.windowId, x: v.pos.x, y: v.pos.y }))), windowId)
     const maxZ = Math.max(...windows.map((win) => win.z), INITIAL_Z_INDEX);
 
-    const currentWindow = windows.find((win) => win.windowId === windowId);
+    if (windowId) {
+      const currentWindow = windows.find((win) => win.windowId === windowId);
 
-    if (!currentWindow) return console.log(`Window ${windowId} is not found`);
-    if (currentWindow.isFocused) return 
+      if (!currentWindow) return console.log(`Window ${windowId} is not found`);
+      if (currentWindow.isFocused) return;
+    }
 
     // currentWindow.z = maxZ + 1;
     // currentWindow.isFocused = true;
     windows.forEach((win) => {
       win.isFocused = false;
 
-      if (win.windowId === windowId) {
+      if (windowId && win.windowId === windowId) {
         win.windowId = windowId;
         win.isFocused = true;
         win.z = maxZ + 1;
+
+        if (win.isMinimized) win.isMinimized = false;
       }
     });
+
+    // console.log(
+    //   "changing focus",
+    //   windowId,
+    //   "lah",
+    //   windows.map((v) => v.isFocused),
+    // );
 
     set({ activeWindows: windows });
   },
@@ -88,11 +101,30 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const currentActiveWindows = get().activeWindows;
 
     const windowName = windowId.split("_")[0];
+    const app = getApp(windowName as AppName);
 
     const appConfig = APP_WINDOW_CONFIG.find((v) => v.appName === windowName);
-    if (!appConfig) return console.log("App not found");
+    if (!appConfig || !app) return console.log("App not found");
 
-    // currentMinimizedWindows.push({ ...appConfig, isFocused: false});
+    currentMinimizedWindows.push({
+      ...appConfig,
+      isFocused: false,
+      isMinimized: true,
+      windowId,
+      title: app.appTitle || app.defaultTitle!,
+    });
+
+    currentActiveWindows.forEach((win) => {
+      if (win.windowId === windowId) {
+        win.isMinimized = true;
+        win.isFocused = false;
+      }
+    });
+
+    set({
+      minimizedWindows: currentMinimizedWindows,
+      activeWindows: currentActiveWindows,
+    });
   },
 
   setWindowPos: (windowId, newPos) => {
@@ -101,7 +133,7 @@ export const useWindowState = create<WindowState>((set, get) => ({
       (win) => win.windowId === windowId,
     )?.pos;
     currentWindows.forEach((v) => {
-      console.log(v.isFocused, v.windowId, v.pos, "new", newPos);
+      // console.log(v.isFocused, v.windowId, v.pos, "new", newPos);
       if (v.windowId === windowId) {
         v.pos.x = newPos.x;
         v.pos.y = newPos.y;

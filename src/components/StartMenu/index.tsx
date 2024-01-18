@@ -54,6 +54,10 @@ const Wrapper = styled.div`
   height: 336px;
   background: ${({ theme }) => theme.elementDefaultBackground};
   width: 210px;
+  position: absolute;
+  bottom: 25px;
+   /* Mwahahahah */
+  z-index: 9999999999999999999999999999999999999999999999999999999999999;
 `;
 
 const WindowLogo = styled.div`
