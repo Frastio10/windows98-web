@@ -10,10 +10,6 @@ import {
 
 export const Notepad = ({ windowData }: AppProps) => {
   const { changeWindowTitle } = useWindowState();
-  useEffect(() => {
-    changeWindowTitle(windowData.windowId, "lah babi ya kata gw mah");
-    console.log("luh");
-  }, []);
   const topBarActions: TopBarAction[] = [
     {
       title: "File",

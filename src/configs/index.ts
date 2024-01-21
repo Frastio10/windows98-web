@@ -64,15 +64,15 @@ export const APP_LIST: App[] = [
     isResizable: false,
     isDraggable: true,
     icons: [
-      "/assets/images/notepad-small.png", // small -> minimized icons
-      "/assets/images/notepad-small.png", // medium -> other stuffs
-      "/assets/images/notepad-small.png", // large -> desktop icon
+      "/assets/images/small/notepad.png", // small -> minimized icons
+      "/assets/images/medium/notepad.png", // medium -> other stuffs
+      "/assets/images/big/notepad.png", // large -> desktop icon
     ],
   },
   {
     appName: "notepad",
     component: Notepad,
-    defaultTitle: "Untitled",
+    defaultTitle: "Untitled - Notepad",
     appTitle: "Notepad",
     useDefaultExtraActions: false,
     defaultPosition: "center",
@@ -82,9 +82,9 @@ export const APP_LIST: App[] = [
     isResizable: true,
     isDraggable: true,
     icons: [
-      "/assets/images/notepad-small.png", // small -> minimized icons
-      "/assets/images/notepad-small.png", // medium -> other stuffs
-      "/assets/images/notepad-small.png", // large -> desktop icon
+      "/assets/images/small/notepad.png",
+      "/assets/images/medium/notepad.png",
+      "/assets/images/big/notepad.png",
     ],
   },
   {

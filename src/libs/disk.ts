@@ -1,7 +1,7 @@
 import { safeJsonParse } from "../utils";
 
 export default class Disk {
-  private static instance: Disk | null = null;
+  private static _instance: Disk | null = null;
   private storage: Storage;
   private cache: { [key: string]: any };
 
@@ -55,10 +55,10 @@ export default class Disk {
   }
 
   public static getInstance() {
-    if (!Disk.instance) {
-      Disk.instance = new Disk();
+    if (!Disk._instance) {
+      Disk._instance = new Disk();
     }
-    return Disk.instance;
+    return Disk._instance;
   }
 
   // Other methods or properties related to Disk can be added here
