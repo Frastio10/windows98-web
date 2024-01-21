@@ -2,9 +2,10 @@ import { useRef } from "react";
 import styled from "styled-components";
 import { getApp } from "../../configs";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
+import { WindowData } from "../../types";
 
 export const Tasks = () => {
-  const { activeWindows, changeFocus } = useWindowState();
+  const { activeWindows, changeFocus, minimizeWindow } = useWindowState();
   const tasksWrapperRef = useRef<HTMLDivElement>(null);
 
   const calculateTaskElementWidth = (
@@ -14,6 +15,18 @@ export const Tasks = () => {
     const TASK_ELEMENT_WIDTH = 180;
     const width = Math.min(parentWidth / tasksLength, TASK_ELEMENT_WIDTH);
     return width;
+  };
+
+  const onClickTask = (win: WindowData) => {
+    if (win.isFocused) {
+      minimizeWindow(win.windowId);
+      changeFocus(null);
+      return;
+    } else if (!win.isFocused) {
+      return changeFocus(win.windowId);
+    }
+
+    // else if (!win.isMinimized) return changeFocus(win.windowId);
   };
   return (
     <Wrapper ref={tasksWrapperRef}>
@@ -25,7 +38,7 @@ export const Tasks = () => {
               <Task
                 key={v.windowId}
                 isFocused={v.isFocused}
-                onClick={() => changeFocus(v.windowId)}
+                onClick={() => onClickTask(v)}
                 style={{
                   width:
                     calculateTaskElementWidth(

@@ -27,8 +27,8 @@ const CloseButton = ({ ...props }: any) => {
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M0 0H2V1H3V2H5V1H6V0H8V1H7V2H6V3H5V4H6V5H7V6H8V7H6V6H5V5H3V6H2V7H0V6H1V5H2V4H3V3H2V2H1V1H0V0Z"
           fill="black"
         />
@@ -47,8 +47,8 @@ const FullScreenButton = ({ ...props }: any) => (
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M9 0H0V9H9V0ZM8 2H1V8H8V2Z"
         fill="black"
       />
@@ -127,7 +127,6 @@ export const TopBar = ({
           {app.showTopBarIcon === false ? null : <AppIcon src={app.icons[0]} />}
           <TextTitle>
             {title}
-            {windowId}
           </TextTitle>
         </LeftBar>
         <Actions>
@@ -197,15 +196,18 @@ export const TopBar = ({
 
 export const TopBarWrapper = styled.div`
   user-select: none;
+  overflow: hidden;
 `;
 
 const LeftBar = styled.div`
   display: flex;
   gap: 4px;
   padding-left: 2px;
+  overflow: hidden;
 `;
 
 export const Bar = styled.div<{ isFocus: boolean }>`
+  max-width: 100%;
   background: ${({ theme, isFocus }) =>
     isFocus
       ? theme.windowTopBarBackgroundPrimary
@@ -225,6 +227,10 @@ const TextTitle = styled.p`
   font-weight: bold;
   color: #fff;
   font-size: 13px;
+  white-space: nowrap;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export const Actions = styled.div`

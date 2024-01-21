@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import styled from "styled-components";
+import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { AppProps } from "../../types";
 import {
   TopBarAction,
@@ -7,6 +9,11 @@ import {
 } from "../Window/TopBarActions";
 
 export const Notepad = ({ windowData }: AppProps) => {
+  const { changeWindowTitle } = useWindowState();
+  useEffect(() => {
+    changeWindowTitle(windowData.windowId, "lah babi ya kata gw mah");
+    console.log("luh");
+  }, []);
   const topBarActions: TopBarAction[] = [
     {
       title: "File",
@@ -47,7 +54,11 @@ export const Notepad = ({ windowData }: AppProps) => {
     <Wrapper>
       <TopBarActions actions={topBarActions} />
       <TextAreaWrapper>
-        <TextArea></TextArea>
+        <TextArea
+          onChange={(ev) => {
+            console.log(JSON.stringify(ev.target.value));
+          }}
+        ></TextArea>
       </TextAreaWrapper>
     </Wrapper>
   );

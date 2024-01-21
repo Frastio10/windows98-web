@@ -40,6 +40,7 @@ export interface App {
   appName: string;
   component: ({ windowData }: AppProps) => JSX.Element;
   showTopBarIcon?: boolean;
+  sessionTitle?: string;
   appTitle: string;
   icons: [string, string, string];
   allowMultipleInstances?: boolean;

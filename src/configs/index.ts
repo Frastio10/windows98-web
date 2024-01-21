@@ -287,7 +287,7 @@ export const QUICK_LAUNCH_LIST = [
     appName: "notepad",
   },
   {
-    appName: "logInForm",
+    appName: "notepad",
   },
   {
     appName: "logInForm",
