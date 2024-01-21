@@ -15,6 +15,7 @@ interface WindowState {
   closeWindow: (windowName: AppName) => void;
   closeWindowById: (windowId: string) => void;
   changeStartMenu: (isOpen?: boolean) => void;
+  changeWindowTitle: (windowId: string, newTitle: string) => void;
 
   closeAllWindows: () => void;
 }
@@ -60,6 +61,16 @@ export const useWindowState = create<WindowState>((set, get) => ({
     set({ activeWindows: currentWindows });
   },
 
+  changeWindowTitle: (windowId, newTitle) => {
+    const windows = get().activeWindows;
+    windows.forEach((win) => {
+      if (windowId === win.windowId) {
+        win.title = newTitle;
+      }
+    });
+    set({ activeWindows: windows });
+  },
+
   changeFocus: (windowId) => {
     const windows = get().activeWindows;
     // console.log('closedWindowii', JSON.stringify(windows.map(v => ({ id: v.windowId, x: v.pos.x, y: v.pos.y }))), windowId)
@@ -72,8 +83,6 @@ export const useWindowState = create<WindowState>((set, get) => ({
       if (currentWindow.isFocused) return;
     }
 
-    // currentWindow.z = maxZ + 1;
-    // currentWindow.isFocused = true;
     windows.forEach((win) => {
       win.isFocused = false;
 
@@ -85,13 +94,6 @@ export const useWindowState = create<WindowState>((set, get) => ({
         if (win.isMinimized) win.isMinimized = false;
       }
     });
-
-    // console.log(
-    //   "changing focus",
-    //   windowId,
-    //   "lah",
-    //   windows.map((v) => v.isFocused),
-    // );
 
     set({ activeWindows: windows });
   },
@@ -132,15 +134,13 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const currentPos = get().activeWindows.find(
       (win) => win.windowId === windowId,
     )?.pos;
+
     currentWindows.forEach((v) => {
-      // console.log(v.isFocused, v.windowId, v.pos, "new", newPos);
       if (v.windowId === windowId) {
         v.pos.x = newPos.x;
         v.pos.y = newPos.y;
       }
     });
-
-    // console.log(windowId, currentPos, newPos);
 
     set({ activeWindows: currentWindows });
   },

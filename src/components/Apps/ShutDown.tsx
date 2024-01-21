@@ -3,6 +3,7 @@ import { useLogin } from "../../hooks/zustand/useAuthState";
 import { useSystemState } from "../../hooks/zustand/useSystemState";
 import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { AppProps } from "../../types";
+import { EmptyComponent } from "../shared/EmptyComponent";
 
 export const ShutDown = ({ windowData }: AppProps) => {
   const { shutDown } = useSystemState();
@@ -16,5 +17,5 @@ export const ShutDown = ({ windowData }: AppProps) => {
     closeWindowById(windowData.windowId);
   }, []);
 
-  return <div></div>;
+  return <EmptyComponent />;
 };

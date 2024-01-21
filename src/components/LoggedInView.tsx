@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
+import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { useWindowState } from "../hooks/zustand/useWindowState";
+import { FileNode } from "../libs/fileSystem";
 import { Vector2D } from "../types";
 import { Box } from "./shared/Box";
 import { Taskbar } from "./Taskbar";
@@ -8,6 +10,7 @@ import { Window } from "./Window";
 
 export const LoggedInView = () => {
   const { activeWindows } = useWindowState();
+  const { fileSystem } = useFileSystem();
   const [shortcutBoxCoordinate, setShortcutBoxCoordinate] =
     useState<Vector2D | null>(null);
 
@@ -23,7 +26,8 @@ export const LoggedInView = () => {
       <Main className="bounds">
         <EventHandlerOverlay
           onContextMenu={(ev) => {
-            setShortcutBoxCoordinate(null)
+            const node = new FileNode("apa");
+            setShortcutBoxCoordinate(null);
             setShortcutBoxCoordinate({ x: ev.clientX, y: ev.clientY });
           }}
         />
@@ -39,7 +43,9 @@ export const LoggedInView = () => {
               position: "absolute",
               width: "200px",
             }}
-          >Window</Box>
+          >
+            Window
+          </Box>
         )}
       </Main>
       <Bottom>

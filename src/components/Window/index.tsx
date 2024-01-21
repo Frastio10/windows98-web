@@ -57,7 +57,7 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     y: number;
   } | null>(null);
 
-  const [hasMinimzed, setHasMinimized] = useState<boolean>(false);
+  const [hasMinimized, setHasMinimized] = useState<boolean>(false);
   // useOutsideAlerter(windowRef, () => changeFocus("nofocus"));
 
   const appConfig = getApp(windowData.appName);
@@ -160,16 +160,15 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
       x: -rndRef.current.resizableElement.current!.clientWidth,
       y: window.innerHeight,
     });
-
-    minimizeWindow(windowData.windowId);
   };
 
   useEffect(() => {
     if (windowInstance?.isMinimized) {
       setHasMinimized(true);
+      minimize();
     }
 
-    if (!windowInstance?.isMinimized && hasMinimzed) {
+    if (!windowInstance?.isMinimized && hasMinimized) {
       restoreToPreviousDimension();
     }
   }, [windowInstance?.isMinimized]);
@@ -286,7 +285,7 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
             fullScreenOrRestore(isFullScreen);
           }}
           handleMinimize={() => {
-            minimize();
+            minimizeWindow(windowData.windowId);
             changeFocus(null);
           }}
         />

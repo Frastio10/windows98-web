@@ -18,7 +18,9 @@ export const StartMenu = forwardRef<HTMLDivElement>((props, ref) => {
   return (
     <Wrapper ref={ref}>
       <WindowLogo>
-        <p style={{ transform: "rotate(-90deg)", width: "16px" }}>Windows98</p>
+        <p style={{ transform: "rotate(-90deg)", width: "16px" }}>
+          Windows<span>98</span>
+        </p>
       </WindowLogo>
       <MenuList>
         {START_MENU_LIST.map((v, parentIdx) => {
@@ -56,7 +58,7 @@ const Wrapper = styled.div`
   width: 210px;
   position: absolute;
   bottom: 25px;
-   /* Mwahahahah */
+  /* Mwahahahah */
   z-index: 9999999999999999999999999999999999999999999999999999999999999;
 `;
 
@@ -67,4 +69,8 @@ const WindowLogo = styled.div`
   color: white;
   font-weight: bold;
   align-items: flex-end;
+
+  span {
+    font-weight: lighter;
+  }
 `;
