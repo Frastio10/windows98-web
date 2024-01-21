@@ -1,8 +1,11 @@
+import { AppName } from "../types";
 import { log } from "../utils";
 import Disk from "./disk";
 
 const FILE_ID_PREFIX = "file-";
 export const STORAGE_KEY = "fs";
+
+export const ROOT_FILENAME ="C:"
 
 export const extractFileSystemToJson = () => {};
 
@@ -12,11 +15,13 @@ export class FileNode {
   children: FileNode[];
   content: any;
   id: string;
+  icon: string | null;
 
   constructor(name: string, isDirectory = false) {
     this.name = name;
     this.isDirectory = isDirectory;
     this.children = [];
+    this.icon = null
     this.content = null;
     this.id = `${FILE_ID_PREFIX}${Date.now()}`;
   }
@@ -35,7 +40,7 @@ export default class FileSystem {
   private static _instance: FileSystem | null = null;
 
   constructor() {
-    this.root = new FileNode("~", true);
+    this.root = new FileNode(ROOT_FILENAME, true);
     log("Created FileSystem instance.");
   }
 
@@ -48,7 +53,9 @@ export default class FileSystem {
 
   static loadFilesFromArray(root: FileNode, fileArr: any[]) {
     fileArr.forEach((file: any) => {
-      const node = new FileNode(file.name, true);
+      const node = new FileNode(file.name, file.isDirectory);
+      node.content = file.content
+      node.icon = file.icon
       root.addChild(node);
 
       if (file.children && file.children.length)
@@ -85,6 +92,7 @@ export default class FileSystem {
       isDirectory: node.isDirectory,
       content: node.content,
       id: node.id,
+      icon: node.icon,
       children: [],
     };
 
@@ -101,7 +109,7 @@ export default class FileSystem {
     const pathSegments = path.split("/");
     let currentNode = this.root;
     for (const segment of pathSegments) {
-      if (segment === "") continue;
+      if (segment === ROOT_FILENAME) continue;
 
       const foundNode = currentNode.children.find(
         (node) => node.name === segment,
@@ -118,5 +126,13 @@ export default class FileSystem {
     }
 
     return currentNode;
+  }
+
+  getDesktopFiles() {
+    const DESKTOP_PATH = "C:/Desktop";
+    const node = this.getNodeByPath(DESKTOP_PATH);
+    if (!node) log("Desktop not found... Weird.");
+
+    return node;
   }
 }
