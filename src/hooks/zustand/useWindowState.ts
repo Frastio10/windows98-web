@@ -10,7 +10,7 @@ interface WindowState {
 
   changeFocus: (windowId: string | null) => void;
   setWindowPos: (windowId: string, newPos: Vector2D) => void;
-  openWindow: (windowName: AppName) => void;
+  openWindow: (windowName: AppName, data?: any) => void;
   minimizeWindow: (windowId: string) => void;
   closeWindow: (windowName: AppName) => void;
   closeWindowById: (windowId: string) => void;
