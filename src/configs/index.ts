@@ -56,7 +56,7 @@ export const APP_LIST: App[] = [
     defaultTitle: "Welcome to Windows",
     appTitle: "Notepad",
     showTopBarIcon: false,
-    useDefaultExtraActions: false,
+    useDefaultExtraActions: true,
     defaultPosition: "center",
     allowMultipleInstances: true,
     width: 555,

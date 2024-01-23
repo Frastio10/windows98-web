@@ -10,7 +10,7 @@ interface WindowState {
 
   changeFocus: (windowId: string | null) => void;
   setWindowPos: (windowId: string, newPos: Vector2D) => void;
-  openWindow: (windowName: AppName, data?: any) => void;
+  openWindow: (windowName: AppName, args?: any) => void;
   minimizeWindow: (windowId: string) => void;
   closeWindow: (windowName: AppName) => void;
   closeWindowById: (windowId: string) => void;
@@ -33,7 +33,7 @@ export const useWindowState = create<WindowState>((set, get) => ({
     set({ isStartMenuOpen: isOpen || !get().isStartMenuOpen });
   },
 
-  openWindow: (windowName) => {
+  openWindow: (windowName, args) => {
     const appConfig = APP_WINDOW_CONFIG.find((v) => v.appName === windowName);
     const currentWindows = get().activeWindows;
     const isWindowAlreadyOpened = currentWindows.find(
@@ -55,6 +55,7 @@ export const useWindowState = create<WindowState>((set, get) => ({
       isMinimized: false,
       windowId,
       title,
+      args,
       pos: { x: 0, y: 0 },
     });
     get().changeFocus(windowId);

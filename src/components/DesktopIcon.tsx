@@ -5,7 +5,7 @@ import { getApp } from "../configs";
 import { FILE_EXTENSIONS } from "../configs/fileSystem";
 import useOutsideAlerter from "../hooks/useOutsideAlerter";
 import { useWindowState } from "../hooks/zustand/useWindowState";
-import { FileExtractor } from "../libs/fileExtractor";
+import { FileProcessor } from "../libs/fileProcessor";
 import { FileNode } from "../libs/fileSystem";
 import { AppName, Vector2D } from "../types";
 
@@ -20,24 +20,18 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
   const elemRef = useRef<Rnd>();
 
-  const exeData = FileExtractor.exe(file.content);
-  const app = getApp(exeData.appName as AppName);
+  const fileProcessor = new FileProcessor(file);
+  const data = fileProcessor.read();
+  const program = data.fileMetadata.supportedPrograms![0];
+
+  const app = getApp(program);
 
   useOutsideAlerter([elemRef.current?.resizableElement!], () => {
     setIsSelected(false);
   });
 
-  const handleExe = (str: string) => {
-    const file = FileExtractor.exe(str);
-    if (file.command === "run") {
-      openWindow(file.appName as AppName);
-    }
-  };
-
-  const handleOpen = (file: FileNode) => {
-    if (file.name.includes(FILE_EXTENSIONS.EXE)) {
-      handleExe(file.content);
-    }
+  const handleOpen = (_: FileNode) => {
+    fileProcessor.run();
   };
   return (
     <Rnd
@@ -48,8 +42,8 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
       default={{
         x: position.x,
         y: position.y,
-        width: '75px',
-        height: '75px'
+        width: "75px",
+        height: "75px",
       }}
       style={{
         cursor: "auto !important",
@@ -61,7 +55,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
       <Wrapper>
         <IconImage src={app.icons[2]} draggable={false} />
         <span style={{ background: isSelected ? "blue" : "none" }}>
-          {FileExtractor.getFileName(file.name)}
+          {FileProcessor.getFileNameOnly(file.name)}
         </span>
       </Wrapper>
     </Rnd>
@@ -76,16 +70,24 @@ const IconImage = styled.img`
 const Wrapper = styled.div`
   position: absolute;
   z-index: 1;
-  height: 75px;
+  height: 80px;
   width: 75px;
-  display: flex;
+  text-align: center;
+  /* display: flex; */
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  overflow: hidden;
 
   span {
     margin-top: 8px;
     font-size: 13px;
     color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
   }
 `;
