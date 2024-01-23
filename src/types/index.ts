@@ -20,6 +20,7 @@ export interface WindowData extends WindowSetup {
   isFocused: boolean;
   isMinimized: boolean;
   title: string;
+  args?: any;
 }
 
 export type AppName =

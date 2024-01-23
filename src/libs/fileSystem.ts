@@ -5,7 +5,7 @@ import Disk from "./disk";
 const FILE_ID_PREFIX = "file-";
 export const STORAGE_KEY = "fs";
 
-export const ROOT_FILENAME ="C:"
+export const ROOT_FILENAME = "C:";
 
 export const extractFileSystemToJson = () => {};
 
@@ -16,22 +16,60 @@ export class FileNode {
   content: any;
   id: string;
   icon: string | null;
+  parent: FileNode | null;
+  createdAt: Date;
+  updatedAt: Date;
+  path: string;
 
-  constructor(name: string, isDirectory = false) {
+  constructor(name: string, isDirectory = false, parent: FileNode | null) {
     this.name = name;
     this.isDirectory = isDirectory;
     this.children = [];
-    this.icon = null
+    this.icon = null;
     this.content = null;
     this.id = `${FILE_ID_PREFIX}${Date.now()}`;
+    this.parent = parent;
+
+    this.path = this.getNodePath();
+
+    this.updatedAt = new Date();
+    this.createdAt = new Date();
   }
 
-  addChild(childNode: FileNode) {
+  addChild(childNode: FileNode, updateDisk: boolean = true) {
     this.children.push(childNode);
+    this.updateDate();
+    if (updateDisk) this.updateDisk();
   }
 
-  removeChild(childNode: FileNode) {
+  updateDisk() {
+    const fs = FileSystem.getInstance();
+    fs.updateStorageData();
+  }
+
+  updateDate() {
+    this.updatedAt = new Date();
+    return this.updatedAt;
+  }
+
+  removeChild(childNode: FileNode, updateDisk = true) {
     this.children = this.children.filter((child) => child !== childNode);
+    this.updateDate();
+
+    if (updateDisk) this.updateDisk();
+  }
+
+  getNodePath() {
+    const pathSegments = [];
+    let currentNode: FileNode | null = this;
+
+    while (currentNode) {
+      pathSegments.unshift(currentNode.name);
+      currentNode = currentNode.parent;
+    }
+
+    const nodePath = pathSegments.join("/");
+    return nodePath === "" ? "/" : `${nodePath}`;
   }
 }
 
@@ -40,7 +78,7 @@ export default class FileSystem {
   private static _instance: FileSystem | null = null;
 
   constructor() {
-    this.root = new FileNode(ROOT_FILENAME, true);
+    this.root = new FileNode(ROOT_FILENAME, true, null);
     log("Created FileSystem instance.");
   }
 
@@ -53,9 +91,9 @@ export default class FileSystem {
 
   static loadFilesFromArray(root: FileNode, fileArr: any[]) {
     fileArr.forEach((file: any) => {
-      const node = new FileNode(file.name, file.isDirectory);
-      node.content = file.content
-      node.icon = file.icon
+      const node = new FileNode(file.name, file.isDirectory, root);
+      node.content = file.content;
+      node.icon = file.icon;
       root.addChild(node);
 
       if (file.children && file.children.length)

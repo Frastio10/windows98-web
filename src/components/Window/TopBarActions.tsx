@@ -45,6 +45,7 @@ export const TopBarActions = ({ actions }: TopBarActionsProps) => {
                     paddingBottom: "2px",
                     textAlign: "left",
                   }}
+                  onClick={child.onAction}
                 >
                   <TextShortcut
                     text={child.title}

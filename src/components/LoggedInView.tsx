@@ -29,10 +29,6 @@ export const LoggedInView = () => {
       <Main className="bounds">
         <EventHandlerOverlay
           onContextMenu={(ev) => {
-            const node = new FileNode("apa");
-            fileSystem.root.addChild(node);
-            fileSystem.updateStorageData();
-
             setShortcutBoxCoordinate(null);
             setShortcutBoxCoordinate({ x: ev.clientX, y: ev.clientY });
           }}
