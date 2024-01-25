@@ -41,6 +41,13 @@ export class FileNode {
     this.updateDate();
     if (updateDisk) this.updateDisk();
   }
+  rename(newName: string, updateDisk: boolean = true) {
+    this.name = newName;
+    this.updateDate();
+    if (updateDisk) this.updateDisk();
+
+    return this.name;
+  }
 
   updateDisk() {
     const fs = FileSystem.getInstance();

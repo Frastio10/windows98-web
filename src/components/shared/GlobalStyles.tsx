@@ -127,6 +127,10 @@ font-smooth: never;
     background: ${themeStyles.elementDefaultBackground};
     box-shadow: ${themeStyles.buttonPixelatedBorder};
   }
+
+ [contenteditable]:focus {
+    outline: 0px solid transparent;
+  }
 `;
 
 export default GlobalStyles;
