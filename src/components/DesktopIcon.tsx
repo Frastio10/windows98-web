@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import styled from "styled-components";
 import { getApp } from "../configs";
@@ -25,44 +25,72 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
   const titleRef = useRef<HTMLSpanElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const fileProcessor = new FileProcessor(file);
-  const data = fileProcessor.read();
-  const program = data.fileMetadata.supportedPrograms![0];
+  const { fileProcessor, data, program, app } = useMemo(() => {
+    const fileProcessor = new FileProcessor(file);
+    const data = fileProcessor.read();
+    const program = data.fileMetadata.supportedPrograms![0];
 
-  const app = getApp(program);
+    const app = getApp(program);
+
+    return {
+      fileProcessor,
+      data,
+      program,
+      app,
+    };
+  }, [file]);
 
   useOutsideAlerter([wrapperRef], () => {
     setIsSelected(false);
     setIsRename(false);
   });
 
-  const handleOpen = (_: FileNode) => {
-    fileProcessor.run();
-  };
+  useEffect(() => {
+    const handleOpen = () => {
+      fileProcessor.run();
+    };
+
+    elemRef.current?.resizableElement.current?.addEventListener(
+      "dblclick",
+      handleOpen,
+    );
+
+    return () =>
+      elemRef.current?.resizableElement.current?.removeEventListener(
+        "dblclick",
+        handleOpen,
+      );
+  }, [file]);
 
   function selectElementContents(el: any) {
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    var sel = window.getSelection();
-    sel?.removeAllRanges();
-    sel?.addRange(range);
+    let range, sel;
+
+    if (window.getSelection && document.createRange) {
+      range = document.createRange();
+      range.selectNodeContents(el);
+      sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
   }
 
-  const handleKeydown = (ev: KeyboardEvent) => {
-    if (ev.key === "F2") {
-      setIsRename(true);
-      titleRef.current?.focus();
-      selectElementContents(titleRef.current);
-    }
-  };
-
   useEffect(() => {
+    const handleKeydown = (ev: KeyboardEvent) => {
+      if (ev.key === "F2") {
+        setIsRename(true);
+        selectElementContents(titleRef.current);
+        titleRef.current?.focus();
+      }
+    };
+
     if (isSelected) {
       document.addEventListener("keydown", handleKeydown);
     } else {
       document.removeEventListener("keydown", handleKeydown);
     }
-  }, [isSelected]);
+
+    return () => document.removeEventListener("keydown", handleKeydown);
+  }, [isSelected, isRename]);
 
   const renameFile = () => {
     titleRef.current?.blur();
@@ -87,7 +115,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
         cursor: "auto !important",
       }}
       bounds=".bounds"
-      onDoubleClick={() => handleOpen(file)}
+      // onDoubleClick={() => handleOpen(file)}
       onClick={() => setIsSelected(true)}
     >
       <Wrapper ref={wrapperRef}>
@@ -100,6 +128,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
         >
           <TextRename
             ref={titleRef}
+            tabIndex={1}
             style={{
               // fix this ugly shiit
               background: isRename ? "white" : isSelected ? "blue" : "none",
@@ -109,6 +138,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
             }}
             contentEditable={isRename}
             dangerouslySetInnerHTML={{ __html: file.name }}
+            onClick={(e) => e.stopPropagation()}
             onKeyDown={(ev) => {
               if (ev.key === "Enter") {
                 ev.preventDefault();
@@ -124,10 +154,12 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
 const TextRename = styled.span`
   min-width: 30px;
+  padding: 0 4px;
 `;
 const RenameInput = styled.input`
   width: 100%;
   height: 14px;
+  padding: 0 4px;
 `;
 
 const IconImage = styled.img`

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FILE_EXTENSIONS } from "../configs/fileSystem";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
@@ -17,12 +17,18 @@ export const LoggedInView = () => {
   const [shortcutBoxCoordinate, setShortcutBoxCoordinate] =
     useState<Vector2D | null>(null);
 
-  const hideShortcutBox = () => {
-    setShortcutBoxCoordinate(null);
-  };
+  useEffect(() => {
+    const hideShortcutBox = () => {
+      setShortcutBoxCoordinate(null);
+    };
+    document.addEventListener("click", hideShortcutBox);
+    document.addEventListener("keydown", hideShortcutBox);
 
-  document.addEventListener("click", hideShortcutBox);
-  document.addEventListener("keydown", hideShortcutBox);
+    return () => {
+      document.removeEventListener("click", hideShortcutBox);
+      document.removeEventListener("keydown", hideShortcutBox);
+    };
+  }, []);
 
   return (
     <Wrapper>
@@ -39,7 +45,7 @@ export const LoggedInView = () => {
 
         {desktopFiles?.children.map((file, index) => (
           <DesktopIcon
-            key={index}
+            key={file.id}
             file={file}
             position={{ x: index * 75 + (index > 0 ? 10 : 0), y: 0 }}
           />

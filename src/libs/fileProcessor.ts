@@ -24,7 +24,6 @@ export class FileProcessor {
   }
 
   run() {
-    console.log("running", this.fileMetadata.supportedPrograms);
     if (!this.fileMetadata.supportedPrograms)
       return log("No supported programs.");
 
@@ -36,6 +35,8 @@ export class FileProcessor {
           ? null
           : this.file.path,
       );
+
+    return this;
     // useWindowState()
   }
 

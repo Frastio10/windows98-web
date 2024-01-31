@@ -1,18 +1,52 @@
-import { safeJsonParse } from "../utils";
+import { log, safeJsonParse } from "../utils";
+
+// @ts-ignore
+const lzmaWorker = LZMA as any;
 
 export default class Disk {
   private static _instance: Disk | null = null;
   private storage: Storage;
   private cache: { [key: string]: any };
+  private useLZMA: boolean;
+
+  private lzmaWorker: any;
 
   private constructor() {
     this.storage = localStorage;
     this.cache = {};
+    this.useLZMA = true;
+
+    if (this.useLZMA && lzmaWorker) {
+      this.lzmaWorker = lzmaWorker;
+    }
+
+    // @ts-ignore
+    // this.workerLZMA=
+    // console.log(LZMA)
+  }
+
+  decompressLZMA(data: string) {
+    if (!this.lzmaWorker) return log(`LZMA worker is not found.`);
+    return this.lzmaWorker.decompress(data);
+  }
+
+  compressLZMA(data: string) {
+    if (!this.lzmaWorker) return log(`LZMA worker is not found.`);
+    return this.lzmaWorker.compress(data, 1);
+  }
+
+  setStorage(storage: Storage) {
+    this.storage = storage;
+    return this.storage;
   }
 
   setJSON(key: string, val: any) {
-    const string = JSON.stringify(val);
     this.setCache(key, val);
+
+    const string = JSON.stringify(val);
+    const compressed = this.compressLZMA(string);
+
+    if (this.useLZMA) return this.storage.setItem(key, compressed);
 
     this.storage.setItem(key, string);
   }
@@ -31,7 +65,12 @@ export default class Disk {
     const cache = this.getCache(key);
     if (cache) return cache;
 
-    return safeJsonParse(this.get(key));
+    const savedData = this.get(key);
+    if (!savedData) return null;
+
+    const decompressed = this.decompressLZMA(savedData.split(","));
+
+    return safeJsonParse(decompressed);
   }
 
   getCache(key: string) {
