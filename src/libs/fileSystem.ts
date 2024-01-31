@@ -1,5 +1,5 @@
 import { AppName } from "../types";
-import { log } from "../utils";
+import { generateRandomString, log } from "../utils";
 import Disk from "./disk";
 
 const FILE_ID_PREFIX = "file-";
@@ -27,7 +27,23 @@ export class FileNode {
     this.children = [];
     this.icon = null;
     this.content = null;
-    this.id = `${FILE_ID_PREFIX}${Date.now()}`;
+
+    const makeId = (len: number) => {
+      let result = "";
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      const charactersLength = characters.length;
+      let counter = 0;
+      while (counter < len) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength),
+        );
+        counter += 1;
+      }
+      return result;
+    };
+
+    this.id = `${FILE_ID_PREFIX}${makeId(5)}-${Date.now()}`;
     this.parent = parent;
 
     this.path = this.getNodePath();
@@ -43,6 +59,7 @@ export class FileNode {
   }
   rename(newName: string, updateDisk: boolean = true) {
     this.name = newName;
+    this.path = this.getNodePath()
     this.updateDate();
     if (updateDisk) this.updateDisk();
 
@@ -94,6 +111,19 @@ export default class FileSystem {
       FileSystem._instance = new FileSystem();
     }
     return FileSystem._instance;
+  }
+
+  public static makeId(len: number) {
+    let result = "";
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
   }
 
   static loadFilesFromArray(root: FileNode, fileArr: any[]) {

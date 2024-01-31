@@ -21,7 +21,7 @@ export const Notepad = ({ windowData }: AppProps) => {
   useEffect(() => {
     if (windowData.args) {
       const file = fileSystem.getNodeByPath(windowData.args);
-      if (!file) return log("Failed to open file. File is not found");
+      if (!file) return log(`Failed to open file. File '${windowData.args}' is not found`);
       currentFile.current = file;
 
       changeWindowTitle(windowData.windowId, file.name + " - Notepad");
@@ -60,8 +60,6 @@ export const Notepad = ({ windowData }: AppProps) => {
     updateFileSystem();
 
     setIsSaved(true);
-
-    console.log("save current");
   };
 
   const topBarActions: TopBarAction[] = [
