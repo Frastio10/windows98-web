@@ -1,11 +1,6 @@
 const defaultSettings = {
   desktop: {
-    icons: {
-      "Notepad.exe": {
-        x: Math.round(window.innerWidth - 80),
-        y: 10,
-      },
-    },
+    icons: {},
   },
 };
 export const INITIAL_FILES = [
@@ -17,11 +12,6 @@ export const INITIAL_FILES = [
     name: "Desktop",
     isDirectory: true,
     children: [
-      {
-        name: "Notepad.exe",
-        content: "run notepad",
-        isDirectory: false,
-      },
       {
         name: "Notepad.exe",
         content: "run notepad",

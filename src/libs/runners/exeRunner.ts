@@ -1,12 +1,12 @@
-import { useWindowState } from "../hooks/zustand/useWindowState";
-import { FileNode } from "./fileSystem";
+import { useWindow } from "../../hooks/os";
+import { FileNode } from "../fileSystem";
 
 type Command = {
   key: string;
   command: Function;
 };
 
-class ExeRunner {
+export default class ExeRunner {
   file: FileNode;
   commands: Command[];
   constructor(file: FileNode) {
@@ -15,7 +15,7 @@ class ExeRunner {
     this.commands = [
       {
         key: "run",
-        command: useWindowState.getState().openWindow,
+        command: useWindow.getState().openWindow,
       },
     ];
   }

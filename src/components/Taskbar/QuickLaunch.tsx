@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { QUICK_LAUNCH_LIST, getApp } from "../../configs";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { LongDivider, ThickDivider } from "../shared/Dividers";
 import { AppName } from "../../types";
+import { useWindow } from "../../hooks/os";
 
 export const QuickLaunch = () => {
-  const { openWindow } = useWindowState();
+  const { openWindow } = useWindow();
   return (
     <Wrapper>
       <InnerWrapper>

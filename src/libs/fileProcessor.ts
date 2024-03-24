@@ -1,9 +1,9 @@
 import { EXTENSION_READERS } from "../configs/constants";
 import { FILE_EXTENSIONS } from "../configs/fileSystem";
-import { useWindowState } from "../hooks/zustand/useWindowState";
 import { App, AppName } from "../types";
 import { log } from "../utils";
 import { FileNode } from "./fileSystem";
+import System from "./system";
 
 // the name FileReader is reserved :(
 type FileMetadata = {
@@ -27,17 +27,15 @@ export class FileProcessor {
     if (!this.fileMetadata.supportedPrograms)
       return log("No supported programs.");
 
-    useWindowState
-      .getState()
-      .openWindow(
-        this.fileMetadata?.supportedPrograms[0],
-        this.fileMetadata.extension === FILE_EXTENSIONS.EXE
-          ? null
-          : this.file.path,
-      );
+    if (this.fileMetadata.extension == FILE_EXTENSIONS.EXE) {
+      return this.runExe();
+    }
+
+    const sys = System.getInstance();
+
+    sys.open(this.fileMetadata?.supportedPrograms[0], this.file.path);
 
     return this;
-    // useWindowState()
   }
 
   read() {
@@ -49,6 +47,7 @@ export class FileProcessor {
     }
     return this;
   }
+
   private findSupportedApps() {
     const extensions = EXTENSION_READERS as any;
 
@@ -69,6 +68,11 @@ export class FileProcessor {
       command,
       appName,
     };
+  }
+
+  runExe() {
+    const sys = System.getInstance()
+    sys.open(this.fileMetadata.supportedPrograms![0], null)
   }
 
   static getFileExtension(fileName: string) {

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { getApp } from "../../configs";
+import { useWindow } from "../../hooks/os";
 import { useStartMenu } from "../../hooks/zustand/useStartMenu";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { AppName } from "../../types";
 
 export interface App {
@@ -12,7 +12,7 @@ export interface App {
 }
 
 export const StartMenuApp = ({ appName, isDisabled, children }: App) => {
-  const { openWindow } = useWindowState();
+  const { openWindow } = useWindow();
   const { changeStartMenu } = useStartMenu();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useWindow } from "../../hooks/os";
 import { useFileSystem } from "../../hooks/zustand/useFileSystem";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { FileNode } from "../../libs/fileSystem";
 import { AppProps } from "../../types";
 import { log } from "../../utils";
@@ -10,22 +10,27 @@ import {
   TopBarActions,
   TopBarActionsProps,
 } from "../Window/TopBarActions";
+import LZString from "lz-string";
 
 export const Notepad = ({ windowData }: AppProps) => {
-  const { changeWindowTitle } = useWindowState();
+  const { changeWindowTitle } = useWindow();
   const { fileSystem, updateFileSystem } = useFileSystem();
   const [value, setValue] = useState("");
-  const currentFile = useRef<FileNode | null>();
+
+  const [currentFile, setCurrentFile] = useState<FileNode | null>(null);
   const [isSaved, setIsSaved] = useState<null | boolean>(null);
 
   useEffect(() => {
     if (windowData.args) {
       const file = fileSystem.getNodeByPath(windowData.args);
-      if (!file) return log(`Failed to open file. File '${windowData.args}' is not found`);
-      currentFile.current = file;
+      if (!file)
+        return log(
+          `Failed to open file. File '${windowData.args}' is not found`,
+        );
+      setCurrentFile(file);
 
       changeWindowTitle(windowData.windowId, file.name + " - Notepad");
-      setValue(file.content);
+      setValue(LZString.decompressFromUTF16(file.content));
       setIsSaved(true);
     }
   }, []);
@@ -45,18 +50,30 @@ export const Notepad = ({ windowData }: AppProps) => {
     const file = new FileNode(filename, false, desktopNode);
 
     changeWindowTitle(windowData.windowId, filename + " - Notepad");
-    file.content = value;
-    currentFile.current = file;
+    file.content = LZString.compressToUTF16(value);
+    setCurrentFile(file);
 
     desktopNode?.addChild(file);
     updateFileSystem();
     setIsSaved(true);
   };
 
+  const openNewInstance = () => {
+    setCurrentFile(null);
+    setValue("");
+    changeWindowTitle(windowData.windowId, null);
+    setIsSaved(true);
+  };
+
   const saveCurrent = () => {
-    if (!currentFile.current) return saveAsNewFile();
-    if (value === currentFile.current?.content) return;
-    currentFile.current.content = value;
+    if (!currentFile) return saveAsNewFile();
+    if (value === currentFile.content) return;
+
+    // this is so ugly.  i have no fucking idea why prevState doesnt work with classes
+    const file = currentFile;
+    file.content = LZString.compressToUTF16(value);
+    setCurrentFile(file);
+
     updateFileSystem();
 
     setIsSaved(true);
@@ -72,7 +89,7 @@ export const Notepad = ({ windowData }: AppProps) => {
         },
         {
           title: "Open...",
-          onAction: () => console.log("hellopeppoep"),
+          onAction: () => openNewInstance(),
         },
         {
           title: "Save",

@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import styled from "styled-components";
 import { getApp } from "../../configs";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
+import { useWindow } from "../../hooks/os";
 import { WindowData } from "../../types";
 
 export const Tasks = () => {
-  const { activeWindows, changeFocus, minimizeWindow } = useWindowState();
+  const { activeWindows, changeFocus, minimizeWindow } = useWindow();
   const tasksWrapperRef = useRef<HTMLDivElement>(null);
 
   const calculateTaskElementWidth = (

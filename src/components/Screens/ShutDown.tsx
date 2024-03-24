@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { useSystemState } from "../../hooks/zustand/useSystemState";
+import { useSystem } from "../../hooks/os";
 
 export const ShutDown = (props: {}) => {
-  const { turnOn } = useSystemState();
+  const { turnOn } = useSystem();
   return (
     <Wrapper>
       <Text onClick={turnOn}>You can just refresh to go back, or click this text.</Text>

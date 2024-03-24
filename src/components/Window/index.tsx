@@ -9,7 +9,6 @@ import {
 } from "react";
 import styled from "styled-components";
 import { getApp } from "../../configs";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { extractCssTranslateProperty, NOOP } from "../../utils";
 import { TopBar } from "./TopBar";
 // import Draggable from 'react-draggable'
@@ -19,6 +18,7 @@ import {
   DEFAULT_WINDOW_HEIGHT,
   DEFAULT_WINDOW_WIDTH,
 } from "../../configs/constants";
+import { useWindow } from "../../hooks/os";
 
 interface WindowProps {
   windowData: WindowData;
@@ -35,7 +35,7 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     changeFocus,
     activeWindows,
     minimizeWindow,
-  } = useWindowState();
+  } = useWindow();
 
   const windowRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);

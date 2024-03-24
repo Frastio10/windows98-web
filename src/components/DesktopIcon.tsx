@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Rnd } from "react-rnd";
+import { DraggableEvent } from "react-draggable";
+import { DraggableData, Rnd } from "react-rnd";
 import styled from "styled-components";
 import { getApp } from "../configs";
-import { FILE_EXTENSIONS } from "../configs/fileSystem";
+import { useWindow } from "../hooks/os";
 import useOutsideAlerter from "../hooks/useOutsideAlerter";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
-import { useWindowState } from "../hooks/zustand/useWindowState";
 import { FileProcessor } from "../libs/fileProcessor";
 import { FileNode } from "../libs/fileSystem";
 import { AppName, Vector2D } from "../types";
@@ -16,8 +16,8 @@ interface DesktopIconProps {
 }
 
 export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
-  const { activeWindows, openWindow } = useWindowState();
-  const { updateFileSystem } = useFileSystem();
+  const { activeWindows, openWindow } = useWindow();
+  const { fileSystem, updateFileSystem } = useFileSystem();
   const [isSelected, setIsSelected] = useState(false);
   const [isRename, setIsRename] = useState(false);
 
@@ -74,12 +74,25 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
     }
   }
 
+  const handleRenameFile = () => {
+    setIsRename(true);
+    selectElementContents(titleRef.current);
+    titleRef.current?.focus();
+  };
+
+  const handleRemoveFile = () => {
+    fileSystem.removeNode(file.path);
+    updateFileSystem();
+  };
+
   useEffect(() => {
     const handleKeydown = (ev: KeyboardEvent) => {
       if (ev.key === "F2") {
-        setIsRename(true);
-        selectElementContents(titleRef.current);
-        titleRef.current?.focus();
+        handleRenameFile();
+      }
+
+      if (ev.key === "Delete") {
+        handleRemoveFile();
       }
     };
 
@@ -99,6 +112,19 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
     updateFileSystem();
   };
 
+  const handleDragIcon = (_: DraggableEvent, d: DraggableData) => {
+    const storedData = fileSystem.getStoredSettings();
+    const iconSettings = storedData.desktop.icons[file.id]
+
+    iconSettings.x = d.lastX
+    iconSettings.y = d.lastY
+
+
+    fileSystem.updateStoredSettings(storedData)
+
+    updateFileSystem()
+  };
+
   return (
     <Rnd
       ref={(elem) => {
@@ -116,6 +142,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
       }}
       bounds=".bounds"
       // onDoubleClick={() => handleOpen(file)}
+      onDragStop={handleDragIcon}
       onClick={() => setIsSelected(true)}
     >
       <Wrapper ref={wrapperRef}>
@@ -156,6 +183,7 @@ const TextRename = styled.span`
   min-width: 30px;
   padding: 0 4px;
 `;
+
 const RenameInput = styled.input`
   width: 100%;
   height: 14px;

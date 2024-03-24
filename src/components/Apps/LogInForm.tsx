@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { useLogin } from "../../hooks/zustand/useAuthState";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
+import { useAuth, useWindow } from "../../hooks/os";
 import { AppProps } from "../../types";
 import { DefaultButton } from "../shared/Button";
 
 export const LogInForm = ({ windowData }: AppProps) => {
-  const { updatePassword, login } = useLogin();
-  const { closeWindow } = useWindowState();
+  const { updatePassword, login } = useAuth();
+  const { closeWindow } = useWindow();
 
   const handleLogin = () => {
     login();
