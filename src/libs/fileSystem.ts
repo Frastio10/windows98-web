@@ -1,4 +1,4 @@
-import { AppName } from "../types";
+import { AppName, FilePath } from "../types";
 import { generateRandomString, log } from "../utils";
 import Disk from "./disk";
 
@@ -19,9 +19,14 @@ export class FileNode {
   parent: FileNode | null;
   createdAt: Date;
   updatedAt: Date;
-  path: string;
+  path: FilePath;
 
-  constructor(name: string, isDirectory = false, parent: FileNode | null) {
+  constructor(
+    name: string,
+    isDirectory = false,
+    parent: FileNode | null,
+    id?: string,
+  ) {
     this.name = name;
     this.isDirectory = isDirectory;
     this.children = [];
@@ -43,7 +48,7 @@ export class FileNode {
       return result;
     };
 
-    this.id = `${FILE_ID_PREFIX}${makeId(5)}-${Date.now()}`;
+    this.id = id || `${FILE_ID_PREFIX}${makeId(5)}-${Date.now()}`;
     this.parent = parent;
 
     this.path = this.getNodePath();
@@ -57,9 +62,10 @@ export class FileNode {
     this.updateDate();
     if (updateDisk) this.updateDisk();
   }
+
   rename(newName: string, updateDisk: boolean = true) {
     this.name = newName;
-    this.path = this.getNodePath()
+    this.path = this.getNodePath();
     this.updateDate();
     if (updateDisk) this.updateDisk();
 
@@ -77,7 +83,7 @@ export class FileNode {
   }
 
   removeChild(childNode: FileNode, updateDisk = true) {
-    this.children = this.children.filter((child) => child !== childNode);
+    this.children = this.children.filter((child) => child.id !== childNode.id);
     this.updateDate();
 
     if (updateDisk) this.updateDisk();
@@ -126,9 +132,9 @@ export default class FileSystem {
     return result;
   }
 
-  static loadFilesFromArray(root: FileNode, fileArr: any[]) {
-    fileArr.forEach((file: any) => {
-      const node = new FileNode(file.name, file.isDirectory, root);
+  static loadFilesFromArray(root: FileNode, fileArr: FileNode[]) {
+    fileArr.forEach((file) => {
+      const node = new FileNode(file.name, file.isDirectory, root, file.id);
       node.content = file.content;
       node.icon = file.icon;
       root.addChild(node);
@@ -180,7 +186,17 @@ export default class FileSystem {
     return result;
   }
 
-  getNodeByPath(path: string) {
+  removeNode(path: FilePath) {
+    const target = this.getNodeByPath(path);
+
+    if (!target) return log(`Cannot remove file, file '${path}' is not found`);
+    if (!target.parent)
+      return log(`Parent folder for file '${path}' is not found.`);
+
+    target.parent.removeChild(target);
+  }
+
+  getNodeByPath(path: FilePath) {
     const pathSegments = path.split("/");
     let currentNode = this.root;
     for (const segment of pathSegments) {
@@ -193,7 +209,6 @@ export default class FileSystem {
       if (!foundNode) {
         return null; // Node not found
       }
-
       if (!foundNode.isDirectory) {
         return foundNode;
       }
@@ -209,5 +224,24 @@ export default class FileSystem {
     if (!node) log("Desktop not found... Weird.");
 
     return node;
+  }
+
+  getStoredSettings() {
+    const SETTINGS_JSON = "C:/settings.json";
+    const node = this.getNodeByPath(SETTINGS_JSON);
+    if (!node) return log("Desktop not found... Weird.");
+
+    return JSON.parse(node.content);
+  }
+
+  // @TODO
+  updateStoredSettings(newData: any) {
+    const SETTINGS_JSON = "C:/settings.json";
+    const node = this.getNodeByPath(SETTINGS_JSON);
+    if (!node) return log("Desktop not found... Weird.");
+
+    node.content = JSON.stringify(newData);
+
+    return this;
   }
 }

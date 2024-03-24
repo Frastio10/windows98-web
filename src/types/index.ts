@@ -3,6 +3,8 @@ export type Vector2D = {
   y: number;
 };
 
+export type FilePath = string;
+
 export type Size = Vector2D;
 
 export interface AppProps {

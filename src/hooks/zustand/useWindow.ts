@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { APP_LIST, getApp, APP_WINDOW_CONFIG } from "../../configs";
 import { INITIAL_Z_INDEX } from "../../configs/constants";
 import { AppName, Vector2D, WindowData } from "../../types";
+import { log } from "../../utils";
 
 interface WindowState {
   activeWindows: WindowData[];
@@ -15,12 +16,12 @@ interface WindowState {
   closeWindow: (windowName: AppName) => void;
   closeWindowById: (windowId: string) => void;
   changeStartMenu: (isOpen?: boolean) => void;
-  changeWindowTitle: (windowId: string, newTitle: string) => void;
+  changeWindowTitle: (windowId: string, newTitle?: string | null) => void;
 
   closeAllWindows: () => void;
 }
 
-export const useWindowState = create<WindowState>((set, get) => ({
+export const useWindow = create<WindowState>((set, get) => ({
   activeWindows: [],
   minimizedWindows: [],
   isStartMenuOpen: false,
@@ -66,7 +67,15 @@ export const useWindowState = create<WindowState>((set, get) => ({
     const windows = get().activeWindows;
     windows.forEach((win) => {
       if (windowId === win.windowId) {
-        win.title = newTitle;
+        const app = getApp(win.appName);
+        if (!app) return log("Failed to open file");
+
+        win.title =
+          newTitle ||
+          app.sessionTitle ||
+          app.defaultTitle ||
+          app.appTitle ||
+          "";
       }
     });
     set({ activeWindows: windows });

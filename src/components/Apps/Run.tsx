@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { AppProps } from "../../types";
-import { DefaultButton } from "../shared/Button";
 
 export const Run = ({ windowData }: AppProps) => {
   return (

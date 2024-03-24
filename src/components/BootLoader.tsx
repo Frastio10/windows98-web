@@ -1,14 +1,15 @@
 import React, { useEffect, useRef } from "react";
-import { useSystemState } from "../hooks/zustand/useSystemState";
+
 import { ShutDown } from "./Screens/ShutDown";
 import { Desktop } from "./Desktop";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { INITIAL_FILES } from "../configs/fileSystem";
 import FileSystem from "../libs/fileSystem";
 import { EmptyComponent } from "./shared/EmptyComponent";
+import { useSystem } from "../hooks/os";
 
 export const BootLoader = () => {
-  const { isShutDown } = useSystemState();
+  const { isShutDown } = useSystem();
   const { fileSystem, initialize, isInitialized } = useFileSystem();
   const isLoaded = useRef(false);
 
@@ -17,6 +18,8 @@ export const BootLoader = () => {
   const loadFileSystem = () => {
     const initialFiles = FileSystem.getSavedFiles();
     const rootFiles = initialFiles?.children || INITIAL_FILES;
+
+    console.log({initialFiles})
 
     FileSystem.loadFilesFromArray(fileSystem.root, rootFiles);
     initialize();

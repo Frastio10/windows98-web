@@ -10,7 +10,7 @@ interface AuthState {
   updatePassword: (password: string) => void;
 }
 
-export const useLogin = create<AuthState>((set) => ({
+export const useAuth = create<AuthState>((set) => ({
   currentPassword: "",
   isLoggedIn: localStorage.getItem("loggedIn") === "1" || false,
   isLoginError: false,
@@ -30,6 +30,6 @@ export const useLogin = create<AuthState>((set) => ({
     set((state) => ({
       isLoggedIn: false,
     }));
-    console.log('set')
+    console.log("set");
   },
 }));

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-enum BootState {
+export enum BootState {
   SHUTDOWN,
   ON,
   LOCKED,
@@ -17,7 +17,7 @@ interface SystemState {
   turnOn: () => void;
 }
 
-export const useSystemState = create<SystemState>((set, get) => ({
+export const useSystem = create<SystemState>((set, get) => ({
   isMuted: false,
   isShutDown: false,
   isSystemLoading: false,

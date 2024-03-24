@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import styled from "styled-components";
-import { useWindowState } from "../hooks/zustand/useWindowState";
+import { useWindow } from "../hooks/os";
 import { Window } from "./Window";
 
 export const LoggedOutView = () => {
-  const { activeWindows, openWindow } = useWindowState();
+  const { activeWindows, openWindow } = useWindow();
 
   useEffect(() => {
     if (!activeWindows.length) {

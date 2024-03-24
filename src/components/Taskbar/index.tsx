@@ -1,8 +1,8 @@
 import { useRef } from "react"
 import styled from "styled-components"
+import { useWindow } from "../../hooks/os"
 import useOutsideAlerter from "../../hooks/useOutsideAlerter"
 import { useStartMenu } from "../../hooks/zustand/useStartMenu"
-import { useWindowState } from "../../hooks/zustand/useWindowState"
 import { DefaultButton } from "./../shared/Button"
 import { StartMenu } from "./../StartMenu"
 import { Clock } from "./Clock"
@@ -10,7 +10,7 @@ import { QuickLaunch } from "./QuickLaunch"
 import { Tasks } from "./Tasks"
 
 export const Taskbar = () => {
-  const { openWindow } = useWindowState()
+  const { openWindow } = useWindow()
   const { isStartMenuOpen, isStartButtonClicked, changeStartMenu, changeStartMenuButton } = useStartMenu()
 
   const startMenuRef = useRef<HTMLDivElement>(null);

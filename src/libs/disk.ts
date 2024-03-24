@@ -1,41 +1,39 @@
 import { log, safeJsonParse } from "../utils";
+import LZString from "lz-string";
+import { deviceSettings } from "../configs/deviceSettings";
+import { drivers } from "../configs/drivers";
+import StorageDriver from "./drivers/storages/storage";
 
-// @ts-ignore
-const lzmaWorker = LZMA as any;
+type DiskOptions = {
+  compressString: boolean;
+};
 
 export default class Disk {
   private static _instance: Disk | null = null;
-  private storage: Storage;
+  private storage: StorageDriver;
   private cache: { [key: string]: any };
-  private useLZMA: boolean;
+  private opts: DiskOptions;
 
-  private lzmaWorker: any;
-
-  private constructor() {
-    this.storage = localStorage;
+  private constructor(storage: StorageDriver, opts?: DiskOptions) {
+    this.storage = storage
     this.cache = {};
-    this.useLZMA = true;
 
-    if (this.useLZMA && lzmaWorker) {
-      this.lzmaWorker = lzmaWorker;
-    }
-
-    // @ts-ignore
-    // this.workerLZMA=
-    // console.log(LZMA)
+    this.opts = {
+      // @ts-ignore i know what i am doing typescript.
+      compressString: true,
+      ...opts,
+    };
   }
 
-  decompressLZMA(data: string) {
-    if (!this.lzmaWorker) return log(`LZMA worker is not found.`);
-    return this.lzmaWorker.decompress(data);
+  private decompressLZMA(data: string) {
+    return LZString.decompressFromUTF16(data);
   }
 
-  compressLZMA(data: string) {
-    if (!this.lzmaWorker) return log(`LZMA worker is not found.`);
-    return this.lzmaWorker.compress(data, 1);
+  private compressLZMA(data: string) {
+    return LZString.compressToUTF16(data);
   }
 
-  setStorage(storage: Storage) {
+  setStorage(storage: StorageDriver) {
     this.storage = storage;
     return this.storage;
   }
@@ -44,11 +42,13 @@ export default class Disk {
     this.setCache(key, val);
 
     const string = JSON.stringify(val);
-    const compressed = this.compressLZMA(string);
 
-    if (this.useLZMA) return this.storage.setItem(key, compressed);
+    if (this.opts.compressString) {
+      const compressed = this.compressLZMA(string);
+      return this.storage.write(key, compressed);
+    }
 
-    this.storage.setItem(key, string);
+    this.storage.write(key, string);
   }
 
   flush() {
@@ -58,19 +58,21 @@ export default class Disk {
 
   delete(key: string) {
     delete this.cache[key];
-    this.storage.removeItem(key);
+    this.storage.delete(key);
   }
 
   getJSON(key: string) {
     const cache = this.getCache(key);
     if (cache) return cache;
 
-    const savedData = this.get(key);
+    let savedData = this.get(key);
     if (!savedData) return null;
 
-    const decompressed = this.decompressLZMA(savedData.split(","));
+    if (this.opts.compressString) {
+      savedData = this.decompressLZMA(savedData);
+    }
 
-    return safeJsonParse(decompressed);
+    return safeJsonParse(savedData);
   }
 
   getCache(key: string) {
@@ -81,7 +83,7 @@ export default class Disk {
     const cache = this.getCache(key);
     if (cache) return cache;
 
-    return this.storage.getItem(key);
+    return this.storage.read(key);
   }
 
   setCache(key: string, val: any) {
@@ -90,15 +92,17 @@ export default class Disk {
 
   set(key: string, val: string) {
     this.setCache(key, val);
-    return this.storage.setItem(key, val);
+    return this.storage.write(key, val);
   }
 
-  public static getInstance() {
+  public static getInstance(
+    storage: StorageDriver = new drivers.storages[deviceSettings.storage],
+    opts?: DiskOptions,
+  ) {
     if (!Disk._instance) {
-      Disk._instance = new Disk();
+      console.log(drivers.storages);
+      Disk._instance = new Disk(storage, opts);
     }
     return Disk._instance;
   }
-
-  // Other methods or properties related to Disk can be added here
 }

@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { useLogin } from "../hooks/zustand/useAuthState";
+import { useAuth } from "../hooks/os";
 import { LoggedInView } from "./LoggedInView";
 import { LoggedOutView } from "./LoggedOutView";
 
 export const Desktop = () => {
-  const { isLoggedIn } = useLogin();
+  const { isLoggedIn } = useAuth();
 
   return (
     <Wrapper>

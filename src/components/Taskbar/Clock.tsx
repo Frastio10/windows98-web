@@ -1,9 +1,9 @@
 import styled from "styled-components"
-import { useSystemState } from "../../hooks/zustand/useSystemState"
+import { useSystem } from "../../hooks/os"
 import { LongDivider } from "../shared/Dividers"
 
 export const Clock = () => {
-  const { changeMute, isMuted } = useSystemState()
+  const { changeMute, isMuted } = useSystem()
   const d = new Date()
 
   return (

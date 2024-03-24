@@ -1,9 +1,9 @@
 import { ComponentType, useRef, useState } from "react";
 import styled from "styled-components";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { DefaultButton } from "../shared/Button";
 import { AppName } from "../../types";
 import { getApp } from "../../configs";
+import { useWindow } from "../../hooks/os";
 
 interface TopBarProps {
   title: string;
@@ -106,7 +106,7 @@ export const TopBar = ({
   handleMinimize,
   handleFullScreen,
 }: TopBarProps) => {
-  const { activeWindows } = useWindowState();
+  const { activeWindows } = useWindow();
   const app = getApp(name);
   const [isFullScreen, setIsFullScreen] = useState(false);
 

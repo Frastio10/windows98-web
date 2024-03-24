@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { FILE_EXTENSIONS } from "../configs/fileSystem";
+import { useWindow } from "../hooks/os";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
-import { useWindowState } from "../hooks/zustand/useWindowState";
 import { FileNode } from "../libs/fileSystem";
 import { AppName, Vector2D } from "../types";
 import { DesktopIcon } from "./DesktopIcon";
@@ -11,7 +11,7 @@ import { Taskbar } from "./Taskbar";
 import { Window } from "./Window";
 
 export const LoggedInView = () => {
-  const { activeWindows, openWindow } = useWindowState();
+  const { activeWindows, openWindow } = useWindow();
   const { fileSystem } = useFileSystem();
   const desktopFiles = fileSystem.getDesktopFiles();
   const [shortcutBoxCoordinate, setShortcutBoxCoordinate] =
@@ -30,6 +30,40 @@ export const LoggedInView = () => {
     };
   }, []);
 
+  const desktopSettings = useMemo(() => {
+    return fileSystem.getStoredSettings().desktop;
+  }, []);
+
+  const getDesktopIcons = () => {
+    const icons = desktopFiles?.children.map((file, index) => {
+      let storedData = desktopSettings.icons;
+
+      const iconData = {
+        x: index * 75 + (index > 0 ? 10 : 0),
+        y: 0,
+        ...storedData[file.id],
+      };
+
+      storedData[file.id] = iconData;
+
+      return {
+        file,
+        iconData,
+      };
+    });
+
+    const newSettings = {
+      ...fileSystem.getStoredSettings(),
+      ...{
+        desktop: desktopSettings,
+      },
+    };
+
+    fileSystem.updateStoredSettings(newSettings);
+
+    return icons || [];
+  };
+
   return (
     <Wrapper>
       <Main className="bounds">
@@ -43,11 +77,11 @@ export const LoggedInView = () => {
           <Window key={w.windowId} windowData={w} />
         ))}
 
-        {desktopFiles?.children.map((file, index) => (
+        {getDesktopIcons().map((icon) => (
           <DesktopIcon
-            key={file.id}
-            file={file}
-            position={{ x: index * 75 + (index > 0 ? 10 : 0), y: 0 }}
+            key={icon.file.id}
+            file={icon.file}
+            position={{ x: icon.iconData.x, y: icon.iconData.y }}
           />
         ))}
 

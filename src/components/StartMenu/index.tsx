@@ -1,9 +1,7 @@
 import { Children, forwardRef, RefObject, useRef } from "react";
 import styled from "styled-components";
 import { START_MENU_LIST } from "../../configs";
-import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 import { useStartMenu } from "../../hooks/zustand/useStartMenu";
-import { useWindowState } from "../../hooks/zustand/useWindowState";
 import { App, StartMenuApp } from "./StartMenuApp";
 import { AppName } from "../../types";
 
