@@ -6,11 +6,11 @@ export const themeStyles = {
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC",
 
   // 1px equal 2pixels
-  windowPixelatedBorder: `-2px -2px black inset, 
-                           2px 2px #dbdbdb inset,
-                          -4px -4px #808080 inset, 
-                           4px 4px #fff inset,
-                           0 0 0 4px #bfbfbf inset;`,
+  windowPixelatedBorder: `-1px -1px black inset, 
+                           1px 1px #dbdbdb inset,
+                          -2px -2px #808080 inset, 
+                           2px 2px #fff inset,
+                           0 0 0 2px #bfbfbf inset;`,
   // windowTopBarBackgroundPrimary: "linear-gradient(to right, #08216b 0%, #a5cef7 100%)",
   // windowTopBarBackgroundSecondary: "linear-gradient(to right, #808080 0%, #C0C0C0 100%)",
 
@@ -33,5 +33,10 @@ export const themeStyles = {
                           0 0 0 2px #bfbfbf inset`,
 
   scrollbarButtonInnerSize: 9,
-  scrollbarSize: '13px'
+  scrollbarSize: '13px',
+
+  baseBorderThin: '1px solid rgb(128,128,128)',
+  baseBorderWhite: '1px solid rgb(255,255,255)',
+  baseBorderShadowWhite: '0 1px 0 rgb(255,255,255), 0 1px 0 rgb(255,255,255) inset',
+  baseBorderShadowThin: '0 1px 0 rgb(128,128,128), 0 1px 0 rgb(128,128,128) inset',
 };

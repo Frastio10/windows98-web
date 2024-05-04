@@ -111,6 +111,7 @@ const Dropdown = styled.div`
 
   span {
     font-size: 12px;
+    margin-left: 6px;
   }
 `;
 
@@ -124,6 +125,7 @@ const Wrapper = styled.div`
   align-items: center;
   position: relative;
   padding: 1px 0;
+  cursor: pointer;
 
   &.disabled {
     pointer-events: none;

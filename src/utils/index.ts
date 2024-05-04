@@ -9,6 +9,15 @@ export const log = (...args: any[]) => {
   return console.log(...args);
 };
 
+export const icon = (
+  key: string,
+  imgIndex?: number,
+  ext = "png",
+  imgPath = "/assets/icons/png/",
+) => {
+  return `${imgPath}${key}-${imgIndex}.${ext}`;
+};
+
 export const extractCssTranslateProperty = (str: string): Vector2D => {
   // idk regex man... maybe not so efficient
   const pos = str.replace(/(translate)|(\()|(\))|(px)| /g, "").split(",");

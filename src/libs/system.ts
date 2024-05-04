@@ -1,3 +1,5 @@
+import { unstable_batchedUpdates } from "react-dom";
+import api from "../api";
 import { useWindow } from "../hooks/os";
 import { AppName } from "../types";
 
@@ -12,8 +14,9 @@ export default class System {
   }
 
   open(executable: AppName, initialData: any) {
-    useWindow.getState().openWindow(executable, initialData);
-
+    unstable_batchedUpdates(() => {
+      api.os.openWindow(executable, initialData);
+    });
     return 1;
   }
 }

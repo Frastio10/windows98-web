@@ -1,6 +1,15 @@
 import styled from "styled-components";
 
-export const HoverButton = styled.button`
+export const ColoredHoverButton = styled.button`
+  border: none;
+
+  &:hover {
+    background: ${({ theme }) => theme.windowTopBarBackgroundPrimary};
+    color: #fff;
+  }
+`;
+
+export const HoverButtonInset = styled.button`
   border: none;
 
   &:hover {

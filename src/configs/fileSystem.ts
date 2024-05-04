@@ -17,6 +17,11 @@ export const INITIAL_FILES = [
         content: "run notepad",
         isDirectory: false,
       },
+      {
+        name: "Windows Explorer.exe",
+        content: "run windowsExplorer",
+        isDirectory: false,
+      },
     ],
   },
   {

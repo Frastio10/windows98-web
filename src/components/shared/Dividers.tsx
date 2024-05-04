@@ -9,6 +9,14 @@ border: 1px outset #fff;
 margin: 0 -2px;
 `
 
+export const Divider = styled.span`
+display: inline-block;
+width: 3px;
+/* height: 100%; */
+border: 1px outset #fff;
+margin: 0 -2px;
+`
+
 export const LongDivider = styled.span`
   display: inline-block;
   border-left: 1px solid gray;
