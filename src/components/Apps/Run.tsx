@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AppProps } from "../../types";
+import { Icon } from "../shared/icon";
 
 export const Run = ({ windowData }: AppProps) => {
   return (
@@ -11,7 +12,7 @@ export const Run = ({ windowData }: AppProps) => {
           alignItems: "flex-start",
         }}
       >
-        <img src="/assets/images/medium/application_hourglass-big.png" />
+        <Icon name="application_hourglass" index={0} />
       </div>
       <div>
         <p>

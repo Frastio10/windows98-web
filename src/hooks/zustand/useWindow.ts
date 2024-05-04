@@ -46,12 +46,14 @@ export const useWindow = create<WindowState>((set, get) => ({
     const app = getApp(windowName);
     const title = app.defaultTitle || app.appTitle;
 
-    if (!appConfig || !app)
+    if (!appConfig && !app)
       return console.log(`App '${windowName}' is not found`);
     if (!app.allowMultipleInstances && isWindowAlreadyOpened) return;
 
     currentWindows.push({
       ...appConfig,
+      z: appConfig?.z || INITIAL_Z_INDEX,
+      appName: appConfig?.appName || app.appName,
       isFocused: false,
       isMinimized: false,
       windowId,

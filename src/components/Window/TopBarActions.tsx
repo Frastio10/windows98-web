@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { NOOP } from "../../utils";
 import { Box } from "../shared/Box";
-import { HoverButton } from "../shared/Button";
+import { ColoredHoverButton } from "../shared/Button";
+import { ThickDivider } from "../shared/Dividers";
 import { TextShortcut } from "../shared/TextShortcut";
 
 export interface TopBarAction {
@@ -13,61 +14,74 @@ export interface TopBarAction {
 
 export interface TopBarActionsProps {
   actions: TopBarAction[];
+  children?: React.ReactNode;
 }
 
-export const TopBarActions = ({ actions }: TopBarActionsProps) => {
+export const TopBarActions = ({ actions, children }: TopBarActionsProps) => {
   return (
     <Wrapper>
-      {actions.map((action, index) => (
-        <ParentAction
-          key={index}
-          onClick={action.children ? NOOP : action.onAction}
-        >
-          <TextShortcut text={action.title} />
-          {action.children?.length ? (
-            <Box
-              className="child"
-              style={{
-                display: "none",
-                position: "absolute",
-                width: "150px",
-                left: "-2px",
-                top: "110%",
-              }}
-            >
-              {action.children.map((child, indx) => (
-                <HoverButton
-                  key={indx}
-                  style={{
-                    width: "100%",
-                    paddingLeft: "30px",
-                    paddingTop: "2px",
-                    paddingBottom: "2px",
-                    textAlign: "left",
-                  }}
-                  onClick={child.onAction}
-                >
-                  <TextShortcut
-                    text={child.title}
-                    shortcutLetter={child.shortcutLetter}
-                  />
-                </HoverButton>
-              ))}
-            </Box>
-          ) : null}
-        </ParentAction>
-      ))}
+      <MainActionsWrapper>
+        <ThickDivider style={{marginInline: '2px'}} />
+        {actions.map((action, index) => (
+          <ParentAction
+            key={index}
+            onClick={action.children ? NOOP : action.onAction}
+          >
+            <TextShortcut text={action.title} />
+            {action.children?.length ? (
+              <Box
+                className="child"
+                style={{
+                  display: "none",
+                  position: "absolute",
+                  width: "150px",
+                  left: "-2px",
+                  top: "110%",
+                }}
+              >
+                {action.children.map((child, indx) => (
+                  <ColoredHoverButton
+                    key={indx}
+                    style={{
+                      width: "100%",
+                      paddingLeft: "30px",
+                      paddingTop: "2px",
+                      paddingBottom: "2px",
+                      textAlign: "left",
+                    }}
+                    onClick={child.onAction}
+                  >
+                    <TextShortcut
+                      text={child.title}
+                      shortcutLetter={child.shortcutLetter}
+                    />
+                  </ColoredHoverButton>
+                ))}
+              </Box>
+            ) : null}
+          </ParentAction>
+        ))}
+      </MainActionsWrapper>
+
+      {children}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const MainActionsWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 0px;
+  padding: 2px 0px;
+  height: 20px;
+`;
+
+const Wrapper = styled.div`
+padding: 0 1px;
 `;
 
 const ParentAction = styled.div`
-  border: 2px outset transparent;
+  border: 1px outset transparent;
   background: none;
   margin: 0;
   padding: 1px 4px;

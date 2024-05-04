@@ -37,10 +37,11 @@ export type AppName =
   | "run"
   | "logOff"
   | "notepad"
-  | "shutDown";
+  | "shutDown"
+  | "windowsExplorer";
 
 export interface App {
-  appName: string;
+  appName: AppName;
   component: ({ windowData }: AppProps) => JSX.Element;
   showTopBarIcon?: boolean;
   sessionTitle?: string;

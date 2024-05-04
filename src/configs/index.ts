@@ -1,14 +1,16 @@
 import { AppName, App, WindowSetup } from "../types";
 import { EmptyComponent } from "../components/shared/EmptyComponent";
-import { Run, LogInForm, ShutDown, Notepad } from "../components/Apps";
+import { Run, LogInForm, ShutDown, Notepad, WindowsExplorer } from "../components/Apps";
 import {
   DEFAULT_WINDOW_HEIGHT,
   DEFAULT_WINDOW_WIDTH,
   INITIAL_Z_INDEX,
 } from "./constants";
+import { icon } from "../utils";
 
 export const getApp = (appName: AppName): App => {
   const app = APP_LIST.find((app) => app.appName === appName)!;
+  console.log(APP_LIST, app)
   // if (!app) return console.log(`${appName} is not a valid app!`);
 
   return app;
@@ -54,7 +56,7 @@ export const APP_LIST: App[] = [
     appName: "logInForm",
     component: LogInForm,
     defaultTitle: "Welcome to Windows",
-    appTitle: "Notepad",
+    appTitle: "Log In",
     showTopBarIcon: false,
     useDefaultExtraActions: true,
     defaultPosition: "center",
@@ -64,10 +66,24 @@ export const APP_LIST: App[] = [
     isResizable: false,
     isDraggable: true,
     icons: [
-      "/assets/images/small/notepad.png", // small -> minimized icons
-      "/assets/images/medium/notepad.png", // medium -> other stuffs
-      "/assets/images/big/notepad.png", // large -> desktop icon
+      icon("key_win_alt", 0),
+      icon("key_win_alt", 1),
+      icon("key_win_alt", 2),
     ],
+  },
+  {
+    appName: "windowsExplorer",
+    component: WindowsExplorer,
+    defaultTitle: "Exploring - (C:)",
+    appTitle: "Exploring - (C:)",
+    useDefaultExtraActions: false,
+    defaultPosition: "center",
+    allowMultipleInstances: true,
+    width: 500,
+    height: 600,
+    isResizable: true,
+    isDraggable: true,
+    icons: [icon("directory_explorer", 1), icon("directory_explorer", 2), icon("directory_explorer", 0)],
   },
   {
     appName: "notepad",
@@ -81,11 +97,7 @@ export const APP_LIST: App[] = [
     height: 600,
     isResizable: true,
     isDraggable: true,
-    icons: [
-      "/assets/images/small/notepad.png",
-      "/assets/images/medium/notepad.png",
-      "/assets/images/big/notepad.png",
-    ],
+    icons: [icon("notepad", 0), icon("notepad", 1), icon("notepad", 2)],
   },
   {
     appName: "run",
@@ -287,7 +299,7 @@ export const QUICK_LAUNCH_LIST = [
     appName: "notepad",
   },
   {
-    appName: "notepad",
+    appName: "windowsExplorer",
   },
   {
     appName: "logInForm",

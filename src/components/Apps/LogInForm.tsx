@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useAuth, useWindow } from "../../hooks/os";
 import { AppProps } from "../../types";
 import { DefaultButton } from "../shared/Button";
+import { Icon } from "../shared/icon";
 
 export const LogInForm = ({ windowData }: AppProps) => {
   const { updatePassword, login } = useAuth();
@@ -21,7 +22,7 @@ export const LogInForm = ({ windowData }: AppProps) => {
           alignItems: "flex-start",
         }}
       >
-        <img src="/assets/images/key_win_alt-2.png" />
+        <Icon name="key_win_alt" index={2} />
       </div>
       <div>
         <p>Type a user name and password to log on to Windows.</p>
