@@ -56,3 +56,9 @@ export interface App {
   isResizable?: boolean;
   isDraggable?: boolean;
 }
+
+export type HeadlessApp = Omit<App, "appName" | "component"> & {
+  isFocused?: boolean;
+  appName: string;
+  component: () => JSX.Element;
+};

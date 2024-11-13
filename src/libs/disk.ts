@@ -15,7 +15,7 @@ export default class Disk {
   private opts: DiskOptions;
 
   private constructor(storage: StorageDriver, opts?: DiskOptions) {
-    this.storage = storage
+    this.storage = storage;
     this.cache = {};
 
     this.opts = {
@@ -96,11 +96,10 @@ export default class Disk {
   }
 
   public static getInstance(
-    storage: StorageDriver = new drivers.storages[deviceSettings.storage],
+    storage: StorageDriver = new drivers.storages[deviceSettings.storage](),
     opts?: DiskOptions,
   ) {
     if (!Disk._instance) {
-      console.log(drivers.storages);
       Disk._instance = new Disk(storage, opts);
     }
     return Disk._instance;

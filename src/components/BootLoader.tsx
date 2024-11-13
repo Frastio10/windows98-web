@@ -6,20 +6,19 @@ import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { INITIAL_FILES } from "../configs/fileSystem";
 import FileSystem from "../libs/fileSystem";
 import { EmptyComponent } from "./shared/EmptyComponent";
-import { useSystem } from "../hooks/os";
+import { useSystem, useWindow } from "../hooks/os";
 
 export const BootLoader = () => {
   const { isShutDown } = useSystem();
   const { fileSystem, initialize, isInitialized } = useFileSystem();
   const isLoaded = useRef(false);
 
-  const isReadyToLoad = !isShutDown && isInitialized && isLoaded.current;
+  const isReadyToLoad =
+    !isShutDown && isInitialized && isLoaded.current && !!typeof window;
 
   const loadFileSystem = () => {
     const initialFiles = FileSystem.getSavedFiles();
     const rootFiles = initialFiles?.children || INITIAL_FILES;
-
-    console.log({initialFiles})
 
     FileSystem.loadFilesFromArray(fileSystem.root, rootFiles);
     initialize();
@@ -34,6 +33,7 @@ export const BootLoader = () => {
   }, []);
 
   if (isShutDown) return <ShutDown />;
-  else if (isReadyToLoad) return <Desktop />;
+  else if (isReadyToLoad)
+    return <Desktop />; // this is where the function is called andcmponent is imported
   else return <EmptyComponent />;
 };

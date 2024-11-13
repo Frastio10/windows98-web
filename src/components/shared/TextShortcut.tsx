@@ -19,7 +19,7 @@ export const TextShortcut = ({ text, shortcutLetter }: TextShortcutProps) => {
     }
     return (
       <p>
-        <u>{text.charAt(0)}</u>
+        <u className="underline-offset-2 decoration-1">{text.charAt(0)}</u>
         {text.slice(1, text.length)}
       </p>
     );

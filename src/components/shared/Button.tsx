@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const ColoredHoverButton = styled.button`
   border: none;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background: ${({ theme }) => theme.windowTopBarBackgroundPrimary};

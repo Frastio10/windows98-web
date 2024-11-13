@@ -1,9 +1,14 @@
 import { useWindow } from "./hooks/os";
 
-const os = {
-  ...useWindow.getState(),
+const os = () => {
+  // window: !!typeof window ? useWindow.getState() : null,
+
+  return {
+    localStorage: window.localStorage,
+    sessionStorage: window.sessionStorage,
+    cookie: document.cookie,
+    clipboard: navigator.clipboard,
+  };
 };
 
-export default {
-  os,
-};
+export default os();

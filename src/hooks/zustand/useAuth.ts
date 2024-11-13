@@ -30,6 +30,5 @@ export const useAuth = create<AuthState>((set) => ({
     set((state) => ({
       isLoggedIn: false,
     }));
-    console.log("set");
   },
 }));

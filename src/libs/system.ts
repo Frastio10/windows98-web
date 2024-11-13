@@ -15,7 +15,7 @@ export default class System {
 
   open(executable: AppName, initialData: any) {
     unstable_batchedUpdates(() => {
-      api.os.openWindow(executable, initialData);
+      useWindow.getState().openWindow(executable, initialData);
     });
     return 1;
   }

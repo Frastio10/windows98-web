@@ -1,6 +1,7 @@
 import { AppName, FilePath } from "../types";
 import { generateRandomString, log } from "../utils";
 import Disk from "./disk";
+import { logger } from "./logger";
 
 const FILE_ID_PREFIX = "file-";
 export const STORAGE_KEY = "fs";
@@ -109,7 +110,7 @@ export default class FileSystem {
 
   constructor() {
     this.root = new FileNode(ROOT_FILENAME, true, null);
-    log("Created FileSystem instance.");
+    logger.log("Created FileSystem instance.");
   }
 
   public static getInstance() {
@@ -143,7 +144,7 @@ export default class FileSystem {
         FileSystem.loadFilesFromArray(node, file.children);
     });
 
-    log(
+    logger.log(
       `${root.children.length} files/folders were initially loaded in folder '${root.name}'`,
     );
   }
@@ -153,17 +154,19 @@ export default class FileSystem {
     const disk = Disk.getInstance();
 
     disk.setJSON(STORAGE_KEY, jsonNode);
-    log("Saved to disk.");
+    logger.log("Saved to disk.");
   }
 
   static getSavedFiles() {
     const disk = Disk.getInstance();
     const local = disk.getJSON(STORAGE_KEY);
     if (!local) {
-      return log("Saved data is not found. Loading from initial folders..");
+      return logger.log(
+        "Saved data is not found. Loading from initial folders..",
+      );
     }
 
-    log("Saved data is found. Loading from saved data..");
+    logger.log("Saved data is found. Loading from saved data..");
     return local;
   }
 
@@ -189,16 +192,101 @@ export default class FileSystem {
   removeNode(path: FilePath) {
     const target = this.getNodeByPath(path);
 
-    if (!target) return log(`Cannot remove file, file '${path}' is not found`);
+    if (!target)
+      return logger.log(`Cannot remove file, file '${path}' is not found`);
     if (!target.parent)
-      return log(`Parent folder for file '${path}' is not found.`);
+      return logger.log(`Parent folder for file '${path}' is not found.`);
 
     target.parent.removeChild(target);
   }
 
-  getNodeByPath(path: FilePath) {
-    const pathSegments = path.split("/");
+  // case insensitive
+  searchNodeByPath(path: FilePath) {
+    const pathSegments = path.split("/").filter((segment) => segment); // Remove empty segments
     let currentNode = this.root;
+
+    for (const segment of pathSegments) {
+      if (segment.toLowerCase() === ROOT_FILENAME.toLowerCase()) continue;
+
+      const foundNode = currentNode.children.find((node) =>
+        node.name.toLowerCase().includes(segment.toLowerCase()),
+      );
+
+      if (!foundNode) {
+        return null; // Node not found
+      }
+      if (!foundNode.isDirectory) {
+        return foundNode;
+      }
+      currentNode = foundNode;
+    }
+
+    return currentNode;
+  }
+
+  searchNodes(path: FilePath) {
+    const pathSegments = path.split("/");
+    const nonEmptySegments = pathSegments.filter((segment) => segment);
+    let results: FileNode[] = [];
+    let currentNode = this.root;
+
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    const lastNonEmptySegment = nonEmptySegments[nonEmptySegments.length - 1];
+    const hasTrailingSlash = lastSegment === "";
+
+    for (const [index, segment] of pathSegments.entries()) {
+      const isLastSegment = index === pathSegments.length - 1;
+
+      // Skip root directory filename matching if needed
+      if (segment.toLowerCase() === ROOT_FILENAME.toLowerCase()) continue;
+
+      // Find all nodes that match the current segment (case-insensitive)
+      const matchingNodes = currentNode.children.filter((node) =>
+        node.name.toLowerCase().includes(segment.toLowerCase()),
+      );
+
+      // Debug logging to inspect segment processing
+      console.log({
+        isLastSegment,
+        lastSegment,
+        hasTrailingSlash,
+        lastNonEmptySegment,
+        segment,
+      });
+
+      // Handle logic based on whether it's the last segment and if there's a trailing slash
+      if (isLastSegment) {
+        if (hasTrailingSlash) {
+          if (
+            lastNonEmptySegment.toLowerCase() === currentNode.name.toLowerCase()
+          ) {
+            results = currentNode.children; // Return all children if name matches
+          } else {
+            results = []; // No match if names don’t align
+          }
+        } else {
+          results = currentNode.children.filter((node) =>
+            node.name.toLowerCase().includes(lastSegment.toLowerCase()),
+          );
+        }
+      }
+
+      // Move to the next matching node if available
+      if (matchingNodes.length > 0) {
+        currentNode = matchingNodes[0];
+      } else if (isLastSegment) {
+        // Stop if no matching node is found on the last segment
+        return results;
+      }
+    }
+
+    return results;
+  }
+
+  getNodeByPath(path: FilePath) {
+    const pathSegments = path.split("/").filter((segment) => segment); // Remove empty segments
+    let currentNode = this.root;
+
     for (const segment of pathSegments) {
       if (segment === ROOT_FILENAME) continue;
 
@@ -219,29 +307,43 @@ export default class FileSystem {
   }
 
   getDesktopFiles() {
-    const DESKTOP_PATH = "C:/Desktop";
+    const DESKTOP_PATH = "C:/WINDOWS/Desktop";
     const node = this.getNodeByPath(DESKTOP_PATH);
-    if (!node) log("Desktop not found... Weird.");
+    if (!node) logger.error("Desktop not found... Weird.");
 
     return node;
   }
 
   getStoredSettings() {
-    const SETTINGS_JSON = "C:/settings.json";
+    const SETTINGS_JSON = "C:/WINDOWS/settings.json";
     const node = this.getNodeByPath(SETTINGS_JSON);
-    if (!node) return log("Desktop not found... Weird.");
+
+    if (!node) return logger.error("Desktop not found... Weird.");
 
     return JSON.parse(node.content);
   }
 
   // @TODO
   updateStoredSettings(newData: any) {
-    const SETTINGS_JSON = "C:/settings.json";
+    const SETTINGS_JSON = "C:/WINDOWS/settings.json";
     const node = this.getNodeByPath(SETTINGS_JSON);
-    if (!node) return log("Desktop not found... Weird.");
+    if (!node) return logger.error("Desktop not found... Weird.");
 
     node.content = JSON.stringify(newData);
 
     return this;
+  }
+
+  createFileNode(
+    filename: string,
+    isDirectory: boolean,
+    parent: FileNode | null,
+  ) {
+    if (parent?.children?.find((f) => f.name.toLowerCase() === filename)) {
+      throw new Error(`File ${filename} already exists`);
+    }
+    const file = new FileNode(filename, isDirectory, parent);
+
+    return file;
   }
 }

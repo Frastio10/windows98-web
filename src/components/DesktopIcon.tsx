@@ -8,7 +8,7 @@ import useOutsideAlerter from "../hooks/useOutsideAlerter";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { FileProcessor } from "../libs/fileProcessor";
 import { FileNode } from "../libs/fileSystem";
-import { AppName, Vector2D } from "../types";
+import { App, AppName, Vector2D } from "../types";
 
 interface DesktopIconProps {
   file: FileNode;
@@ -114,15 +114,22 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
   const handleDragIcon = (_: DraggableEvent, d: DraggableData) => {
     const storedData = fileSystem.getStoredSettings();
-    const iconSettings = storedData.desktop.icons[file.id]
+    const iconSettings = storedData.desktop.icons[file.id];
 
-    iconSettings.x = d.lastX
-    iconSettings.y = d.lastY
+    iconSettings.x = d.lastX;
+    iconSettings.y = d.lastY;
 
+    fileSystem.updateStoredSettings(storedData);
 
-    fileSystem.updateStoredSettings(storedData)
+    updateFileSystem();
+  };
 
-    updateFileSystem()
+  const getIcon = (app: App) => {
+    const ext = file.name.split(".").pop()!;
+    const settings = fileSystem.getStoredSettings();
+    const storedIcon = settings.desktop?.iconsSrc?.[ext];
+
+    return storedIcon?.[2] || app.icons[2];
   };
 
   return (
@@ -146,7 +153,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
       onClick={() => setIsSelected(true)}
     >
       <Wrapper ref={wrapperRef}>
-        <IconImage src={app.icons[2]} draggable={false} />
+        <IconImage src={getIcon(app)} draggable={false} />
         <div
           style={{
             display: "flex",

@@ -1,36 +1,51 @@
+import { iconSize } from "../utils";
+
 const defaultSettings = {
   desktop: {
     icons: {},
+    iconsSrc: {
+      txt: [
+        iconSize("notepad_file", "small"),
+        iconSize("notepad_file", "medium"),
+        iconSize("notepad_file", "big"),
+      ],
+    },
   },
 };
 export const INITIAL_FILES = [
   {
-    name: "settings.json",
-    content: JSON.stringify(defaultSettings),
-  },
-  {
-    name: "Desktop",
+    name: "WINDOWS",
     isDirectory: true,
     children: [
       {
-        name: "Notepad.exe",
-        content: "run notepad",
-        isDirectory: false,
+        name: "settings.json",
+        content: JSON.stringify(defaultSettings),
       },
       {
-        name: "Windows Explorer.exe",
-        content: "run windowsExplorer",
-        isDirectory: false,
+        name: "Desktop",
+        isDirectory: true,
+        children: [
+          {
+            name: "Notepad.exe",
+            content: "run notepad",
+            isDirectory: false,
+          },
+          {
+            name: "Windows Explorer.exe",
+            content: "run windowsExplorer",
+            isDirectory: false,
+          },
+        ],
+      },
+      {
+        name: "Documents",
+        isDirectory: true,
+      },
+      {
+        name: "Music",
+        isDirectory: true,
       },
     ],
-  },
-  {
-    name: "Documents",
-    isDirectory: true,
-  },
-  {
-    name: "Music",
-    isDirectory: true,
   },
 ];
 
