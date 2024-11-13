@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { APP_LIST, getApp, APP_WINDOW_CONFIG } from "../../configs";
+import { getApp, APP_WINDOW_CONFIG } from "../../configs";
 import { INITIAL_Z_INDEX } from "../../configs/constants";
+import { logger } from "../../libs/logger";
 import { AppName, Vector2D, WindowData } from "../../types";
 import { log } from "../../utils";
 
@@ -44,11 +45,12 @@ export const useWindow = create<WindowState>((set, get) => ({
     const randomNumbers = Math.floor(Math.random() * 9000) + 1000;
     const windowId = `${windowName}_${randomNumbers}`;
     const app = getApp(windowName);
-    const title = app.defaultTitle || app.appTitle;
 
-    if (!appConfig && !app)
-      return console.log(`App '${windowName}' is not found`);
+    if (!appConfig || !app)
+      return logger.log(`[OPEN] App '${windowName}' is not found`);
     if (!app.allowMultipleInstances && isWindowAlreadyOpened) return;
+
+    const title = app.defaultTitle || app.appTitle;
 
     currentWindows.push({
       ...appConfig,
@@ -70,7 +72,7 @@ export const useWindow = create<WindowState>((set, get) => ({
     windows.forEach((win) => {
       if (windowId === win.windowId) {
         const app = getApp(win.appName);
-        if (!app) return log("Failed to open file");
+        if (!app) return logger.log("Failed to open file");
 
         win.title =
           newTitle ||
@@ -85,13 +87,13 @@ export const useWindow = create<WindowState>((set, get) => ({
 
   changeFocus: (windowId) => {
     const windows = get().activeWindows;
-    // console.log('closedWindowii', JSON.stringify(windows.map(v => ({ id: v.windowId, x: v.pos.x, y: v.pos.y }))), windowId)
     const maxZ = Math.max(...windows.map((win) => win.z), INITIAL_Z_INDEX);
 
     if (windowId) {
       const currentWindow = windows.find((win) => win.windowId === windowId);
 
-      if (!currentWindow) return console.log(`Window ${windowId} is not found`);
+      if (!currentWindow)
+        return logger.error(`[FOCUS] Window ${windowId} is not found`);
       if (currentWindow.isFocused) return;
     }
 
@@ -118,7 +120,8 @@ export const useWindow = create<WindowState>((set, get) => ({
     const app = getApp(windowName as AppName);
 
     const appConfig = APP_WINDOW_CONFIG.find((v) => v.appName === windowName);
-    if (!appConfig || !app) return console.log("App not found");
+    if (!appConfig || !app)
+      return logger.error(`[MINIMIZE] App ${windowId} not found`);
 
     currentMinimizedWindows.push({
       ...appConfig,
@@ -167,14 +170,10 @@ export const useWindow = create<WindowState>((set, get) => ({
   closeWindowById: (windowId) => {
     const currentWindows = get().activeWindows;
     // get().changeFocus(windowId);
-    // console.log("curra", windowId, currentWindows);
     const filtered = currentWindows.filter((v) => v.windowId !== windowId);
-    console.log("closing", windowId);
-    // console.log("bba",filtered)
 
     set({
       activeWindows: filtered,
     });
-    // console.log("curr", get().activeWindows);
   },
 }));
