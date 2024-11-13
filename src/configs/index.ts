@@ -1,17 +1,22 @@
 import { AppName, App, WindowSetup } from "../types";
 import { EmptyComponent } from "../components/shared/EmptyComponent";
-import { Run, LogInForm, ShutDown, Notepad, WindowsExplorer } from "../components/Apps";
 import {
-  DEFAULT_WINDOW_HEIGHT,
-  DEFAULT_WINDOW_WIDTH,
-  INITIAL_Z_INDEX,
-} from "./constants";
+  Run,
+  LogInForm,
+  ShutDown,
+  Notepad,
+  WindowsExplorer,
+} from "../components/Apps";
+import { INITIAL_Z_INDEX } from "./constants";
 import { icon } from "../utils";
+import { logger } from "../libs/logger";
 
-export const getApp = (appName: AppName): App => {
-  const app = APP_LIST.find((app) => app.appName === appName)!;
-  console.log(APP_LIST, app)
-  // if (!app) return console.log(`${appName} is not a valid app!`);
+export const getApp = (appName: AppName) => {
+  const app = APP_LIST.find((app) => app.appName === appName);
+  if (!app) {
+    logger.error(`${appName} is not a valid app!`);
+    return null;
+  }
 
   return app;
 };
@@ -43,6 +48,14 @@ export const APP_WINDOW_CONFIG: WindowSetup[] = [
   },
   {
     appName: "notepad",
+    z: INITIAL_Z_INDEX,
+    pos: {
+      x: 0,
+      y: 0,
+    },
+  },
+  {
+    appName: "windowsExplorer",
     z: INITIAL_Z_INDEX,
     pos: {
       x: 0,
@@ -83,7 +96,11 @@ export const APP_LIST: App[] = [
     height: 600,
     isResizable: true,
     isDraggable: true,
-    icons: [icon("directory_explorer", 1), icon("directory_explorer", 2), icon("directory_explorer", 0)],
+    icons: [
+      icon("directory_explorer", 1),
+      icon("directory_explorer", 2),
+      icon("directory_explorer", 0),
+    ],
   },
   {
     appName: "notepad",
