@@ -1,16 +1,16 @@
 import { ComponentType, useRef, useState } from "react";
 import styled from "styled-components";
 import { DefaultButton } from "../shared/Button";
-import { AppName } from "../../types";
-import { getApp } from "../../configs";
-import { useWindow } from "../../hooks/os";
+import { App, AppName } from "../../types";
 
 interface TopBarProps {
   title: string;
   windowId: string;
   name: AppName;
+  app: App;
   extraActions?: ComponentType<any>[];
   useDefaultExtraActions: boolean;
+  isFocused?: boolean;
   handleClose: (args: unknown) => void;
   handleMinimize: (args: unknown) => void;
   handleFullScreen: (isFullScreen: boolean) => void;
@@ -101,16 +101,16 @@ export const TopBar = ({
   useDefaultExtraActions = true,
   windowId,
   name,
+  isFocused,
+  app,
   extraActions,
   handleClose,
   handleMinimize,
   handleFullScreen,
 }: TopBarProps) => {
-  const { activeWindows } = useWindow();
-  const app = getApp(name);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
-  const onChangeFullScreen = (ev: MouseEvent) => {
+  const onChangeFullScreen = (ev: React.MouseEvent) => {
     ev.stopPropagation();
     setIsFullScreen(!isFullScreen);
     handleFullScreen(isFullScreen);
@@ -119,15 +119,14 @@ export const TopBar = ({
   return (
     <TopBarWrapper className="top-bar">
       <Bar
-        isFocus={
-          activeWindows.find((v) => v.windowId === windowId)?.isFocused || false
-        }
+        onDoubleClick={(ev) => onChangeFullScreen(ev)}
+        isFocus={isFocused || false}
       >
         <LeftBar>
-          {app.showTopBarIcon === false ? null : <AppIcon src={app.icons[0]} />}
-          <TextTitle>
-            {title}
-          </TextTitle>
+          {app?.showTopBarIcon === false ? null : (
+            <AppIcon src={app?.icons[0]} />
+          )}
+          <TextTitle>{title}</TextTitle>
         </LeftBar>
         <Actions>
           {useDefaultExtraActions ? (
