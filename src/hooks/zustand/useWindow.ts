@@ -12,7 +12,7 @@ interface WindowState {
 
   changeFocus: (windowId: string | null) => void;
   setWindowPos: (windowId: string, newPos: Vector2D) => void;
-  openWindow: (windowName: AppName, args?: any) => void;
+  openWindow: (windowName: AppName, args?: any, attachedTo?: string) => void;
   minimizeWindow: (windowId: string) => void;
   closeWindow: (windowName: AppName) => void;
   closeWindowById: (windowId: string) => void;
@@ -35,7 +35,7 @@ export const useWindow = create<WindowState>((set, get) => ({
     set({ isStartMenuOpen: isOpen || !get().isStartMenuOpen });
   },
 
-  openWindow: (windowName, args) => {
+  openWindow: (windowName, args, attachedTo) => {
     const appConfig = APP_WINDOW_CONFIG.find((v) => v.appName === windowName);
     const currentWindows = get().activeWindows;
     const isWindowAlreadyOpened = currentWindows.find(
@@ -61,17 +61,18 @@ export const useWindow = create<WindowState>((set, get) => ({
       windowId,
       title,
       args,
+      attachedTo
       pos: { x: 0, y: 0 },
     });
     get().changeFocus(windowId);
-    set({ activeWindows: currentWindows });
+    set({ activeWindows: currentWindows.filter() });
   },
 
   changeWindowTitle: (windowId, newTitle) => {
     const windows = get().activeWindows;
     windows.forEach((win) => {
       if (windowId === win.windowId) {
-        const app = getApp(win.appName);
+        const app = getApp(win.appName as AppName);
         if (!app) return logger.log("Failed to open file");
 
         win.title =

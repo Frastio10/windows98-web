@@ -31,9 +31,7 @@ export class FileProcessor {
       return this.runExe();
     }
 
-    const sys = System.getInstance();
-
-    sys.open(this.fileMetadata?.supportedPrograms[0], this.file.path);
+    System.open(this.fileMetadata?.supportedPrograms[0], this.file.path);
 
     return this;
   }
@@ -71,8 +69,7 @@ export class FileProcessor {
   }
 
   runExe() {
-    const sys = System.getInstance();
-    sys.open(this.fileMetadata.supportedPrograms![0], null);
+    System.open(this.fileMetadata.supportedPrograms![0], null);
   }
 
   static getFileExtension(fileName: string) {

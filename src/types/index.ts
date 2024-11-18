@@ -12,7 +12,7 @@ export interface AppProps {
 }
 
 export interface WindowSetup {
-  appName: AppName;
+  appName: AppName | string;
   z: number;
   pos: Vector2D;
 }
@@ -41,7 +41,7 @@ export type AppName =
   | "windowsExplorer";
 
 export interface App {
-  appName: AppName;
+  appName: AppName | string;
   component: ({ windowData }: AppProps) => JSX.Element;
   showTopBarIcon?: boolean;
   sessionTitle?: string;

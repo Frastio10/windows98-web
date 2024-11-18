@@ -1,24 +1,15 @@
-import {
-  FC,
-  ComponentType,
-  useRef,
-  memo,
-  useMemo,
-  useState,
-  useEffect,
-} from "react";
-import styled from "styled-components";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { getApp } from "../../configs";
-import { extractCssTranslateProperty, NOOP } from "../../utils";
-import { TopBar } from "./TopBar";
-// import Draggable from 'react-draggable'
+import { extractCssTranslateProperty } from "../../utils";
 import { Rnd } from "react-rnd";
-import { AppName, Size, WindowData } from "../../types";
+import { AppName, AppProps, WindowData } from "../../types";
+import { useWindow } from "../../hooks/os";
+import { logger } from "../../libs/logger";
 import {
   DEFAULT_WINDOW_HEIGHT,
   DEFAULT_WINDOW_WIDTH,
 } from "../../configs/constants";
-import { useWindow } from "../../hooks/os";
+import { BaseWindow, BaseWindowRef } from "./BaseWindow";
 
 interface WindowProps {
   windowData: WindowData;
@@ -28,7 +19,7 @@ const getComponentByName = (name: AppName) => {
   return getApp(name)?.component;
 };
 
-export const Window: FC<WindowProps> = ({ windowData }) => {
+export const Window = ({ windowData }: WindowProps) => {
   const {
     closeWindowById,
     setWindowPos,
@@ -37,8 +28,9 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     minimizeWindow,
   } = useWindow();
 
-  const windowRef = useRef<HTMLDivElement>(null);
-  const rndRef = useRef<Rnd | null>(null);
+  const baseWindowRef = useRef<BaseWindowRef>(null);
+
+  // const rndRef = useRef<Rnd | null>(null);
   const windowInstance = activeWindows.find(
     (v) => v.windowId === windowData.windowId,
   );
@@ -60,9 +52,10 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
   const [hasMinimized, setHasMinimized] = useState<boolean>(false);
   // useOutsideAlerter(windowRef, () => changeFocus("nofocus"));
 
-  const appConfig = getApp(windowData.appName);
+  const appConfig = getApp(windowData.appName as AppName);
+  if (!appConfig) logger.log("App not found");
 
-  const Component = getComponentByName(windowData.appName);
+  const Component = getComponentByName(windowData.appName as AppName);
 
   const resizeConfig = {
     top: true,
@@ -111,7 +104,7 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
   }, [name, windowInstance, activeWindows]);
 
   const fullScreenOrRestore = (isFullScreen: boolean) => {
-    if (!rndRef.current) return;
+    if (!baseWindowRef.current) return;
     updatePreviousDimension();
 
     if (isFullScreen) return restoreMaximize();
@@ -121,7 +114,8 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
   };
 
   const updatePreviousDimension = () => {
-    const element = rndRef.current?.resizableElement.current!;
+    const rndRef = baseWindowRef.current?.getRndInstance();
+    const element = rndRef?.resizableElement.current!;
     if (!element) return;
 
     enableTransition();
@@ -135,7 +129,8 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
   };
 
   const updateWindowedDimension = () => {
-    const element = rndRef.current?.resizableElement.current!;
+    const rndRef = baseWindowRef.current?.getRndInstance();
+    const element = rndRef?.resizableElement.current!;
     if (!element) return;
 
     enableTransition();
@@ -149,15 +144,18 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
   };
 
   const maximize = () => {
-    rndRef.current?.updateSize({ width: "100%", height: "100%" });
-    rndRef.current?.updatePosition({ x: 0, y: 0 });
+    const rndRef = baseWindowRef.current?.getRndInstance();
+    rndRef?.updateSize({ width: "100%", height: "100%" });
+    rndRef?.updatePosition({ x: 0, y: 0 });
   };
 
   const minimize = () => {
+    const rndRef = baseWindowRef.current?.getRndInstance();
+
     updatePreviousDimension();
     setVisibility(false);
-    rndRef.current?.updatePosition({
-      x: -rndRef.current.resizableElement.current!.clientWidth,
+    rndRef?.updatePosition({
+      x: -rndRef.resizableElement.current!.clientWidth,
       y: window.innerHeight,
     });
   };
@@ -174,19 +172,23 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
   }, [windowInstance?.isMinimized]);
 
   const restoreToPreviousDimension = () => {
+    const rndRef = baseWindowRef.current?.getRndInstance();
+
     enableTransition();
     setVisibility(true, false);
-    rndRef.current?.updateSize({
+    rndRef?.updateSize({
       width: previousDimension!.width,
       height: previousDimension!.height,
     });
-    rndRef.current?.updatePosition({
+    rndRef?.updatePosition({
       x: previousDimension!.x,
       y: previousDimension!.y,
     });
   };
 
   const setVisibility = (isVisible: boolean, delayDisplayNone = true) => {
+    const rndRef = baseWindowRef.current?.getRndInstance();
+
     let opacity = "0.2";
     let visibility = "hidden";
 
@@ -196,116 +198,61 @@ export const Window: FC<WindowProps> = ({ windowData }) => {
     }
 
     // setTimeout(() => {
-    rndRef.current!.resizableElement.current!.style.opacity = opacity;
     // }, 500);
+    rndRef!.resizableElement.current!.style.opacity = opacity;
     setTimeout(
       () => {
-        rndRef.current!.resizableElement.current!.style.visibility = visibility;
+        rndRef!.resizableElement.current!.style.visibility = visibility;
       },
       delayDisplayNone ? 500 : 0,
     );
   };
 
   const restoreMaximize = () => {
-    rndRef.current?.updateSize({
+    const rndRef = baseWindowRef.current?.getRndInstance();
+
+    rndRef?.updateSize({
       width: windowedDimension!.width,
       height: windowedDimension!.height,
     });
-    rndRef.current?.updatePosition({
+    rndRef?.updatePosition({
       x: windowedDimension!.x,
       y: windowedDimension!.y,
     });
   };
 
   const enableTransition = () => {
-    const element = rndRef.current?.resizableElement.current!;
+    const rndRef = baseWindowRef.current?.getRndInstance();
+
+    const element = rndRef?.resizableElement.current!;
     if (!element) return;
 
     element.style.transition = "0.5s ease-in all";
     element.style.transitionProperty = "width, height, transform";
   };
 
-  const disableTransition = () => {
-    if (!rndRef.current || !rndRef.current.resizableElement.current) return;
-    rndRef.current.resizableElement.current!.style.transition = "none";
-  };
-
   return (
-    <Rnd
-      ref={(c) => {
-        if (c) rndRef.current = c;
-      }}
-      dragHandleClassName="top-bar"
-      enableResizing={appConfig?.isResizable ? resizeConfig : false}
-      disableDragging={!appConfig?.isDraggable}
-      bounds=".bounds"
-      default={{
-        ...windowPosition,
-        width: (appConfig?.width || DEFAULT_WINDOW_WIDTH) + "px",
-        height: (appConfig?.height || DEFAULT_WINDOW_HEIGHT) + "px",
-      }}
-      style={{
-        zIndex: activeWindows.find(
-          (win) => win.windowId === windowData.windowId,
-        )?.z,
-      }}
-      onDragStart={() => {
-        changeFocus(windowData.windowId);
-        disableTransition();
-      }}
-      minWidth={appConfig.width}
-      minHeight={appConfig.height}
-      onResizeStart={() => {
-        changeFocus(windowData.windowId);
-        disableTransition();
-      }}
-      onDragStop={(_, d) => {
-        if (rndRef.current?.resizableElement.current) {
-          rndRef.current.resizableElement.current.style.transform = `translate(${Math.round(
-            d.x,
-          )}px, ${Math.round(d.y)}px)`;
-        }
-
-        setWindowPos(windowData.windowId, { x: d.lastX, y: d.lastY });
-      }}
-    >
-      <WindowWrapper
-        ref={windowRef}
-        onClick={() => changeFocus(windowData.windowId)}
-      >
-        <TopBar
-          windowId={windowData.windowId}
-          name={windowData.appName}
-          useDefaultExtraActions={appConfig?.useDefaultExtraActions || false}
-          title={windowData.title}
-          handleClose={() => closeWindowById(windowData.windowId)}
-          handleFullScreen={(isFullScreen) => {
-            if (!rndRef.current) return;
-
-            fullScreenOrRestore(isFullScreen);
-          }}
-          handleMinimize={() => {
-            minimizeWindow(windowData.windowId);
-            changeFocus(null);
-          }}
-        />
-        <WindowContentWrapper>
-          {Component && <Component windowData={windowData} />}
-        </WindowContentWrapper>
-      </WindowWrapper>
-    </Rnd>
+    <BaseWindow
+      ref={baseWindowRef}
+      windowData={windowData}
+      appConfig={appConfig!}
+      zIndex={
+        activeWindows.find((win) => win.windowId === windowData.windowId)?.z
+      }
+      defaultWidth={appConfig?.width || DEFAULT_WINDOW_WIDTH}
+      defaultHeight={appConfig?.height || DEFAULT_WINDOW_HEIGHT}
+      defaultX={windowPosition.x}
+      defaultY={windowPosition.y}
+      onDragStart={() => changeFocus(windowData.windowId)}
+      onResizeStart={() => changeFocus(windowData.windowId)}
+      onFocus={() => changeFocus(windowData.windowId)}
+      onClose={() => closeWindowById(windowData.windowId)}
+      onFullScreen={(isFullScreen) => fullScreenOrRestore(isFullScreen)}
+      onMinimize={() => minimizeWindow(windowData.windowId)}
+      onDragStop={(d) =>
+        setWindowPos(windowData.windowId, { x: d.lastX, y: d.lastY })
+      }
+      component={Component!}
+    />
   );
 };
-
-const WindowContentWrapper = styled.div`
-  flex-grow: 1;
-`;
-
-const WindowWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  box-shadow: ${({ theme }) => theme.windowPixelatedBorder};
-  background: ${({ theme }) => theme.elementDefaultBackground};
-  padding: 4px;
-`;

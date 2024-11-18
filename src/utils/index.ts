@@ -1,4 +1,9 @@
+import { TopBarAction } from "../components/Window/TopBarActions";
 import { Vector2D } from "../types";
+
+export const MENU_DIVIDER = {
+  type: "divider",
+} as TopBarAction;
 
 export const NOOP = () => {};
 export const getIdValue = (str: string) => {

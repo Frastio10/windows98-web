@@ -6,7 +6,7 @@ import { App, AppName } from "../../types";
 interface TopBarProps {
   title: string;
   windowId: string;
-  name: AppName;
+  name: string;
   app: App;
   extraActions?: ComponentType<any>[];
   useDefaultExtraActions: boolean;

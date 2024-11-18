@@ -13,7 +13,7 @@ export default class System {
     return System._instance;
   }
 
-  open(executable: AppName, initialData: any) {
+  public static open(executable: AppName, initialData?: any) {
     unstable_batchedUpdates(() => {
       useWindow.getState().openWindow(executable, initialData);
     });

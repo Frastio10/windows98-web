@@ -4,7 +4,7 @@ import { useWindow } from "../../../hooks/os";
 import { useFileSystem } from "../../../hooks/zustand/useFileSystem";
 import { FileNode } from "../../../libs/fileSystem";
 import { AppProps } from "../../../types";
-import { iconSize, log, NOOP } from "../../../utils";
+import { icon, iconSize, log, MENU_DIVIDER, NOOP } from "../../../utils";
 import TopBarActions from "../../Window/TopBarActions";
 import type { TopBarAction } from "../../Window/TopBarActions";
 import LZString from "lz-string";
@@ -12,6 +12,12 @@ import NotepadTextArea from "./TextArea";
 import { Window } from "../../Window";
 
 import api from "../../../api";
+import { BaseWindow } from "../../Window/BaseWindow";
+import {
+  DEFAULT_WINDOW_HEIGHT,
+  DEFAULT_WINDOW_WIDTH,
+} from "../../../configs/constants";
+import System from "../../../libs/system";
 
 const Alert = () => (
   <div>
@@ -124,9 +130,9 @@ export const Notepad = ({ windowData }: AppProps) => {
             saveAsNewFile();
           },
         },
-        {
-          type: "divider",
-        },
+
+        MENU_DIVIDER,
+
         {
           title: "Page Setup...",
           onAction: () => saveCurrent(),
@@ -138,9 +144,9 @@ export const Notepad = ({ windowData }: AppProps) => {
             saveAsNewFile();
           },
         },
-        {
-          type: "divider",
-        },
+
+        MENU_DIVIDER,
+
         {
           title: "Exit",
           shortcutLetter: "x",
@@ -158,9 +164,9 @@ export const Notepad = ({ windowData }: AppProps) => {
           title: "Undo",
           onAction: NOOP,
         },
-        {
-          type: "divider",
-        },
+
+        MENU_DIVIDER,
+
         {
           title: "Cut",
           onAction: () => {
@@ -185,9 +191,9 @@ export const Notepad = ({ windowData }: AppProps) => {
           shortcutLetter: "A",
           onAction: () => deleteText(),
         },
-        {
-          type: "divider",
-        },
+
+        MENU_DIVIDER,
+
         {
           title: "Select All",
           shortcutLetter: "A",
@@ -198,9 +204,9 @@ export const Notepad = ({ windowData }: AppProps) => {
           shortcutLetter: "D",
           onAction: () => insertTimeDate(),
         },
-        {
-          type: "divider",
-        },
+
+        MENU_DIVIDER,
+
         {
           type: "checkbox",
           title: "Word Wrap",
@@ -239,9 +245,9 @@ export const Notepad = ({ windowData }: AppProps) => {
           shortcutLetter: "A",
           onAction: NOOP,
         },
-        {
-          type: "divider",
-        },
+
+        MENU_DIVIDER,
+
         {
           type: "checkbox",
           title: "About Notepad",

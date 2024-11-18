@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { FILE_EXTENSIONS } from "../configs/fileSystem";
 import { useWindow } from "../hooks/os";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
-import { FileNode } from "../libs/fileSystem";
-import { AppName, Vector2D } from "../types";
+import { Vector2D } from "../types";
 import { DesktopIcon } from "./DesktopIcon";
 import { Box } from "./shared/Box";
 import { Taskbar } from "./Taskbar";
 import { Window } from "./Window";
 
 export const LoggedInView = () => {
-  const { activeWindows, openWindow } = useWindow();
+  const { activeWindows } = useWindow();
   const { fileSystem } = useFileSystem();
   const desktopFiles = fileSystem.getDesktopFiles();
   const [shortcutBoxCoordinate, setShortcutBoxCoordinate] =
