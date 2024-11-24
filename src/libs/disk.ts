@@ -20,7 +20,7 @@ export default class Disk {
 
     this.opts = {
       // @ts-ignore i know what i am doing typescript.
-      compressString: true,
+      compressString: false,
       ...opts,
     };
   }

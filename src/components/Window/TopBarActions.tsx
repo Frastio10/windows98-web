@@ -38,6 +38,7 @@ const TopBarActionButton = ({ action }: { action: TopBarAction }) => {
         textAlign: "left",
       }}
       onClick={(ev) => {
+        ev.stopPropagation();
         const handle = action.onAction || NOOP;
 
         if (action.type !== "checkbox") handle(ev);

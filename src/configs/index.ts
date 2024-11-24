@@ -6,10 +6,12 @@ import {
   ShutDown,
   Notepad,
   WindowsExplorer,
+  MessageBox,
 } from "../components/Apps";
 import { INITIAL_Z_INDEX } from "./constants";
-import { icon } from "../utils";
+import { icon, iconSize } from "../utils";
 import { logger } from "../libs/logger";
+import { FileDialog } from "../components/Apps";
 
 export const getApp = (appName: AppName) => {
   const app = APP_LIST.find((app) => app.appName === appName);
@@ -21,45 +23,21 @@ export const getApp = (appName: AppName) => {
   return app;
 };
 
-export const APP_WINDOW_CONFIG: WindowSetup[] = [
-  {
-    appName: "logInForm",
-    z: INITIAL_Z_INDEX,
-    pos: {
-      x: 0,
-      y: 0,
-    },
+export const DEFAULT_APP_CONFIG = {
+  z: INITIAL_Z_INDEX,
+  pos: {
+    x: 0,
+    y: 0,
   },
+};
+
+export const APP_WINDOW_CONFIG: WindowSetup[] = [
   {
     appName: "run",
     z: INITIAL_Z_INDEX,
     pos: {
       x: window.innerWidth,
       y: window.innerHeight,
-    },
-  },
-  {
-    appName: "shutDown",
-    z: INITIAL_Z_INDEX,
-    pos: {
-      x: 0,
-      y: 0,
-    },
-  },
-  {
-    appName: "notepad",
-    z: INITIAL_Z_INDEX,
-    pos: {
-      x: 0,
-      y: 0,
-    },
-  },
-  {
-    appName: "windowsExplorer",
-    z: INITIAL_Z_INDEX,
-    pos: {
-      x: 0,
-      y: 0,
     },
   },
 ];
@@ -116,6 +94,47 @@ export const APP_LIST: App[] = [
     isDraggable: true,
     icons: [icon("notepad", 0), icon("notepad", 1), icon("notepad", 2)],
   },
+
+  {
+    appName: "messageBox",
+    component: MessageBox,
+    defaultTitle: "Untitled - Notepad",
+    appTitle: "Notepad",
+    useDefaultExtraActions: true,
+    defaultPosition: "center",
+    allowMultipleInstances: true,
+    showTopBarIcon: false,
+    width: 300,
+    height: 300,
+    isResizable: false,
+    isDraggable: true,
+    icons: [
+      iconSize("msg_warning", "small"),
+      iconSize("msg_warning", "medium"),
+      iconSize("notepad", "big"),
+    ],
+  },
+
+  {
+    appName: "fileDialog",
+    component: FileDialog,
+    defaultTitle: "-",
+    appTitle: "-",
+    useDefaultExtraActions: true,
+    defaultPosition: "center",
+    allowMultipleInstances: true,
+    showTopBarIcon: false,
+    width: 500,
+    height: 300,
+    isResizable: true,
+    isDraggable: true,
+    icons: [
+      iconSize("msg_warning", "small"),
+      iconSize("msg_warning", "medium"),
+      iconSize("notepad", "big"),
+    ],
+  },
+
   {
     appName: "run",
     component: Run,

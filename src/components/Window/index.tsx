@@ -239,8 +239,10 @@ export const Window = ({ windowData }: WindowProps) => {
       zIndex={
         activeWindows.find((win) => win.windowId === windowData.windowId)?.z
       }
-      defaultWidth={appConfig?.width || DEFAULT_WINDOW_WIDTH}
-      defaultHeight={appConfig?.height || DEFAULT_WINDOW_HEIGHT}
+      defaultWidth={
+        windowData.args?.width || appConfig?.width || DEFAULT_WINDOW_WIDTH
+      }
+      defaultHeight={windowData.args?.height || appConfig?.height}
       defaultX={windowPosition.x}
       defaultY={windowPosition.y}
       onDragStart={() => changeFocus(windowData.windowId)}

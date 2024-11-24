@@ -16,6 +16,7 @@ export const themeStyles = {
 
   // windowTopBarBackgroundPrimary: "linear-gradient(to right, rgb(0,0,128) 0%, rgb(16, 132, 208) 100%)",
   // windowTopBarBackgroundSecondary: "#85898D",
+  highlightBackgroundColorPrimary: "#0000AA",
 
   windowTopBarBackgroundPrimary: "#0000AA",
   windowTopBarBackgroundSecondary: "#85898D",
@@ -33,10 +34,12 @@ export const themeStyles = {
                           0 0 0 2px #bfbfbf inset`,
 
   scrollbarButtonInnerSize: 9,
-  scrollbarSize: '13px',
+  scrollbarSize: "13px",
 
-  baseBorderThin: '1px solid rgb(128,128,128)',
-  baseBorderWhite: '1px solid rgb(255,255,255)',
-  baseBorderShadowWhite: '0 1px 0 rgb(255,255,255), 0 1px 0 rgb(255,255,255) inset',
-  baseBorderShadowThin: '0 1px 0 rgb(128,128,128), 0 1px 0 rgb(128,128,128) inset',
+  baseBorderThin: "1px solid rgb(128,128,128)",
+  baseBorderWhite: "1px solid rgb(255,255,255)",
+  baseBorderShadowWhite:
+    "0 1px 0 rgb(255,255,255), 0 1px 0 rgb(255,255,255) inset",
+  baseBorderShadowThin:
+    "0 1px 0 rgb(128,128,128), 0 1px 0 rgb(128,128,128) inset",
 };

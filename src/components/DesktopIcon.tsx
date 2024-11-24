@@ -9,6 +9,7 @@ import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { FileProcessor } from "../libs/fileProcessor";
 import { FileNode } from "../libs/fileSystem";
 import { App, AppName, Vector2D } from "../types";
+import { themeStyles } from "./shared/theme";
 
 interface DesktopIconProps {
   file: FileNode;
@@ -45,23 +46,6 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
     setIsRename(false);
   });
 
-  useEffect(() => {
-    const handleOpen = () => {
-      fileProcessor.run();
-    };
-
-    elemRef.current?.resizableElement.current?.addEventListener(
-      "dblclick",
-      handleOpen,
-    );
-
-    return () =>
-      elemRef.current?.resizableElement.current?.removeEventListener(
-        "dblclick",
-        handleOpen,
-      );
-  }, [file]);
-
   function selectElementContents(el: any) {
     let range, sel;
 
@@ -87,11 +71,13 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
   useEffect(() => {
     const handleKeydown = (ev: KeyboardEvent) => {
-      if (ev.key === "F2") {
+      ev.stopPropagation();
+      console.log(ev.key);
+      if (ev.key === "F2" || ev.key === "r") {
         handleRenameFile();
       }
 
-      if (ev.key === "Delete") {
+      if (ev.key === "Delete" || ev.key === "Backspace") {
         handleRemoveFile();
       }
     };
@@ -153,7 +139,14 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
       onClick={() => setIsSelected(true)}
     >
       <Wrapper ref={wrapperRef}>
-        <IconImage src={getIcon(app)} draggable={false} />
+        <div
+          className="w-full flex justify-center"
+          onDoubleClick={() => fileProcessor.run()}
+        >
+          <IconWrapper src={getIcon(app!)} active={isSelected}>
+            <IconImage src={getIcon(app!)} draggable={false} />
+          </IconWrapper>
+        </div>
         <div
           style={{
             display: "flex",
@@ -163,9 +156,14 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
           <TextRename
             ref={titleRef}
             tabIndex={1}
+            onDoubleClick={handleRenameFile}
             style={{
               // fix this ugly shiit
-              background: isRename ? "white" : isSelected ? "blue" : "none",
+              background: isRename
+                ? "white"
+                : isSelected
+                  ? themeStyles.highlightBackgroundColorPrimary
+                  : "none",
               color: isRename ? "black" : "white",
               boxShadow: isSelected ? "0 0 0 1px white" : "",
               outline: isSelected ? "dashed 1px black" : "",
@@ -197,9 +195,42 @@ const RenameInput = styled.input`
   padding: 0 4px;
 `;
 
+const IconWrapper = styled.div<{ src: string; active: boolean }>`
+  position: relative;
+
+  &::before {
+    content: "";
+    display: ${(props) => (props.active ? "block" : "none")};
+    mask-size: 100%;
+    mask-image: url(${(props) => props.src});
+    -webkit-mask-image: url(${(props) => props.src});
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(
+        45deg,
+        rgba(0, 0, 170, 0.5) 25%,
+        transparent 25%
+      ),
+      linear-gradient(-45deg, rgba(0, 0, 170, 0.5) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(0, 0, 170, 0.5) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(0, 0, 170, 0.5) 75%);
+    background-size: 3px 3px;
+    background-position:
+      0 0,
+      0 2px,
+      2px -2px,
+      -2px 0px;
+  }
+`;
+
 const IconImage = styled.img`
   width: 40px;
   height: 40px;
+  position: relative;
 `;
 
 const Wrapper = styled.div`

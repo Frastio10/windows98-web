@@ -11,7 +11,7 @@ interface WindowProps {
   zIndex?: number;
 
   defaultWidth: number;
-  defaultHeight: number;
+  defaultHeight?: number;
   defaultX: number;
   defaultY: number;
 
@@ -97,7 +97,7 @@ export const BaseWindow = forwardRef<BaseWindowRef, WindowProps>(
           x: defaultX,
           y: defaultY,
           width: defaultWidth + "px",
-          height: defaultHeight + "px",
+          height: defaultHeight ? defaultHeight + "px" : "auto",
         }}
         style={{
           zIndex,
@@ -106,8 +106,8 @@ export const BaseWindow = forwardRef<BaseWindowRef, WindowProps>(
           disableTransition();
           onDragStart(ev);
         }}
-        minWidth={appConfig?.width || 300}
-        minHeight={appConfig?.height || 300}
+        minWidth={defaultWidth || 300}
+        minHeight={defaultHeight || 300}
         onResizeStart={(ev) => {
           disableTransition();
           onResizeStart(ev);
@@ -124,7 +124,9 @@ export const BaseWindow = forwardRef<BaseWindowRef, WindowProps>(
       >
         <WindowWrapper
           ref={windowRef}
-          onClick={() => onFocus(windowData.windowId)}
+          onClick={() => {
+            onFocus(windowData.windowId);
+          }}
         >
           {appConfig && (
             <TopBar

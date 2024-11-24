@@ -4,30 +4,17 @@ import { useWindow } from "../../../hooks/os";
 import { useFileSystem } from "../../../hooks/zustand/useFileSystem";
 import { FileNode } from "../../../libs/fileSystem";
 import { AppProps } from "../../../types";
-import { icon, iconSize, log, MENU_DIVIDER, NOOP } from "../../../utils";
+import { log, MENU_DIVIDER, NOOP } from "../../../utils";
 import TopBarActions from "../../Window/TopBarActions";
 import type { TopBarAction } from "../../Window/TopBarActions";
-import LZString from "lz-string";
 import NotepadTextArea from "./TextArea";
-import { Window } from "../../Window";
 
 import api from "../../../api";
-import { BaseWindow } from "../../Window/BaseWindow";
-import {
-  DEFAULT_WINDOW_HEIGHT,
-  DEFAULT_WINDOW_WIDTH,
-} from "../../../configs/constants";
 import System from "../../../libs/system";
-
-const Alert = () => (
-  <div>
-    Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum
-    sint consectetur cupidatat.
-  </div>
-);
+import { DialogResult } from "../MessageBox";
 
 export const Notepad = ({ windowData }: AppProps) => {
-  const { changeWindowTitle } = useWindow();
+  const { changeWindowTitle, changeFocus, closeWindowById } = useWindow();
   const { fileSystem, updateFileSystem } = useFileSystem();
 
   const [value, setValue] = useState("");
@@ -50,10 +37,11 @@ export const Notepad = ({ windowData }: AppProps) => {
         return log(
           `Failed to open file. File '${windowData.args}' is not found`,
         );
+
       setCurrentFile(file);
 
       changeWindowTitle(windowData.windowId, file.name + " - Notepad");
-      updateText(LZString.decompressFromUTF16(file.content));
+      updateText(file.content);
       setIsSaved(true);
     }
   }, []);
@@ -67,22 +55,53 @@ export const Notepad = ({ windowData }: AppProps) => {
     }
   }, [isSaved]);
 
+  const openFile = (file: FileNode) => {
+    setCurrentFile(file);
+
+    changeWindowTitle(windowData.windowId, file.name + " - Notepad");
+    updateText(file.content);
+    setIsSaved(true);
+  };
+
+  const txtFileType = {
+    title: "Text Document",
+    ext: ".txt",
+    key: "txt",
+  };
+
   const saveAsNewFile = () => {
     try {
-      const filename = prompt("*.txt") || "Untitled";
-      const desktopNode = fileSystem.getNodeByPath("C:/WINDOWS/Desktop");
+      System.saveFileDialog(windowData.windowId, {
+        fileTypes: [txtFileType],
+        defaultFileName: "Untitled",
+        defaultFileType: txtFileType,
+        onResult: (e) => {
+          const file = fileSystem.writeFile(e.filePaths[0], value);
 
-      const file = fileSystem.createFileNode(filename, false, desktopNode);
+          if (!file) return;
 
-      changeWindowTitle(windowData.windowId, filename + " - Notepad");
-      file.content = LZString.compressToUTF16(value);
-      setCurrentFile(file);
-
-      desktopNode?.addChild(file);
-      updateFileSystem();
-      setIsSaved(true);
+          setCurrentFile(file);
+          changeWindowTitle(windowData.windowId, file.name + " - Notepad");
+          updateFileSystem();
+          setIsSaved(true);
+        },
+      });
     } catch (err) {
-      alert((err as Error).message);
+      const str = System.messageBox(windowData.windowId, {
+        description: (err as Error).message,
+        title: currentFile?.name + " - Notepad",
+        showWarningIcon: true,
+        width: 400,
+        height: 100,
+        cb: (r) => {
+          if (r.result === DialogResult.OK) {
+          }
+
+          closeWindowById(r.windowData.windowId);
+        },
+      });
+
+      changeFocus(str);
     }
   };
 
@@ -97,9 +116,8 @@ export const Notepad = ({ windowData }: AppProps) => {
     if (!currentFile) return saveAsNewFile();
     if (value === currentFile.content) return;
 
-    // this is so ugly.  i have no fucking idea why prevState doesnt work with classes
     const file = currentFile;
-    file.content = LZString.compressToUTF16(value);
+    file.content = value;
     setCurrentFile(file);
 
     updateFileSystem();
@@ -117,7 +135,30 @@ export const Notepad = ({ windowData }: AppProps) => {
         },
         {
           title: "Open...",
-          onAction: () => openNewInstance(),
+          onAction: () => {
+            System.openFileDialog(windowData.windowId, {
+              isFileOnly: true,
+              fileTypes: [txtFileType],
+              defaultFileType: txtFileType,
+              onResult: (e) => {
+                const foundFile = fileSystem.getNodeByPath(e.filePaths[0]);
+                if (!foundFile) {
+                  return System.messageBox(windowData.windowId, {
+                    description: "File not found",
+                    title: currentFile?.name + " - Notepad",
+                    showWarningIcon: true,
+                    width: 400,
+                    height: 100,
+                    cb: (r) => {
+                      closeWindowById(r.windowData.windowId);
+                    },
+                  });
+                }
+
+                openFile(foundFile);
+              },
+            });
+          },
         },
         {
           title: "Save",
@@ -336,6 +377,10 @@ export const Notepad = ({ windowData }: AppProps) => {
     if (textarea) {
       textarea.focus();
       textarea.setSelectionRange(0, value.length);
+      setTextSelection({
+        start: 0,
+        end: value.length,
+      });
     }
   };
 

@@ -2,7 +2,7 @@ import { useRef } from "react";
 import styled from "styled-components";
 import { getApp } from "../../configs";
 import { useWindow } from "../../hooks/os";
-import { WindowData } from "../../types";
+import { AppName, WindowData } from "../../types";
 
 export const Tasks = () => {
   const { activeWindows, changeFocus, minimizeWindow } = useWindow();
@@ -32,28 +32,30 @@ export const Tasks = () => {
     <Wrapper ref={tasksWrapperRef}>
       {tasksWrapperRef.current ? (
         <Inner>
-          {activeWindows.map((v, i) => {
-            const app = getApp(v.appName);
-            return (
-              <Task
-                key={v.windowId}
-                isFocused={v.isFocused}
-                onClick={() => onClickTask(v)}
-                style={{
-                  width:
-                    calculateTaskElementWidth(
-                      tasksWrapperRef.current!.clientWidth,
-                      activeWindows.length,
-                    ) -
-                    3.14 +
-                    "px",
-                }}
-              >
-                <img src={app?.icons[0]} />
-                <span>{v.title}</span>
-              </Task>
-            );
-          })}
+          {activeWindows
+            .filter((w) => !w.attachedTo)
+            .map((v, i) => {
+              const app = getApp(v.appName as AppName);
+              return (
+                <Task
+                  key={v.windowId}
+                  isFocused={v.isFocused}
+                  onClick={() => onClickTask(v)}
+                  style={{
+                    width:
+                      calculateTaskElementWidth(
+                        tasksWrapperRef.current!.clientWidth,
+                        activeWindows.length,
+                      ) -
+                      3.14 +
+                      "px",
+                  }}
+                >
+                  <img src={app?.icons[0]} />
+                  <span>{v.title}</span>
+                </Task>
+              );
+            })}
         </Inner>
       ) : null}
     </Wrapper>
@@ -61,9 +63,9 @@ export const Tasks = () => {
 };
 
 const Wrapper = styled.div`
-  width: 100%;
   height: 100%;
   padding-right: 5px;
+  flex-grow: 1;
   display: flex;
   align-items: center;
   user-select: none;

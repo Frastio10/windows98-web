@@ -343,7 +343,52 @@ export default class FileSystem {
       throw new Error(`File ${filename} already exists`);
     }
     const file = new FileNode(filename, isDirectory, parent);
+    if (parent) parent.addChild(file);
 
     return file;
+  }
+
+  writeFile(filepath: FilePath, content: any = "") {
+    const pathSegments = filepath.split("/").filter((segment) => segment);
+    const filename = pathSegments[pathSegments.length - 1];
+    const parentPath = pathSegments.slice(0, -1).join("/");
+
+    let currentNode = this.root;
+
+    // Create or traverse to parent directories
+    for (let i = 0; i < pathSegments.length - 1; i++) {
+      const segment = pathSegments[i];
+      if (segment.toLowerCase() === ROOT_FILENAME.toLowerCase()) continue;
+
+      let childNode = currentNode.children.find(
+        (node) => node.name.toLowerCase() === segment.toLowerCase(),
+      );
+
+      // Create directory if it doesn't exist
+      if (!childNode) {
+        childNode = this.createFileNode(segment, true, currentNode);
+      } else if (!childNode.isDirectory) {
+        throw new Error(`Cannot create directory '${segment}': File exists`);
+      }
+
+      currentNode = childNode;
+    }
+
+    let fileNode = currentNode.children.find(
+      (node) => node.name.toLowerCase() === filename.toLowerCase(),
+    );
+
+    if (fileNode) {
+      fileNode.content = content;
+      fileNode.updateDate();
+    } else {
+      fileNode = this.createFileNode(filename, false, currentNode);
+      fileNode.content = content;
+    }
+
+    this.updateStorageData();
+
+    logger.log(`File '${filepath}' has been written successfully.`);
+    return fileNode;
   }
 }

@@ -32,6 +32,7 @@ export const QuickLaunch = () => {
 const Wrapper = styled.div`
   display: flex;
   margin: 0 4px;
+  flex-shrink: 0;
 `;
 
 const InnerWrapper = styled.div`

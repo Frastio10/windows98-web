@@ -32,12 +32,15 @@ export const StartMenuApp = ({ appName, isDisabled, children }: App) => {
         setIsDropdownOpen(true);
       }}
     >
-      <img
-        src={getApp(appName)?.icons[0]}
-        alt={getApp(appName)?.appTitle}
-        width={30}
-        height={30}
-      />
+      {getApp(appName)?.icons?.length && (
+        <img
+          src={getApp(appName)?.icons?.[0]}
+          alt={getApp(appName)?.appTitle}
+          width={30}
+          height={30}
+        />
+      )}
+
       {isDisabled ? (
         <Text
           className="title"
@@ -72,12 +75,14 @@ export const StartMenuApp = ({ appName, isDisabled, children }: App) => {
                 changeStartMenu(false);
               }}
             >
-              <img
-                src={getApp(v.appName)?.icons[0]}
-                alt={getApp(v.appName)?.appTitle}
-                width={16}
-                height={16}
-              />
+              {getApp(appName)?.icons?.length && (
+                <img
+                  src={getApp(appName)?.icons?.[0]}
+                  alt={getApp(appName)?.appTitle}
+                  width={16}
+                  height={16}
+                />
+              )}
               <span>{getApp(v.appName)?.appTitle}</span>
             </DropdownItem>
           ))}

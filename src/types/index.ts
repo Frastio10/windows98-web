@@ -7,8 +7,8 @@ export type FilePath = string;
 
 export type Size = Vector2D;
 
-export interface AppProps {
-  windowData: WindowData;
+export interface AppProps<TArgs = any> {
+  windowData: WindowData<TArgs>;
 }
 
 export interface WindowSetup {
@@ -17,12 +17,13 @@ export interface WindowSetup {
   pos: Vector2D;
 }
 
-export interface WindowData extends WindowSetup {
+export interface WindowData<TArgs = any> extends WindowSetup {
   windowId: string;
   isFocused: boolean;
   isMinimized: boolean;
   title: string;
-  args?: any;
+  args?: TArgs;
+  attachedTo?: string;
 }
 
 export type AppName =
@@ -37,6 +38,9 @@ export type AppName =
   | "run"
   | "logOff"
   | "notepad"
+  | "notepadAlert"
+  | "messageBox"
+  | "fileDialog"
   | "shutDown"
   | "windowsExplorer";
 
@@ -46,7 +50,7 @@ export interface App {
   showTopBarIcon?: boolean;
   sessionTitle?: string;
   appTitle: string;
-  icons: [string, string, string];
+  icons: [string, string, string] | null;
   allowMultipleInstances?: boolean;
   defaultTitle?: string;
   useDefaultExtraActions?: boolean;

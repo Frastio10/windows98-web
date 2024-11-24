@@ -29,6 +29,8 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
   const [suggestedFileNode, setSuggestedFileNode] = useState<FileNode[]>([]);
   const [fileNode, setFileNode] = useState<FileNode | null>(null);
 
+  const [highlightedFile, setHighlightedFile] = useState<string | null>(null);
+
   const topBarActions: TopBarAction[] = [
     {
       title: "File",
@@ -74,8 +76,16 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
           <ToolbarAction />
           <ToolbarAction />
           <ToolbarAction />
-          <LongDivider />
+          <LongDivider style={{ height: "36px" }} />
           <ToolbarAction />
+          <ToolbarAction />
+          <ToolbarAction />
+          <LongDivider style={{ height: "36px" }} />
+          <ToolbarAction />
+          <LongDivider style={{ height: "36px" }} />
+          <ToolbarAction />
+          <ToolbarAction />
+          <LongDivider style={{ height: "36px" }} />
           <ToolbarAction />
         </FileActions>
 
@@ -98,10 +108,6 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                     );
 
                     setShowList(true);
-
-                    // setFileNode(
-                    //   fileSystem.getNodeByPath(addressBarRef.current.value),
-                    // );
                   }
                 }}
               />
@@ -147,7 +153,16 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
       {/* </div> */}
       <InnerWrapper>
         {fileNode?.children.length ? (
-          fileNode?.children.map((v) => <div key={v.id}>{v.name}</div>)
+          fileNode?.children.map((v) => (
+            <div
+              key={v.id}
+              style={{ background: highlightedFile === v.id ? "blue" : "" }}
+              onClick={(e) => setHighlightedFile(v.id)}
+              onDoubleClick={(e) => setFileNode(v)}
+            >
+              {v.name}
+            </div>
+          ))
         ) : fileNode?.content ? (
           <p>{fileNode.content}</p>
         ) : (
@@ -248,4 +263,12 @@ const ToolbarButtonIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  img {
+    filter: grayscale(100%);
+  }
+
+  &:hover img {
+    filter: grayscale(0%);
+  }
 `;
