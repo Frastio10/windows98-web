@@ -102,6 +102,7 @@ export function FileDialog({ windowData }: AppProps<FileDialogProps>) {
           width: 300,
           height: 130,
           cb: (r) => {
+            if (r.windowData.attachedTo) changeFocus(r.windowData.attachedTo);
             closeWindowById(r.windowData.windowId);
           },
         });

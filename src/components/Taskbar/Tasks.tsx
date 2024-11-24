@@ -51,7 +51,7 @@ export const Tasks = () => {
                       "px",
                   }}
                 >
-                  <img src={app?.icons[0]} />
+                  <img src={app?.icons![0]} />
                   <span>{v.title}</span>
                 </Task>
               );

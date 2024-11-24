@@ -17,7 +17,7 @@ export const QuickLaunch = () => {
               onClick={() => openWindow(v.appName as AppName)}
               height="14"
               width="14"
-              src={getApp(v.appName as AppName)?.icons[0]}
+              src={getApp(v.appName as AppName)?.icons![0]}
               alt={getApp(v.appName as AppName)?.appTitle}
             />
           ))}

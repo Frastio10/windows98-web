@@ -4,6 +4,7 @@ import { useFileSystem } from "../../../hooks/os";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import { FileNode } from "../../../libs/fileSystem";
 import { AppProps } from "../../../types";
+import { DefaultButton } from "../../shared/Button";
 import { Divider, LongDivider } from "../../shared/Dividers";
 import { Icon } from "../../shared/icon";
 import { themeStyles } from "../../shared/theme";
@@ -139,6 +140,7 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                 </FileAddressList>
               )}
             </FileAddress>
+            <DefaultButton>A</DefaultButton>
           </InnerWrapper>
         </AddressBar>
       </WrapperActions>

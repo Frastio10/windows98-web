@@ -115,7 +115,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
     const settings = fileSystem.getStoredSettings();
     const storedIcon = settings.desktop?.iconsSrc?.[ext];
 
-    return storedIcon?.[2] || app.icons[2];
+    return storedIcon?.[2] || app.icons![2];
   };
 
   return (

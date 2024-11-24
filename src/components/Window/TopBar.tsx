@@ -124,7 +124,7 @@ export const TopBar = ({
       >
         <LeftBar>
           {app?.showTopBarIcon === false ? null : (
-            <AppIcon src={app?.icons[0]} />
+            <AppIcon src={app?.icons![0]} />
           )}
           <TextTitle>{title}</TextTitle>
         </LeftBar>
