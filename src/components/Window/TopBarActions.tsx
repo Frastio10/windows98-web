@@ -81,6 +81,7 @@ const TopBarParentAction = ({ action }: { action: TopBarAction }) => {
             width: "150px",
             left: "-2px",
             top: "110%",
+            zIndex: 1,
             // background: "red",
             padding: "3px 0",
           }}

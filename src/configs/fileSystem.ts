@@ -14,6 +14,32 @@ const defaultSettings = {
 };
 export const INITIAL_FILES = [
   {
+    name: "My Documents",
+    isDirectory: true,
+  },
+  {
+    name: "Program Files",
+    isDirectory: true,
+    children: [
+      {
+        name: "Accessories",
+        isDirectory: true,
+        children: [],
+      },
+    ],
+  },
+  {
+    name: "vbe_driver",
+    isDirectory: true,
+    children: [
+      {
+        name: "Accessories",
+        isDirectory: true,
+        children: [],
+      },
+    ],
+  },
+  {
     name: "WINDOWS",
     isDirectory: true,
     children: [

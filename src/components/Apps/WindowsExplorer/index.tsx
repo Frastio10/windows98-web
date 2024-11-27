@@ -9,6 +9,10 @@ import { Divider, LongDivider } from "../../shared/Dividers";
 import { Icon } from "../../shared/icon";
 import { themeStyles } from "../../shared/theme";
 import { TopBarAction, TopBarActions } from "../../Window/TopBarActions";
+import SidebarNavigation from "./SideBar";
+import { FileTreeNode } from "./SideBar/FileTree";
+
+type ExplorerBarType = "search" | "favorites" | "history" | "folders";
 
 const ToolbarAction = () => {
   return (
@@ -32,6 +36,10 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
 
   const [highlightedFile, setHighlightedFile] = useState<string | null>(null);
 
+  const [explorerBar, setExplorerBar] = useState<ExplorerBarType | null>(
+    "folders",
+  );
+
   const topBarActions: TopBarAction[] = [
     {
       title: "File",
@@ -47,7 +55,19 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
       onAction: () => console.log("hellopeppoep"),
     },
     {
-      title: "Search",
+      title: "View",
+      onAction: () => console.log("hellopeppoep"),
+    },
+    {
+      title: "Go",
+      onAction: () => console.log("hellopeppoep"),
+    },
+    {
+      title: "Favorites",
+      onAction: () => console.log("hellopeppoep"),
+    },
+    {
+      title: "Tools",
       onAction: () => console.log("hellopeppoep"),
     },
     {
@@ -64,10 +84,37 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
     return pathSegments.join("/"); // Join the segments back together
   }
 
+  const closeExplorerBar = () => {
+    setExplorerBar(null);
+  };
+
   useOutsideAlerter([addressListRef], () => {
     setShowList(false);
   });
 
+  const onSelectPathSidebar = (node: FileTreeNode) => {
+    console.log(node);
+    setFileNode(node);
+  };
+
+  function calculateStringSize(input: string) {
+    // Get the byte size of the string using TextEncoder
+    const byteSize = new TextEncoder().encode(input).length;
+
+    // Determine the unit (bytes, KB, MB, etc.)
+    const units = ["bytes", "KB", "MB", "GB"];
+    let size = byteSize;
+    let unitIndex = 0;
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;
+      unitIndex++;
+    }
+
+    // Format the size: remove unnecessary .00
+    const formattedSize = size % 1 === 0 ? size.toFixed(0) : size.toFixed(2);
+    return `${formattedSize} ${units[unitIndex]}`;
+  }
   return (
     <Wrapper>
       <WrapperActions>
@@ -144,39 +191,75 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
           </InnerWrapper>
         </AddressBar>
       </WrapperActions>
-      {/* <div */}
-      {/*   style={{ */}
-      {/*     display: "flex", */}
-      {/*     justifyContent: "center", */}
-      {/*     alignItems: "flex-start", */}
-      {/*   }} */}
-      {/* > */}
-      {/*   <img src="/assets/images/icons/ico/application_hourglass-0.ico" /> */}
-      {/* </div> */}
-      <InnerWrapper>
-        {fileNode?.children.length ? (
-          fileNode?.children.map((v) => (
-            <div
-              key={v.id}
-              style={{ background: highlightedFile === v.id ? "blue" : "" }}
-              onClick={(e) => setHighlightedFile(v.id)}
-              onDoubleClick={(e) => setFileNode(v)}
-            >
-              {v.name}
-            </div>
-          ))
-        ) : fileNode?.content ? (
-          <p>{fileNode.content}</p>
-        ) : (
-          <p>
-            Type the name of a program, folder, document, or Internet resource,
-            and Windows will open it for you.
-          </p>
+
+      <Body>
+        {explorerBar === "folders" && (
+          <SidebarNavigation
+            onCloseSidebar={closeExplorerBar}
+            onSelectPath={onSelectPathSidebar}
+          />
         )}
-      </InnerWrapper>
+
+        <InnerWrapper>
+          {fileNode?.children.length ? (
+            fileNode?.children.map((v) => (
+              <div
+                key={v.id}
+                style={{ background: highlightedFile === v.id ? "blue" : "" }}
+                onClick={(e) => setHighlightedFile(v.id)}
+                onDoubleClick={(e) => setFileNode(v)}
+              >
+                {v.name}
+              </div>
+            ))
+          ) : fileNode?.content ? (
+            <p>{fileNode.content}</p>
+          ) : (
+            <p>
+              Type the name of a program, folder, document, or Internet
+              resource, and Windows will open it for you.
+            </p>
+          )}
+        </InnerWrapper>
+      </Body>
+      <Footer>
+        <FooterBox>
+          {fileNode?.children?.length
+            ? `${fileNode.children?.length} object(s)`
+            : ""}
+        </FooterBox>
+        <FooterBox>
+          {!fileNode?.isDirectory ? calculateStringSize(fileNode?.content) : ""}
+        </FooterBox>
+        <FooterBox>{fileNode?.name}</FooterBox>
+      </Footer>
     </Wrapper>
   );
 };
+
+const FooterBox = styled.div`
+  flex-grow: 1;
+  border: 2px inset #fff;
+  box-shadow: -1px -1px #000;
+  padding: 2px;
+  min-height: 21px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 4px;
+  padding-top: 4px;
+  padding-bottom: 0px;
+`;
+
+const Body = styled.div`
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  flex: 1;
+  overflow: hidden;
+`;
 
 const FileAddressItem = styled.div`
   padding-inline: 4px;
@@ -197,6 +280,7 @@ const FileAddressList = styled.div`
   position: absolute;
   background: #fff;
   border: 1px solid #000;
+  z-index: 1;
 `;
 
 const InputAddress = styled.input`

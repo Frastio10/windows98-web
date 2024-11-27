@@ -9,6 +9,7 @@
     "preview": "vite preview --host"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "image-size": "^1.1.1",
     "lz-string": "^1.5.0",
     "lzma": "^2.3.2",

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useFileSystem } from "../../../hooks/os";
 import { FileNode } from "../../../libs/fileSystem";
 import { themeStyles } from "../../shared/theme";
+import { FileItem } from "../WindowsExplorer/SideBar/FileTree";
 
 interface FileListProps {
   files: FileNode[];
@@ -83,61 +84,4 @@ const InnerWrapper = styled.div`
   padding: 2px;
   height: 100%;
   background: #fff;
-`;
-
-const FileItem = styled.div<{
-  active?: boolean;
-  src: string;
-}>`
-  color: ${(props) => (props.active ? "white" : "black")};
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 2px 0;
-
-  span {
-    padding: 0 2px;
-    outline: ${(props) => (props.active ? "dashed 1px black" : "")};
-    margin-left: 4px;
-    background-color: ${(props) =>
-      props.active
-        ? themeStyles.highlightBackgroundColorPrimary
-        : "transparent"};
-  }
-
-  div {
-    position: relative;
-
-    &::before {
-      content: "";
-      display: ${(props) => (props.active ? "block" : "none")};
-      mask-size: 100%;
-      mask-image: url(${(props) => props.src});
-      -webkit-mask-image: url(${(props) => props.src});
-      -webkit-mask-size: contain;
-      -webkit-mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-      z-index: 1;
-
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: linear-gradient(
-          45deg,
-          rgba(0, 0, 170, 0.5) 25%,
-          transparent 25%
-        ),
-        linear-gradient(-45deg, rgba(0, 0, 170, 0.5) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, rgba(0, 0, 170, 0.5) 75%),
-        linear-gradient(-45deg, transparent 75%, rgba(0, 0, 170, 0.5) 75%);
-      background-size: 2px 2px;
-      background-position:
-        0 0,
-        0 2px,
-        2px -2px,
-        -2px 0px;
-    }
-  }
 `;

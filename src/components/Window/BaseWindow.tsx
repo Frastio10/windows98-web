@@ -160,6 +160,7 @@ export const BaseWindow = forwardRef<BaseWindowRef, WindowProps>(
 
 const WindowContentWrapper = styled.div`
   flex-grow: 1;
+  overflow: hidden;
 `;
 
 const WindowWrapper = styled.div`

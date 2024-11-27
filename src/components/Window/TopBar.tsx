@@ -16,7 +16,7 @@ interface TopBarProps {
   handleFullScreen: (isFullScreen: boolean) => void;
 }
 
-const CloseButton = ({ ...props }: any) => {
+export const CloseButton = ({ ...props }: any) => {
   return (
     <DefaultButton {...props}>
       <svg
@@ -194,6 +194,7 @@ export const TopBar = ({
 };
 
 export const TopBarWrapper = styled.div`
+  flex-shrink: 0;
   user-select: none;
   overflow: hidden;
 `;
