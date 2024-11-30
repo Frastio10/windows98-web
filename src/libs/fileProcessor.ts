@@ -24,8 +24,9 @@ export class FileProcessor {
   }
 
   run() {
-    if (!this.fileMetadata.supportedPrograms)
+    if (!this.fileMetadata.supportedPrograms) {
       return log("No supported programs.");
+    }
 
     if (this.fileMetadata.extension == FILE_EXTENSIONS.EXE) {
       return this.runExe();

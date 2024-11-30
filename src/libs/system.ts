@@ -4,15 +4,54 @@ import { FileDialogProps } from "../components/Apps/FileDialog";
 import { useWindow } from "../hooks/os";
 import { AppName } from "../types";
 import { BaseFileDialogOpts } from "../types/fileDialogs";
+import DriverManager from "./DriverManager";
+import { drivers } from "../configs/drivers";
+import Driver from "./drivers/driver";
+import { deviceSettings } from "../configs/deviceSettings";
+import StorageDriver from "./drivers/storages/storage";
+import { logger } from "./logger";
+import DeviceAudioDriver from "./drivers/audio/deviceAudio";
 
 export default class System {
   private static _instance: System | null = null;
+  private driverManager!: DriverManager;
 
   public static getInstance() {
     if (!System._instance) {
       System._instance = new System();
     }
     return System._instance;
+  }
+
+  private loadDriverModule(module: keyof typeof drivers) {
+    const moduleDrivers = drivers[module];
+    const driverArr = Object.entries(moduleDrivers);
+    driverArr.forEach(([key, value]) => {
+      value;
+      this.driverManager.load(new value(), key);
+    });
+    logger.log(`${driverArr.length} of ${module} drivers are loaded.`);
+  }
+
+  loadDrivers() {
+    this.driverManager = new DriverManager();
+    this.loadDriverModule("storages");
+    this.loadDriverModule("cache");
+    this.loadDriverModule("audio");
+  }
+
+  storage() {
+    const storage = deviceSettings.storage;
+    return this.driverManager.getDriver(storage) as StorageDriver;
+  }
+
+  audio() {
+    const storage = deviceSettings.audio;
+    const audioDriver = this.driverManager.getDriver(
+      storage,
+    ) as DeviceAudioDriver;
+
+    return audioDriver;
   }
 
   public static open(

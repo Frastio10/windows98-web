@@ -1,4 +1,6 @@
+import { WindowsExplorer } from "../components/Apps";
 import { iconSize } from "../utils";
+import DEFAULT_REGISTRY from "./registry";
 
 const defaultSettings = {
   desktop: {
@@ -48,12 +50,26 @@ export const INITIAL_FILES = [
         content: JSON.stringify(defaultSettings),
       },
       {
+        name: "System32",
+        isDirectory: true,
+        children: [
+          {
+            name: "config",
+            isDirectory: true,
+            children: [...DEFAULT_REGISTRY],
+          },
+        ],
+      },
+      {
         name: "Desktop",
         isDirectory: true,
         children: [
           {
             name: "Notepad.exe",
-            content: "run notepad",
+            content: {
+              exe: "notepad",
+              icon: "notepad",
+            },
             isDirectory: false,
           },
           {

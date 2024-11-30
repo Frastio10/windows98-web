@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import System from "../../libs/system";
 
 export enum BootState {
   SHUTDOWN,
@@ -29,7 +30,12 @@ export const useSystem = create<SystemState>((set, get) => ({
   },
 
   changeMute: (isMuted) => {
-    set({ isMuted: isMuted || !get().isMuted });
+    const muted = isMuted || !get().isMuted;
+    set({ isMuted: muted });
+
+    System.getInstance()
+      .audio()
+      .setVolume(muted ? 0 : 1);
   },
 
   shutDown: () => {

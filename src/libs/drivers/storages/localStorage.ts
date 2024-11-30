@@ -1,13 +1,35 @@
+import { logger } from "../../logger";
 import StorageDriver from "./storage";
 export default class LocalStorageDriver extends StorageDriver {
-  private storage: Storage;
+  private storage!: Storage | null;
+  initialized: boolean = false;
 
   constructor() {
     super();
-    this.storage = window.localStorage;
+    // this.storage = window.localStorage;
+  }
+
+  initialize() {
+    if (window && window.localStorage) {
+      this.storage = window.localStorage;
+      this.initialized = true;
+    }
+  }
+
+  terminate() {
+    this.storage = null;
+    this.initialized = false;
+  }
+
+  getStatus() {
+    if (this.storage) return "ok";
+    else return "not ok";
   }
 
   read(key: string) {
+    if (!this.storage) {
+      return logger.error("LocalStorageDriver is not initialized");
+    }
     try {
       const value = this.storage.getItem(key);
       return value;
@@ -18,6 +40,8 @@ export default class LocalStorageDriver extends StorageDriver {
   }
 
   write(key: string, value: any) {
+    if (!this.storage)
+      return logger.error("LocalStorageDriver is not initialized");
     try {
       // const serializedValue = JSON.stringify(value);
       this.storage.setItem(key, value);
@@ -27,6 +51,8 @@ export default class LocalStorageDriver extends StorageDriver {
   }
 
   delete(key: string) {
+    if (!this.storage)
+      return logger.error("LocalStorageDriver is not initialized");
     try {
       this.storage.removeItem(key);
     } catch (error) {
@@ -35,6 +61,8 @@ export default class LocalStorageDriver extends StorageDriver {
   }
 
   clear() {
+    if (!this.storage)
+      return logger.error("LocalStorageDriver is not initialized");
     try {
       this.storage.clear();
     } catch (error) {

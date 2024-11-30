@@ -1,5 +1,4 @@
-import { AppName, FilePath } from "../types";
-import { generateRandomString, log } from "../utils";
+import { FilePath } from "../types";
 import Disk from "./disk";
 import { logger } from "./logger";
 

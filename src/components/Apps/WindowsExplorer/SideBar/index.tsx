@@ -5,27 +5,6 @@ import { CloseButton } from "../../../Window/TopBar";
 import FileTree, { FileTreeNode } from "./FileTree";
 import FileSystem from "../../../../libs/fileSystem";
 
-const fs = FileSystem.getInstance();
-
-const fileTreeData = [
-  {
-    name: "Desktop",
-    id: "root-destop",
-    isRoot: true,
-    children: [
-      {
-        name: "My Computer",
-        children: [
-          {
-            ...fs.getNodeByPath("C:/"),
-          },
-        ],
-      },
-      { name: '3.5" Floppy (A:)' },
-    ],
-  },
-] as FileTreeNode[];
-
 interface SidebarNavigationProps {
   onCloseSidebar: () => void;
 
@@ -35,6 +14,26 @@ export default function SidebarNavigation({
   onCloseSidebar,
   onSelectPath,
 }: SidebarNavigationProps) {
+  const fs = FileSystem.getInstance();
+
+  const fileTreeData = [
+    {
+      name: "Desktop",
+      id: "root-destop",
+      isRoot: true,
+      children: [
+        {
+          name: "My Computer",
+          children: [
+            {
+              ...fs.getNodeByPath("C:/"),
+            },
+          ],
+        },
+      ],
+    },
+  ] as FileTreeNode[];
+
   return (
     <Rnd
       className="relative h-full"

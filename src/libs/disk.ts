@@ -3,6 +3,7 @@ import LZString from "lz-string";
 import { deviceSettings } from "../configs/deviceSettings";
 import { drivers } from "../configs/drivers";
 import StorageDriver from "./drivers/storages/storage";
+import System from "./system";
 
 type DiskOptions = {
   compressString: boolean;
@@ -96,7 +97,7 @@ export default class Disk {
   }
 
   public static getInstance(
-    storage: StorageDriver = new drivers.storages[deviceSettings.storage](),
+    storage: StorageDriver = System.getInstance().storage(),
     opts?: DiskOptions,
   ) {
     if (!Disk._instance) {

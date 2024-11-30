@@ -8,6 +8,7 @@ import useOutsideAlerter from "../hooks/useOutsideAlerter";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { FileProcessor } from "../libs/fileProcessor";
 import { FileNode } from "../libs/fileSystem";
+import IconResolver from "../libs/iconResolver";
 import { App, AppName, Vector2D } from "../types";
 import { themeStyles } from "./shared/theme";
 

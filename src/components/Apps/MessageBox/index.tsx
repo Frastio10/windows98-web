@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useWindow } from "../../../hooks/os";
+import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
+import System from "../../../libs/system";
 import { AppProps, WindowData } from "../../../types";
 import { iconSize } from "../../../utils";
 import { DefaultButton } from "../../shared/Button";
@@ -48,7 +50,7 @@ export interface MessageBoxProps {
 }
 
 export function MessageBox({ windowData }: AppProps<MessageBoxProps>) {
-  const { changeWindowTitle, changeFocus } = useWindow();
+  const { changeWindowTitle, changeFocus, activeWindows } = useWindow();
 
   const props = {
     showWarningIcon: true,
@@ -56,11 +58,27 @@ export function MessageBox({ windowData }: AppProps<MessageBoxProps>) {
     ...windowData.args,
   } as MessageBoxProps;
 
+  const playAudio = async () => {
+    const audioManager = System.getInstance().audio();
+    await audioManager.loadAudio("/assets/audio/system/error.mp3");
+    audioManager.play();
+  };
+
   useEffect(() => {
     if (windowData.args) {
+      playAudio();
       changeWindowTitle(windowData.windowId, windowData.args.title);
     }
   }, []);
+
+  useEffect(() => {
+    const activeWin = activeWindows.find((win) => win.isFocused);
+
+    if (activeWin?.windowId === windowData.attachedTo) {
+      playAudio();
+      changeFocus(windowData.windowId);
+    }
+  });
 
   const onButtonClick = (result: DialogResult) => {
     windowData.args?.cb({

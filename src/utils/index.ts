@@ -27,6 +27,16 @@ export const iconSize = (key: string, size: "small" | "medium" | "big") => {
   return `/assets/images/${size}/${key}.png`;
 };
 
+export const getFileExtension = (fileName: string) => {
+  const parts = fileName.split(".");
+
+  if (parts.length > 1) {
+    return parts[parts.length - 1];
+  }
+
+  return null;
+};
+
 export const extractCssTranslateProperty = (str: string): Vector2D => {
   // idk regex man... maybe not so efficient
   const pos = str.replace(/(translate)|(\()|(\))|(px)| /g, "").split(",");
