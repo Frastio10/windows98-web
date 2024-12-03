@@ -66,7 +66,6 @@ export default class DeviceAudioDriver {
     if (!this.audioContext || !this.audioBuffer || !this.gainNode) {
       return logger.error("AudioDriver is not initialized or no audio loaded");
     }
-    console.log("playing", this.audioContext);
     try {
       const source = this.audioContext.createBufferSource();
       source.buffer = this.audioBuffer;

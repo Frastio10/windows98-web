@@ -76,10 +76,10 @@ export const BootLoader = () => {
         `Installed Version: ${installedVersion}; Latest Version: ${currentVersion}; Status: ${currentVersion === installedVersion ? "\x1b[36mup-to-date\x1b[0m" : "\x1b[31mnot up-to-date\x1b[0m"};`,
       );
 
+      versionCheck();
       versionInterval.current = setInterval(() => {
         versionCheck();
       }, 10000);
-      versionCheck();
     } else {
       loadFileSystem();
     }
