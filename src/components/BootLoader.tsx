@@ -80,6 +80,8 @@ export const BootLoader = () => {
       versionInterval.current = setInterval(() => {
         versionCheck();
       }, 10000);
+
+      loadFileSystem();
     } else {
       loadFileSystem();
     }
@@ -89,6 +91,7 @@ export const BootLoader = () => {
     setFade(true);
 
     initialLoad();
+
     isLoaded.current = true;
   }, []);
 
