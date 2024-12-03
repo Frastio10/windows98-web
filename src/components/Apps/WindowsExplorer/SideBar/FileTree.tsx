@@ -31,7 +31,8 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
   };
 
   const renderNode = (node: FileTreeNode) => {
-    const file = node.path ? fileSystem.getNodeByPath(node.path) : null;
+    const file =
+      node.path && !node.isRoot ? fileSystem.getNodeByPath(node.path) : null;
     const id = file?.id || node.id || node.name;
     const isExpanded = expanded[id] || false;
     const isExpandable = !!(file ? file.isDirectory : node.children);

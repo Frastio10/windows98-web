@@ -4,16 +4,23 @@ import { ShutDown } from "./Screens/ShutDown";
 import { Desktop } from "./Desktop";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { INITIAL_FILES } from "../configs/fileSystem";
-import FileSystem from "../libs/fileSystem";
+import FileSystem, { FileNode } from "../libs/fileSystem";
 import { EmptyComponent } from "./shared/EmptyComponent";
 import { useSystem, useWindow } from "../hooks/os";
 import System from "../libs/system";
+import Disk from "../libs/disk";
+import packageJson from "../../package.json";
+import { NOOP } from "../utils";
+import { DialogResult, MessageBoxButtons } from "./Apps/MessageBox";
+import { logger } from "../libs/logger";
 
 export const BootLoader = () => {
   const { isShutDown } = useSystem();
   const { fileSystem, initialize, isInitialized } = useFileSystem();
   const isLoaded = useRef(false);
   const [fade, setFade] = useState(false);
+
+  const versionInterval = useRef(0);
 
   const isReadyToLoad =
     !isShutDown && isInitialized && isLoaded.current && !!typeof window;
@@ -27,20 +34,63 @@ export const BootLoader = () => {
     if (!initialFiles) fileSystem.updateStorageData();
   };
 
-  useEffect(() => {
-    setFade(true);
+  const versionCheck = () => {
+    let version = Disk.getInstance().get("version");
+    const currentVersion = packageJson.version;
+    if (!version) {
+      Disk.getInstance().set("version", currentVersion);
+      version = currentVersion;
+    }
+
+    if (version !== currentVersion) {
+      logger.error(
+        `Current version '${currentVersion}' is invalid or not supported.`,
+      );
+      clearInterval(versionInterval.current);
+      loadFileSystem();
+      System.messageBox(undefined, {
+        title: "Invalid version",
+        description:
+          "Your current version is expired, this may cause an error in some programs if you don't reset your data. Reset your data?",
+        height: 150,
+        buttons: MessageBoxButtons.OK,
+        cb: (r) => {
+          if (r.result === DialogResult.OK) {
+            Disk.getInstance().set("version", "");
+            Disk.getInstance().set("fs", "");
+
+            // fileSystem.updateStorageData();
+            window.location.reload();
+          }
+        },
+      });
+    }
+  };
+
+  const initialLoad = () => {
     if (!isLoaded.current && localStorage) {
       System.getInstance().loadDrivers();
+      let installedVersion = Disk.getInstance().get("version");
+      const currentVersion = packageJson.version;
+      logger.log(
+        `Installed Version: ${installedVersion}; Latest Version: ${currentVersion}; Status: ${currentVersion === installedVersion ? "\x1b[36mup-to-date\x1b[0m" : "\x1b[31mnot up-to-date\x1b[0m"};`,
+      );
+
+      versionInterval.current = setInterval(() => {
+        versionCheck();
+      }, 10000);
+      versionCheck();
+    } else {
       loadFileSystem();
-
-      isLoaded.current = true;
     }
-  }, []);
+  };
 
-  // if (isShutDown) return <ShutDown />;
-  // else if (isReadyToLoad)
-  //   return <Desktop />;
-  // else return <EmptyComponent />;
+  useEffect(() => {
+    setFade(true);
+
+    initialLoad();
+    isLoaded.current = true;
+  }, []);
 
   let content;
   if (isShutDown) {

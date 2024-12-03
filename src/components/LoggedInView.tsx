@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useWindow } from "../hooks/os";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
+import Disk from "../libs/disk";
 import IconResolver from "../libs/iconResolver";
 import { Vector2D } from "../types";
 import { DesktopIcon } from "./DesktopIcon";

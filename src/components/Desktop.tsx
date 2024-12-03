@@ -5,6 +5,7 @@ import IconResolver from "../libs/iconResolver";
 import System from "../libs/system";
 import { LoggedInView } from "./LoggedInView";
 import { LoggedOutView } from "./LoggedOutView";
+import packageJson from "../../package.json";
 
 export const Desktop = () => {
   const { isLoggedIn } = useAuth();
@@ -15,8 +16,8 @@ export const Desktop = () => {
   };
 
   useEffect(() => {
-    playStartupAudio();
-  }, []);
+    if (isLoggedIn) playStartupAudio();
+  }, [isLoggedIn]);
 
   return (
     <Wrapper>

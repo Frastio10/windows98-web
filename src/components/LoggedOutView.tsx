@@ -7,16 +7,14 @@ export const LoggedOutView = () => {
   const { activeWindows, openWindow } = useWindow();
 
   useEffect(() => {
-    if (!activeWindows.length) {
-      openWindow("logInForm");
-    }
+    openWindow("logInForm");
   }, [activeWindows]);
 
   return (
     <Wrapper className="bounds">
-        {activeWindows.map((w, i) => (
-          <Window key={i} windowData={w} />
-        ))}
+      {activeWindows.map((w, i) => (
+        <Window key={i} windowData={w} />
+      ))}
     </Wrapper>
   );
 };
@@ -28,5 +26,3 @@ const Wrapper = styled.div`
   background: #007380;
   height: 100%;
 `;
-
-
