@@ -20,10 +20,16 @@ export default function SidebarNavigation({
     {
       name: "Desktop",
       id: "root-destop",
+      icon: "go_desktop",
       isRoot: true,
+      path: "C:/WINDOWS/Desktop",
+      isDirectory: true,
       children: [
         {
           name: "My Computer",
+          id: "my-comp",
+          isDirectory: true,
+          icon: "computer_explorer",
           children: [
             {
               ...fs.getNodeByPath("C:/"),

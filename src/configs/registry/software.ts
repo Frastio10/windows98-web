@@ -1,9 +1,9 @@
 const SOFTWARE_REGISTRY = {
   fileTypes: {
-    ".txt": {
+    txt: {
       defaultApp: {
         name: "Notepad",
-        path: "C:/Windows/notepad.exe",
+        path: "C:/WINDOWS/Desktop/Notepad.exe",
         arguments: "%1",
       },
       alternativeApps: [
@@ -22,9 +22,9 @@ const SOFTWARE_REGISTRY = {
       mimeType: "text/plain",
       description: "Text Document",
     },
-    ".exe": {
+    exe: {
       defaultIcon: {
-        source: "exe_file",
+        source: "executable",
         sizes: [16, 32, 48, 256],
         colorDepth: 32,
         hasTransparency: true,
@@ -32,7 +32,7 @@ const SOFTWARE_REGISTRY = {
       mimeType: "application/x-executable",
       description: "Executable File",
     },
-    ".jpg": {
+    jpg: {
       defaultApp: {
         name: "Windows Photos",
         path: "C:/Windows/System32/Shell/PhotoViewer.dll",
@@ -47,7 +47,7 @@ const SOFTWARE_REGISTRY = {
       mimeType: "image/jpeg",
       description: "JPEG Image",
     },
-    ".pdf": {
+    pdf: {
       defaultIcon: {
         source: "pdf_file",
         sizes: [16, 32, 48, 256],
@@ -61,13 +61,13 @@ const SOFTWARE_REGISTRY = {
   systemFolders: {
     Documents: {
       defaultIcon: {
-        source: "shell32.dll",
+        source: "document",
         index: 0,
         sizes: [16, 32, 48, 256],
         colorDepth: 32,
         hasTransparency: true,
       },
-      path: "%USERPROFILE%\\Documents",
+      path: "C:/WINDOWS/Documents",
     },
     Downloads: {
       defaultIcon: {
@@ -77,7 +77,7 @@ const SOFTWARE_REGISTRY = {
         colorDepth: 32,
         hasTransparency: true,
       },
-      path: "%USERPROFILE%\\Downloads",
+      path: "C:/WINDOWS/Documents",
     },
   },
 };

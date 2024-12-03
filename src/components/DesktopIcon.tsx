@@ -10,6 +10,7 @@ import { FileProcessor } from "../libs/fileProcessor";
 import { FileNode } from "../libs/fileSystem";
 import IconResolver from "../libs/iconResolver";
 import { App, AppName, Vector2D } from "../types";
+import { iconSize } from "../utils";
 import { themeStyles } from "./shared/theme";
 
 interface DesktopIconProps {
@@ -30,7 +31,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
   const { fileProcessor, data, program, app } = useMemo(() => {
     const fileProcessor = new FileProcessor(file);
     const data = fileProcessor.read();
-    const program = data.fileMetadata.supportedPrograms![0];
+    const program = data.fileMetadata.executables![0];
 
     const app = getApp(program);
 
@@ -110,13 +111,15 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
     updateFileSystem();
   };
+  // const ext = file.name.split(".").pop()!;
+  // const settings = fileSystem.getStoredSettings();
+  // const storedIcon = settings.desktop?.iconsSrc?.[ext];
+
+  // return storedIcon?.[2] || app.icons![2];
 
   const getIcon = (app: App) => {
-    const ext = file.name.split(".").pop()!;
-    const settings = fileSystem.getStoredSettings();
-    const storedIcon = settings.desktop?.iconsSrc?.[ext];
-
-    return storedIcon?.[2] || app.icons![2];
+    const icon = IconResolver.resolve(file);
+    return icon.big;
   };
 
   return (
@@ -170,7 +173,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
               outline: isSelected ? "dashed 1px black" : "",
             }}
             contentEditable={isRename}
-            dangerouslySetInnerHTML={{ __html: file.name }}
+            dangerouslySetInnerHTML={{ __html: file.name.replace(".lnk", "") }}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(ev) => {
               if (ev.key === "Enter") {

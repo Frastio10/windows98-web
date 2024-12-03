@@ -1,14 +1,17 @@
 import { EXTENSION_READERS } from "../configs/constants";
-import { FILE_EXTENSIONS } from "../configs/fileSystem";
+import { FILE_EXTENSION } from "../configs/fileSystem";
 import { App, AppName } from "../types";
-import { log } from "../utils";
+import { log, NOOP } from "../utils";
 import { FileNode } from "./fileSystem";
+import RegistryManager from "./registryManager";
 import System from "./system";
+import FileSystem from "./fileSystem";
+import { logger } from "./logger";
 
 // the name FileReader is reserved :(
 type FileMetadata = {
   extension: string | null;
-  supportedPrograms?: AppName[];
+  executables?: AppName[];
   name: string | null;
 };
 export class FileProcessor {
@@ -23,54 +26,84 @@ export class FileProcessor {
     };
   }
 
-  run() {
-    if (!this.fileMetadata.supportedPrograms) {
+  run(args?: any) {
+    if (!this.fileMetadata.executables) {
       return log("No supported programs.");
     }
 
-    if (this.fileMetadata.extension == FILE_EXTENSIONS.EXE) {
-      return this.runExe();
+    if (this.fileMetadata.extension == FILE_EXTENSION.EXE) {
+      return this.runExe(args);
     }
 
-    System.open(this.fileMetadata?.supportedPrograms[0], this.file.path);
+    if (this.fileMetadata.extension === FILE_EXTENSION.LNK) {
+      System.open(this.fileMetadata?.executables[0], args);
+      return this;
+    }
+
+    System.open(this.fileMetadata?.executables[0], args || this.file.path);
 
     return this;
   }
 
   read() {
-    this.fileMetadata.supportedPrograms = this.findSupportedApps();
+    this.fileMetadata.executables = this.findSupportedApps() as AppName[];
 
     if (this.fileMetadata.extension === "exe") {
       const exeData = this.readExe(this.file.content);
-      this.fileMetadata.supportedPrograms = [exeData.appName as AppName];
+      this.fileMetadata.executables = [exeData.appName as AppName];
     }
     return this;
   }
 
   private findSupportedApps() {
-    const extensions = EXTENSION_READERS as any;
-
     const ext = this.fileMetadata.extension?.toLowerCase();
     if (!ext) return ["notepad"];
+    if (ext === FILE_EXTENSION.EXE) return [];
+    if (ext == FILE_EXTENSION.LNK) {
+      const lnkFile = FileSystem.getInstance().getNodeByPath(
+        this.file.content.target.path,
+      );
 
-    const programs = extensions[ext].split(" ");
+      if (!lnkFile) {
+        return [];
+      }
 
-    return programs;
+      const fp = new FileProcessor(lnkFile);
+      const fileData = fp.read();
+      const exe = fileData.fileMetadata.executables;
+      return exe || [];
+    }
+
+    const registry = RegistryManager.getRegistryValue("SOFTWARE");
+
+    const fileTypeInfo = registry.fileTypes[ext];
+    const defaultAppPath = fileTypeInfo.defaultApp.path;
+
+    const executableFile =
+      FileSystem.getInstance().getNodeByPath(defaultAppPath);
+
+    if (!executableFile) {
+      logger.error("Error");
+      return [];
+    }
+
+    const fp = new FileProcessor(executableFile);
+    const fileData = fp.read();
+    const exe = fileData.fileMetadata.executables;
+
+    return exe || [];
   }
 
-  private readExe(str: string) {
-    const split = str.split(" ");
-    const command = split[0];
-    const appName = split[1];
+  private readExe(content: any) {
+    const appName = content.exe;
 
     return {
-      command,
       appName,
     };
   }
 
-  runExe() {
-    System.open(this.fileMetadata.supportedPrograms![0], null);
+  runExe(args?: any) {
+    System.open(this.fileMetadata.executables![0], args || null);
   }
 
   static getFileExtension(fileName: string) {

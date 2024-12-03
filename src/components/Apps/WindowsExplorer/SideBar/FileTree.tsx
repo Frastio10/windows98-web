@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useFileSystem } from "../../../../hooks/os";
 import { FileNode } from "../../../../libs/fileSystem";
+import IconResolver from "../../../../libs/iconResolver";
 import { iconSize, NOOP } from "../../../../utils";
 import { themeStyles } from "../../../shared/theme";
 
 export interface FileTreeNode extends FileNode {
   isRoot?: boolean;
+  icon: string | null;
 }
 
 interface FileTreeProps {
@@ -21,6 +23,7 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const toggleExpand = (item: string) => {
+    console.log("toggiling", item);
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
       [item]: !prevExpanded[item],
@@ -33,6 +36,24 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
     const isExpanded = expanded[id] || false;
     const isExpandable = !!(file ? file.isDirectory : node.children);
     const children = node.children || (file ? file.children : null);
+
+    const getIconSrc = () => {
+      let iconSrc;
+
+      if (file) {
+        iconSrc = IconResolver.resolve(file);
+      } else {
+        iconSrc = IconResolver.getIconSrc("directory_closed");
+      }
+
+      if (isExpanded) iconSrc = IconResolver.getIconSrc("directory_open");
+
+      if (node?.icon) {
+        iconSrc = IconResolver.getIconSrc(node.icon);
+      }
+
+      return iconSrc;
+    };
 
     return (
       <li
@@ -55,9 +76,9 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
           </ToggleButton>
         )}
         <FileItem
-          src={iconSize("nodepad_file", "small")}
+          src={getIconSrc().small}
           active={selectedId === id}
-          className="inline-flex items-center flex-nowrap"
+          className="inline-flex items-center flex-nowrap gap-1"
           onClick={(e) => {
             e.preventDefault();
             isExpandable && toggleExpand(file?.id || node.id || node.name);
@@ -65,8 +86,8 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
             setSelectedId(id);
           }}
         >
-          <div>
-            <img src={iconSize("notepad_file", "small")} />
+          <div className="shrink-0">
+            <img src={getIconSrc().small} />
           </div>
           <span>{node.name}</span>
         </FileItem>
@@ -78,14 +99,22 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
               overflow: !isExpanded ? "hidden" : "",
             }}
           >
-            {children.map((child) => renderNode(child))}
+            {children
+              .filter((ch) => ch.isDirectory)
+              .map((child) => renderNode(child))}
           </ul>
         )}
       </li>
     );
   };
 
-  return <MenuItems>{data.map((node) => renderNode(node))}</MenuItems>;
+  return (
+    <MenuItems>
+      {data
+        .filter((ch) => ch.isDirectory)
+        .map((node) => node.isDirectory && renderNode(node))}
+    </MenuItems>
+  );
 };
 
 export default FileTree;

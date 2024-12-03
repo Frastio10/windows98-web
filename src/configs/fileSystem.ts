@@ -50,6 +50,23 @@ export const INITIAL_FILES = [
         content: JSON.stringify(defaultSettings),
       },
       {
+        name: "notepad.exe",
+        content: {
+          exe: "notepad",
+          icon: "notepad",
+        },
+        isDirectory: false,
+      },
+      {
+        name: "explorer.exe",
+        content: {
+          exe: "windowsExplorer",
+          icon: "directory_explorer",
+        },
+        isDirectory: false,
+      },
+
+      {
         name: "System32",
         isDirectory: true,
         children: [
@@ -65,17 +82,22 @@ export const INITIAL_FILES = [
         isDirectory: true,
         children: [
           {
-            name: "Notepad.exe",
+            name: "Notepad.lnk",
             content: {
-              exe: "notepad",
-              icon: "notepad",
+              target: {
+                path: "C:/WINDOWS/notepad.exe",
+              },
+              icon: {},
             },
-            isDirectory: false,
           },
           {
-            name: "Windows Explorer.exe",
-            content: "run windowsExplorer",
-            isDirectory: false,
+            name: "Windows Explorer.lnk",
+            content: {
+              target: {
+                path: "C:/WINDOWS/explorer.exe",
+              },
+              icon: {},
+            },
           },
         ],
       },
@@ -91,6 +113,7 @@ export const INITIAL_FILES = [
   },
 ];
 
-export const FILE_EXTENSIONS = {
+export const FILE_EXTENSION = {
   EXE: "exe",
+  LNK: "lnk",
 };

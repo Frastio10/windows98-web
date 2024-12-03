@@ -84,7 +84,10 @@ export default class DeviceAudioDriver {
     if (!this.gainNode) {
       return logger.error("AudioDriver is not initialized");
     }
-    this.gainNode.gain.setValueAtTime(value, this.audioContext.currentTime); // Set volume (between 0 and 1)
+    this.gainNode.gain.setValueAtTime(
+      value,
+      this.audioContext?.currentTime || 0,
+    ); // Set volume (between 0 and 1)
     logger.info(`Volume set to ${value}`);
   }
 

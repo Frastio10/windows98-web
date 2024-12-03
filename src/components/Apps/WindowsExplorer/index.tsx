@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import styled from "styled-components";
 import { useFileSystem } from "../../../hooks/os";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
+import { FileProcessor } from "../../../libs/fileProcessor";
 import { FileNode } from "../../../libs/fileSystem";
 import { AppProps } from "../../../types";
 import { DefaultButton } from "../../shared/Button";
@@ -93,8 +94,10 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
   });
 
   const onSelectPathSidebar = (node: FileTreeNode) => {
+    if (!addressBarRef.current) return;
     console.log(node);
     setFileNode(node);
+    addressBarRef.current.value = node.path;
   };
 
   function calculateStringSize(input: string) {
@@ -207,7 +210,12 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                 key={v.id}
                 style={{ background: highlightedFile === v.id ? "blue" : "" }}
                 onClick={(e) => setHighlightedFile(v.id)}
-                onDoubleClick={(e) => setFileNode(v)}
+                onDoubleClick={() => {
+                  const fp = new FileProcessor(v);
+                  fp.read();
+
+                  fp.run();
+                }}
               >
                 {v.name}
               </div>
