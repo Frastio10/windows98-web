@@ -23,7 +23,6 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const toggleExpand = (item: string) => {
-    console.log("toggiling", item);
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
       [item]: !prevExpanded[item],

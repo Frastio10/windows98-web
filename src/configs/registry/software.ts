@@ -69,6 +69,16 @@ const SOFTWARE_REGISTRY = {
       },
       path: "C:/WINDOWS/Documents",
     },
+    Desktop: {
+      defaultIcon: {
+        source: "go_desktop",
+        index: 0,
+        sizes: [16, 32, 48, 256],
+        colorDepth: 32,
+        hasTransparency: true,
+      },
+      path: "C:/WINDOWS/Desktop",
+    },
     Downloads: {
       defaultIcon: {
         source: "shell32.dll",

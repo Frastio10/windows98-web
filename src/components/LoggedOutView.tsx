@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useWindow } from "../hooks/os";
+import System from "../libs/system";
 import { Window } from "./Window";
 
 export const LoggedOutView = () => {
@@ -9,7 +10,7 @@ export const LoggedOutView = () => {
   useEffect(() => {
     const exists = activeWindows.find((win) => win.appName === "logInForm");
     if (!exists) {
-      openWindow("logInForm");
+      System.exec("C:/WINDOWS/login.exe");
     }
   }, [activeWindows]);
 

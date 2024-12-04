@@ -65,6 +65,22 @@ export const INITIAL_FILES = [
         },
         isDirectory: false,
       },
+      {
+        name: "login.exe",
+        content: {
+          exe: "logInForm",
+          icon: "directory_explorer",
+        },
+        isDirectory: false,
+      },
+      {
+        name: "run.exe",
+        content: {
+          exe: "run",
+          icon: "directory_explorer",
+        },
+        isDirectory: false,
+      },
 
       {
         name: "System32",
@@ -98,6 +114,12 @@ export const INITIAL_FILES = [
               },
               icon: {},
             },
+          },
+
+          {
+            name: "CREDITS.txt",
+            content:
+              "Made with ❤️  by Frastio Agustian\n\nhttps://www.frast.dev\nhttps://github.com/frastio10",
           },
         ],
       },

@@ -6,11 +6,14 @@ import { AppName } from "../types";
 import { BaseFileDialogOpts } from "../types/fileDialogs";
 import DriverManager from "./DriverManager";
 import { drivers } from "../configs/drivers";
-import Driver from "./drivers/driver";
 import { deviceSettings } from "../configs/deviceSettings";
 import StorageDriver from "./drivers/storages/storage";
 import { logger } from "./logger";
 import DeviceAudioDriver from "./drivers/audio/deviceAudio";
+import { FileProcessor } from "./fileProcessor";
+import FileSystem from "./fileSystem";
+import { getFileExtension } from "../utils";
+import { FILE_EXTENSION } from "../configs/fileSystem";
 
 export default class System {
   private static _instance: System | null = null;
@@ -124,5 +127,22 @@ export default class System {
     } as FileDialogProps;
 
     return System.open("fileDialog", saveFileDialogOpts, attachedTo);
+  }
+
+  public static exec(path: string, args?: any) {
+    const fs = FileSystem.getInstance();
+    const file = fs.getNodeByPath(path);
+    if (!file) {
+      throw new Error(`Path '${path}' is invalid`);
+    }
+
+    if (getFileExtension(file.name) !== FILE_EXTENSION.EXE) {
+      throw new Error(`'${path}' is not an executable.`);
+    }
+
+    logger.log(`Executing ${file.path}...`);
+    const fileProcessor = new FileProcessor(file);
+    fileProcessor.read();
+    fileProcessor.run(args);
   }
 }

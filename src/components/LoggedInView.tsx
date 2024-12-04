@@ -4,6 +4,7 @@ import { useWindow } from "../hooks/os";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import Disk from "../libs/disk";
 import IconResolver from "../libs/iconResolver";
+import System from "../libs/system";
 import { Vector2D } from "../types";
 import { DesktopIcon } from "./DesktopIcon";
 import { Box } from "./shared/Box";
