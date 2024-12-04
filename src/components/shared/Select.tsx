@@ -18,6 +18,7 @@ interface SelectProps {
   parentClass?: string;
 
   isSelectOnly?: boolean;
+  iconSrc?: string;
 
   onSelect: (value: SelectValue) => void;
   onSearch: (value: string) => void;
@@ -32,6 +33,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
       parentClass,
       value,
       defaultValue,
+      iconSrc,
       isSelectOnly = false,
     },
     ref,
@@ -46,11 +48,9 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
       setShowList(false);
     });
 
-    console.log(showList);
-
     return (
       <InnerWrapper className={"flex " + parentClass}>
-        <img src="/assets/images/medium/application_hourglass_small.png" />
+        {iconSrc && <img src={iconSrc} />}
         <FileAddress>
           <BaseInput
             readOnly={isSelectOnly}

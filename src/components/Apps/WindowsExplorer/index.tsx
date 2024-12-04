@@ -4,6 +4,7 @@ import { useFileSystem } from "../../../hooks/os";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import { FileProcessor } from "../../../libs/fileProcessor";
 import { FileNode } from "../../../libs/fileSystem";
+import IconResolver from "../../../libs/iconResolver";
 import { AppProps } from "../../../types";
 import { DefaultButton } from "../../shared/Button";
 import { Divider, LongDivider } from "../../shared/Dividers";
@@ -11,7 +12,7 @@ import { Icon } from "../../shared/icon";
 import { themeStyles } from "../../shared/theme";
 import { TopBarAction, TopBarActions } from "../../Window/TopBarActions";
 import SidebarNavigation from "./SideBar";
-import { FileTreeNode } from "./SideBar/FileTree";
+import { FileTreeNode, FileItem } from "./SideBar/FileTree";
 
 type ExplorerBarType = "search" | "favorites" | "history" | "folders";
 
@@ -100,10 +101,8 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
   };
 
   function calculateStringSize(input: string) {
-    // Get the byte size of the string using TextEncoder
     const byteSize = new TextEncoder().encode(input).length;
 
-    // Determine the unit (bytes, KB, MB, etc.)
     const units = ["bytes", "KB", "MB", "GB"];
     let size = byteSize;
     let unitIndex = 0;
@@ -113,10 +112,10 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
       unitIndex++;
     }
 
-    // Format the size: remove unnecessary .00
     const formattedSize = size % 1 === 0 ? size.toFixed(0) : size.toFixed(2);
     return `${formattedSize} ${units[unitIndex]}`;
   }
+
   return (
     <Wrapper>
       <WrapperActions>
@@ -143,7 +142,7 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
           <Divider style={{ margin: "2px", alignSelf: "stretch" }} />
           <span className="p-1">Address</span>
           <InnerWrapper className="flex">
-            <img src="/assets/images/medium/application_hourglass_small.png" />
+            {fileNode && <img src={IconResolver.resolve(fileNode).small} />}
             <FileAddress>
               <InputAddress
                 ref={addressBarRef}
@@ -202,22 +201,33 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
           />
         )}
 
-        <InnerWrapper>
+        <InnerWrapper className="flex flex-col gap-[2px]">
           {fileNode?.children.length ? (
             fileNode?.children.map((v) => (
-              <div
+              <FileItem
+                src={IconResolver.resolve(v).small}
                 key={v.id}
-                style={{ background: highlightedFile === v.id ? "blue" : "" }}
+                active={highlightedFile === v.id}
                 onClick={(e) => setHighlightedFile(v.id)}
                 onDoubleClick={() => {
+                  if (v.isDirectory) {
+                    setFileNode(v);
+                    if (addressBarRef.current)
+                      addressBarRef.current.value = v.path;
+                    return;
+                  }
+
                   const fp = new FileProcessor(v);
                   fp.read();
 
                   fp.run();
                 }}
               >
-                {v.name}
-              </div>
+                <div className="shrink-0">
+                  <img src={IconResolver.resolve(v).small} />
+                </div>
+                <span>{v.name}</span>
+              </FileItem>
             ))
           ) : fileNode?.content ? (
             <p>{fileNode.content}</p>

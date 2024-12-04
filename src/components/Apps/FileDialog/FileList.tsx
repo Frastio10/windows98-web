@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useFileSystem } from "../../../hooks/os";
 import { FileNode } from "../../../libs/fileSystem";
+import IconResolver from "../../../libs/iconResolver";
 import { themeStyles } from "../../shared/theme";
 import { FileItem } from "../WindowsExplorer/SideBar/FileTree";
 
@@ -34,7 +35,7 @@ function FileList({ files, onDoubleClickFile, onClickFile }: FileListProps) {
         files.map((child) => (
           <FileItem
             key={child.id}
-            src={getIcon(child)}
+            src={IconResolver.resolve(child).small}
             active={!!selectedFileNodes.find((ch) => ch.id === child.id)}
             onClick={() => {
               setSelectedFileNodes((prevSelected) => {
@@ -61,7 +62,10 @@ function FileList({ files, onDoubleClickFile, onClickFile }: FileListProps) {
             }}
           >
             <div>
-              <img src={getIcon(child)} className="w-4  h-4" />
+              <img
+                src={IconResolver.resolve(child).small}
+                className="w-4  h-4"
+              />
             </div>
             <span>{child.name}</span>
           </FileItem>
@@ -84,4 +88,6 @@ const InnerWrapper = styled.div`
   padding: 2px;
   height: 100%;
   background: #fff;
+  display: flex;
+  flex-direction: column;
 `;

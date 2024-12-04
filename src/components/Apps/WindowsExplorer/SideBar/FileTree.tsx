@@ -79,7 +79,7 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
         <FileItem
           src={getIconSrc().small}
           active={selectedId === id}
-          className="inline-flex items-center flex-nowrap gap-1"
+          className="inline-flex items-center flex-nowrap"
           onClick={(e) => {
             e.preventDefault();
             isExpandable && toggleExpand(file?.id || node.id || node.name);
@@ -124,6 +124,7 @@ export const FileItem = styled.div<{
   active?: boolean;
   src: string;
 }>`
+  gap: 4px;
   color: ${(props) => (props.active ? "white" : "black")};
   display: inline-flex;
   align-items: center;

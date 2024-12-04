@@ -12,6 +12,7 @@ import System from "../../../libs/system";
 import { FileDialogResult, FileType } from "../../../types/fileDialogs";
 import { DialogResult, MessageBoxButtons } from "../MessageBox";
 import FileList from "./FileList";
+import IconResolver from "../../../libs/iconResolver";
 
 const defaultFileTypes = [{ key: "all", title: "All Files (*.*)", ext: null }];
 
@@ -200,6 +201,7 @@ export function FileDialog({ windowData }: AppProps<FileDialogProps>) {
               }))}
             // noop for now, since the original win98 doesnt really allow to write paths on filedialogs addressbar
             onSearch={NOOP}
+            iconSrc={IconResolver.resolve(parentFolder).small}
             onSelect={(e) => {
               const fileNode = parentFolder.children.find(
                 (v) => v.id === e.key,
