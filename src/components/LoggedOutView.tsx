@@ -7,7 +7,12 @@ export const LoggedOutView = () => {
   const { activeWindows, openWindow } = useWindow();
 
   useEffect(() => {
-    openWindow("logInForm");
+    const exists = activeWindows.find((win) => win.appName === "logInForm");
+    console.log({ exists });
+    if (!exists) {
+      console.log(exists);
+      openWindow("logInForm");
+    }
   }, [activeWindows]);
 
   return (

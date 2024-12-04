@@ -95,7 +95,6 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
 
   const onSelectPathSidebar = (node: FileTreeNode) => {
     if (!addressBarRef.current) return;
-    console.log(node);
     setFileNode(node);
     addressBarRef.current.value = node.path;
   };

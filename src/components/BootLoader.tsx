@@ -47,7 +47,6 @@ export const BootLoader = () => {
         `Current version '${currentVersion}' is invalid or not supported.`,
       );
       clearInterval(versionInterval.current);
-      loadFileSystem();
       System.messageBox(undefined, {
         title: "Invalid version",
         description:
@@ -81,8 +80,6 @@ export const BootLoader = () => {
         versionCheck();
       }, 10000);
 
-      loadFileSystem();
-    } else {
       loadFileSystem();
     }
   };
