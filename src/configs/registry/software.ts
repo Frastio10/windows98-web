@@ -3,7 +3,7 @@ const SOFTWARE_REGISTRY = {
     txt: {
       defaultApp: {
         name: "Notepad",
-        path: "C:/WINDOWS/Desktop/Notepad.exe",
+        path: "C:/WINDOWS/notepad.exe",
         arguments: "%1",
       },
       alternativeApps: [
