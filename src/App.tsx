@@ -6,7 +6,7 @@ import { BootLoader } from "./components/BootLoader";
 import GlobalStyles from "./components/shared/GlobalStyles";
 import { themeStyles } from "./components/shared/theme";
 
-import "./index.css"
+import "./index.css";
 
 const App: FC = () => {
   document.addEventListener("contextmenu", (event) => {
@@ -15,7 +15,9 @@ const App: FC = () => {
 
   return (
     <>
+      {/* @ts-ignore */}
       <ThemeProvider theme={themeStyles}>
+        {/* @ts-ignore */}
         <GlobalStyles />
         <BootLoader />
       </ThemeProvider>
