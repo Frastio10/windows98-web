@@ -1,6 +1,6 @@
 import { FilePath } from "../types";
-import Disk from "./disk";
-import { logger } from "./logger";
+import Disk from "./Disk";
+import { logger } from "./Logger";
 
 const FILE_ID_PREFIX = "file-";
 export const STORAGE_KEY = "fs";

@@ -4,15 +4,15 @@ import { ShutDown } from "./Screens/ShutDown";
 import { Desktop } from "./Desktop";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { INITIAL_FILES } from "../configs/fileSystem";
-import FileSystem, { FileNode } from "../libs/fileSystem";
+import FileSystem, { FileNode } from "../libs/FileSystem";
 import { EmptyComponent } from "./shared/EmptyComponent";
 import { useSystem, useWindow } from "../hooks/os";
-import System from "../libs/system";
-import Disk from "../libs/disk";
+import System from "../libs/System";
+import Disk from "../libs/Disk";
 import packageJson from "../../package.json";
 import { NOOP } from "../utils";
 import { DialogResult, MessageBoxButtons } from "./Apps/MessageBox";
-import { logger } from "../libs/logger";
+import { logger } from "../libs/Logger";
 
 export const BootLoader = () => {
   const { isShutDown } = useSystem();

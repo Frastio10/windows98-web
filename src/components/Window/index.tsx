@@ -4,7 +4,7 @@ import { extractCssTranslateProperty } from "../../utils";
 import { Rnd } from "react-rnd";
 import { AppName, AppProps, WindowData } from "../../types";
 import { useWindow } from "../../hooks/os";
-import { logger } from "../../libs/logger";
+import { logger } from "../../libs/Logger";
 import {
   DEFAULT_WINDOW_HEIGHT,
   DEFAULT_WINDOW_WIDTH,

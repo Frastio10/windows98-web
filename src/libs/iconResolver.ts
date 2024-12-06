@@ -1,8 +1,8 @@
 import { FILE_EXTENSION } from "../configs/fileSystem";
 import { getFileExtension, iconSize } from "../utils";
-import { FileNode } from "./fileSystem";
-import RegistryManager from "./registryManager";
-import FileSystem from "./fileSystem";
+import { FileNode } from "./FileSystem";
+import RegistryManager from "./RegistryManager";
+import FileSystem from "./FileSystem";
 
 export default class IconResolver {
   static getIconSrc(key: string) {

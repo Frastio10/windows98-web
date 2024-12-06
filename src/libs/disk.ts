@@ -2,8 +2,8 @@ import { log, safeJsonParse } from "../utils";
 import LZString from "lz-string";
 import { deviceSettings } from "../configs/deviceSettings";
 import { drivers } from "../configs/drivers";
-import StorageDriver from "./drivers/storages/storage";
-import System from "./system";
+import StorageDriver from "./drivers/storages/Storage";
+import System from "./System";
 
 type DiskOptions = {
   compressString: boolean;

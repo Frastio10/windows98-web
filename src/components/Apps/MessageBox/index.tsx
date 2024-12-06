@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useWindow } from "../../../hooks/os";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
-import System from "../../../libs/system";
+import System from "../../../libs/System";
 import { AppProps, WindowData } from "../../../types";
 import { iconSize } from "../../../utils";
 import { DefaultButton } from "../../shared/Button";

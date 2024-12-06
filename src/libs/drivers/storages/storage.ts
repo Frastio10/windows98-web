@@ -1,4 +1,4 @@
-import Driver from "../driver";
+import Driver from "../Driver";
 
 export default abstract class StorageDriver implements Driver {
   abstract initialized: boolean;

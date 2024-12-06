@@ -1,5 +1,5 @@
 import { useWindow } from "../../hooks/os";
-import { FileNode } from "../fileSystem";
+import { FileNode } from "../FileSystem";
 
 type Command = {
   key: string;

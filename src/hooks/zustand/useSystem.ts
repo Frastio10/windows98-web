@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import System from "../../libs/system";
+import System from "../../libs/System";
 
 export enum BootState {
   SHUTDOWN,

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useSystem } from "../../hooks/os";
-import System from "../../libs/system";
+import System from "../../libs/System";
 import { LongDivider } from "../shared/Dividers";
 
 export const Clock = () => {

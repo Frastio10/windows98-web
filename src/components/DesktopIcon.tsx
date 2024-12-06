@@ -3,14 +3,16 @@ import { DraggableEvent } from "react-draggable";
 import { DraggableData, Rnd } from "react-rnd";
 import styled from "styled-components";
 import { getApp } from "../configs";
+import { FILE_EXTENSION } from "../configs/fileSystem";
 import { useWindow } from "../hooks/os";
 import useOutsideAlerter from "../hooks/useOutsideAlerter";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
-import { FileProcessor } from "../libs/fileProcessor";
-import { FileNode } from "../libs/fileSystem";
-import IconResolver from "../libs/iconResolver";
+import { FileProcessor } from "../libs/FileProcessor";
+import { FileNode } from "../libs/FileSystem";
+import IconResolver from "../libs/IconResolver";
 import { App, AppName, Vector2D } from "../types";
-import { iconSize } from "../utils";
+import { getFileExtension, iconSize } from "../utils";
+import { IconSize } from "./shared/icon";
 import { themeStyles } from "./shared/theme";
 
 interface DesktopIconProps {
@@ -132,7 +134,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
         x: position.x,
         y: position.y,
         width: "75px",
-        height: "75px",
+        height: "85px",
       }}
       style={{
         cursor: "auto !important",
@@ -144,17 +146,26 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
     >
       <Wrapper ref={wrapperRef}>
         <div
-          className="w-full flex justify-center"
+          className="w-full flex justify-center flex-grow"
           onDoubleClick={() => fileProcessor.run()}
         >
           <IconWrapper src={getIcon(app!)} active={isSelected}>
+            {getFileExtension(file.name) === FILE_EXTENSION.LNK && (
+              <IconSize
+                className="absolute bottom-0  h-full z-[1] object-contain"
+                iconKey={"link_overlay"}
+                size="medium"
+              />
+            )}
             <IconImage src={getIcon(app!)} draggable={false} />
           </IconWrapper>
         </div>
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            // justifyContent: "center",
+            alignItems: "start",
+            height: "30px",
           }}
         >
           <TextRename
@@ -190,6 +201,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
 const TextRename = styled.span`
   min-width: 30px;
+  // height: 30px;
   padding: 0 4px;
 `;
 
@@ -204,6 +216,7 @@ const IconWrapper = styled.div<{ src: string; active: boolean }>`
 
   &::before {
     content: "";
+    height: 40px;
     display: ${(props) => (props.active ? "block" : "none")};
     mask-size: 100%;
     mask-image: url(${(props) => props.src});
@@ -250,7 +263,7 @@ const Wrapper = styled.div`
   overflow: hidden;
 
   span {
-    margin-top: 8px;
+    // margin-top: 8px;
     font-size: 13px;
     color: white;
     overflow: hidden;

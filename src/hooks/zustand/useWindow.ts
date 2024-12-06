@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { getApp, APP_WINDOW_CONFIG, DEFAULT_APP_CONFIG } from "../../configs";
 import { INITIAL_Z_INDEX } from "../../configs/constants";
-import { logger } from "../../libs/logger";
+import { logger } from "../../libs/Logger";
 import { AppName, Vector2D, WindowData } from "../../types";
 import { log } from "../../utils";
 

@@ -1,5 +1,5 @@
-import Driver from "./drivers/driver";
-import { logger } from "./logger";
+import Driver from "./drivers/Driver";
+import { logger } from "./Logger";
 
 export default class DriverManager {
   private drivers: Map<string, Driver> = new Map();

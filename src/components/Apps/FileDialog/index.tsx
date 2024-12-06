@@ -1,18 +1,18 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useFileSystem, useWindow } from "../../../hooks/os";
-import { FileNode } from "../../../libs/fileSystem";
+import { FileNode } from "../../../libs/FileSystem";
 import { AppProps, FilePath } from "../../../types";
 import { iconSize, NOOP } from "../../../utils";
 import { themeStyles } from "../../shared/theme";
 import { DefaultButton } from "../../shared/Button";
 import { Select } from "../../shared/Select";
 import { BaseInput } from "../../shared/Input";
-import System from "../../../libs/system";
+import System from "../../../libs/System";
 import { FileDialogResult, FileType } from "../../../types/fileDialogs";
 import { DialogResult, MessageBoxButtons } from "../MessageBox";
 import FileList from "./FileList";
-import IconResolver from "../../../libs/iconResolver";
+import IconResolver from "../../../libs/IconResolver";
 
 const defaultFileTypes = [{ key: "all", title: "All Files (*.*)", ext: null }];
 

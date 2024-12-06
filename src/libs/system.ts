@@ -7,11 +7,11 @@ import { BaseFileDialogOpts } from "../types/fileDialogs";
 import DriverManager from "./DriverManager";
 import { drivers } from "../configs/drivers";
 import { deviceSettings } from "../configs/deviceSettings";
-import StorageDriver from "./drivers/storages/storage";
-import { logger } from "./logger";
-import DeviceAudioDriver from "./drivers/audio/deviceAudio";
-import { FileProcessor } from "./fileProcessor";
-import FileSystem from "./fileSystem";
+import StorageDriver from "./drivers/storages/Storage";
+import { logger } from "./Logger";
+import DeviceAudioDriver from "./drivers/audio/DeviceAudio";
+import { FileProcessor } from "./FileProcessor";
+import FileSystem from "./FileSystem";
 import { getFileExtension } from "../utils";
 import { FILE_EXTENSION } from "../configs/fileSystem";
 

@@ -1,4 +1,4 @@
-import FileSystem from "./fileSystem";
+import FileSystem from "./FileSystem";
 type RegistryModule = "SYSTEM" | "SAM" | "SECURITY" | "SOFTWARE" | "USER";
 export default class RegistryManager {
   static getRegistry(registry: RegistryModule) {

@@ -8,6 +8,7 @@ const os = () => {
     sessionStorage: window.sessionStorage,
     cookie: document.cookie,
     clipboard: navigator.clipboard,
+    internalClipboard: navigator.clipboard,
   };
 };
 

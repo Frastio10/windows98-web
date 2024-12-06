@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWindow } from "../../../hooks/os";
 import { useFileSystem } from "../../../hooks/zustand/useFileSystem";
-import { FileNode } from "../../../libs/fileSystem";
+import { FileNode } from "../../../libs/FileSystem";
 import { AppProps } from "../../../types";
 import { log, MENU_DIVIDER, NOOP } from "../../../utils";
 import TopBarActions from "../../Window/TopBarActions";
@@ -10,7 +10,7 @@ import type { TopBarAction } from "../../Window/TopBarActions";
 import NotepadTextArea from "./TextArea";
 
 import api from "../../../api";
-import System from "../../../libs/system";
+import System from "../../../libs/System";
 import { DialogResult } from "../MessageBox";
 
 export const Notepad = ({ windowData }: AppProps) => {

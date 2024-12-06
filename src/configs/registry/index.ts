@@ -1,4 +1,4 @@
-import { FileNode } from "../../libs/fileSystem";
+import { FileNode } from "../../libs/FileSystem";
 import SOFTWARE_REGISTRY from "./software";
 import USER_REGISTRY from "./user";
 

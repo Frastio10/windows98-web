@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { themeStyles } from "../../../shared/theme";
 import { CloseButton } from "../../../Window/TopBar";
 import FileTree, { FileTreeNode } from "./FileTree";
-import FileSystem from "../../../../libs/fileSystem";
+import FileSystem from "../../../../libs/FileSystem";
 
 interface SidebarNavigationProps {
   onCloseSidebar: () => void;

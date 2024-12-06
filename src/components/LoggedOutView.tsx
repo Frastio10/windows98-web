@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useWindow } from "../hooks/os";
-import System from "../libs/system";
+import System from "../libs/System";
 import { Window } from "./Window";
 
 export const LoggedOutView = () => {

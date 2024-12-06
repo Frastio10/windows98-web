@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import FileSystem from "../../libs/fileSystem";
+import FileSystem from "../../libs/FileSystem";
 
 interface FileSystemState {
   fileSystem: FileSystem;

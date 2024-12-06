@@ -10,7 +10,7 @@ import {
 } from "../components/Apps";
 import { INITIAL_Z_INDEX } from "./constants";
 import { icon, iconSize } from "../utils";
-import { logger } from "../libs/logger";
+import { logger } from "../libs/Logger";
 import { FileDialog } from "../components/Apps";
 
 export const getApp = (appName: AppName) => {

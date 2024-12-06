@@ -1,5 +1,5 @@
-import { logger } from "../../logger";
-import StorageDriver from "./storage";
+import { logger } from "../../Logger";
+import StorageDriver from "./Storage";
 
 export default class MapStorageDriver extends StorageDriver {
   private storage!: Map<string, any> | null;

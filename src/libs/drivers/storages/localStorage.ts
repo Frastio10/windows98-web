@@ -1,5 +1,5 @@
-import { logger } from "../../logger";
-import StorageDriver from "./storage";
+import { logger } from "../../Logger";
+import StorageDriver from "./Storage";
 export default class LocalStorageDriver extends StorageDriver {
   private storage!: Storage | null;
   initialized: boolean = false;

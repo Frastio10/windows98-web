@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useFileSystem } from "../../../hooks/os";
-import { FileNode } from "../../../libs/fileSystem";
-import IconResolver from "../../../libs/iconResolver";
+import { FileNode } from "../../../libs/FileSystem";
+import IconResolver from "../../../libs/IconResolver";
 import { themeStyles } from "../../shared/theme";
 import { FileItem } from "../WindowsExplorer/SideBar/FileTree";
 

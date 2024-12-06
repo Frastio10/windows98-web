@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../hooks/os";
-import IconResolver from "../libs/iconResolver";
-import System from "../libs/system";
+import IconResolver from "../libs/IconResolver";
+import System from "../libs/System";
 import { LoggedInView } from "./LoggedInView";
 import { LoggedOutView } from "./LoggedOutView";
 import packageJson from "../../package.json";

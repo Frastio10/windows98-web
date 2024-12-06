@@ -2,11 +2,11 @@ import { EXTENSION_READERS } from "../configs/constants";
 import { FILE_EXTENSION } from "../configs/fileSystem";
 import { App, AppName } from "../types";
 import { log, NOOP } from "../utils";
-import { FileNode } from "./fileSystem";
-import RegistryManager from "./registryManager";
-import System from "./system";
-import FileSystem from "./fileSystem";
-import { logger } from "./logger";
+import { FileNode } from "./FileSystem";
+import RegistryManager from "./RegistryManager";
+import System from "./System";
+import FileSystem from "./FileSystem";
+import { logger } from "./Logger";
 
 // the name FileReader is reserved :(
 type FileMetadata = {

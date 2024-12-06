@@ -2,8 +2,8 @@ import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useFileSystem } from "../../../../hooks/os";
-import { FileNode } from "../../../../libs/fileSystem";
-import IconResolver from "../../../../libs/iconResolver";
+import { FileNode } from "../../../../libs/FileSystem";
+import IconResolver from "../../../../libs/IconResolver";
 import { iconSize, NOOP } from "../../../../utils";
 import { themeStyles } from "../../../shared/theme";
 
@@ -129,7 +129,7 @@ export const FileItem = styled.div<{
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  // padding: 2px 0;
+  padding: 0px 2px;
 
   span {
     // padding: 0 2px;
