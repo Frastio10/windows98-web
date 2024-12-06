@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useFileSystem } from "../../../../hooks/os";
 import { FileNode } from "../../../../libs/fileSystem";
@@ -10,6 +10,7 @@ import { themeStyles } from "../../../shared/theme";
 export interface FileTreeNode extends FileNode {
   isRoot?: boolean;
   icon: string | null;
+  isExpanded?: boolean;
 }
 
 interface FileTreeProps {

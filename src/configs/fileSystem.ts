@@ -69,7 +69,7 @@ export const INITIAL_FILES = [
         name: "login.exe",
         content: {
           exe: "logInForm",
-          icon: "directory_explorer",
+          // icon: "directory_explorer",
         },
         isDirectory: false,
       },
@@ -77,7 +77,7 @@ export const INITIAL_FILES = [
         name: "run.exe",
         content: {
           exe: "run",
-          icon: "directory_explorer",
+          // icon: "directory_explorer",
         },
         isDirectory: false,
       },

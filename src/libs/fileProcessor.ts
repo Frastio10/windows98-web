@@ -14,6 +14,13 @@ type FileMetadata = {
   executables?: AppName[];
   name: string | null;
 };
+
+type FileNameOptions = {
+  showAllExtensions?: boolean; // Show the full filename, including all extensions
+  hideAllExtensions?: boolean; // Hide all extensions
+  excludeExtensions?: string[]; // Exclude only specific extensions
+};
+
 export class FileProcessor {
   file: FileNode;
   fileMetadata: FileMetadata;
@@ -124,6 +131,39 @@ export class FileProcessor {
     } else {
       return fileName;
     }
+  }
+
+  static getFileName(fileName: string, options?: FileNameOptions): string {
+    const parts = fileName.split(".");
+
+    if (parts.length <= 1) {
+      return fileName;
+    }
+
+    const baseName = parts.slice(0, -1).join(".");
+    const allExtensions = parts.slice(1);
+
+    if (options?.showAllExtensions) {
+      return fileName;
+    }
+
+    if (options?.hideAllExtensions) {
+      return baseName;
+    }
+
+    if (options?.excludeExtensions) {
+      const filteredExtensions = allExtensions.filter(
+        (ext) => !options.excludeExtensions?.includes(ext),
+      );
+
+      if (filteredExtensions.length === 0) {
+        return baseName;
+      }
+
+      return `${baseName}.${filteredExtensions.join(".")}`;
+    }
+
+    return baseName;
   }
 
   static getFileNameWIthSupportedExtensions(str: string) {

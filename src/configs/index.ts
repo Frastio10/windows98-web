@@ -70,7 +70,7 @@ export const APP_LIST: App[] = [
     useDefaultExtraActions: false,
     defaultPosition: "center",
     allowMultipleInstances: true,
-    width: 500,
+    width: 600,
     height: 600,
     isResizable: true,
     isDraggable: true,

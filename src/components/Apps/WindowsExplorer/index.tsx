@@ -6,9 +6,10 @@ import { FileProcessor } from "../../../libs/fileProcessor";
 import { FileNode } from "../../../libs/fileSystem";
 import IconResolver from "../../../libs/iconResolver";
 import { AppProps } from "../../../types";
+import { NOOP } from "../../../utils";
 import { DefaultButton } from "../../shared/Button";
 import { Divider, LongDivider } from "../../shared/Dividers";
-import { Icon } from "../../shared/icon";
+import { IconSize } from "../../shared/icon";
 import { themeStyles } from "../../shared/theme";
 import { TopBarAction, TopBarActions } from "../../Window/TopBarActions";
 import SidebarNavigation from "./SideBar";
@@ -16,25 +17,50 @@ import { FileTreeNode, FileItem } from "./SideBar/FileTree";
 
 type ExplorerBarType = "search" | "favorites" | "history" | "folders";
 
-const ToolbarAction = () => {
+type ToolbarSelectAction = {
+  title: string;
+  onAction: () => void;
+};
+
+const ToolbarAction = ({
+  iconKey,
+  title,
+  actions,
+  onClick,
+}: {
+  iconKey: string;
+  title: string;
+  actions?: ToolbarSelectAction[];
+  onClick?: () => void;
+}) => {
   return (
-    <ToolbarButton>
-      <ToolbarButtonIcon>
-        <Icon index={1} name={"application_hourglass"} />
-      </ToolbarButtonIcon>
-      Forward
-    </ToolbarButton>
+    <ToolbarActionWrapper>
+      <ToolbarButton onClick={onClick}>
+        <ToolbarButtonIcon>
+          <IconSize className="w-5 mb-1" iconKey={iconKey} size="medium" />
+        </ToolbarButtonIcon>
+
+        {title}
+      </ToolbarButton>
+      {actions?.length && (
+        <div className="flex items-center">
+          <IconSize iconKey={"pan-down-symbolic"} size="small" />
+        </div>
+      )}
+    </ToolbarActionWrapper>
   );
 };
 
 export const WindowsExplorer = ({ windowData }: AppProps) => {
-  const { fileSystem } = useFileSystem();
+  const { fileSystem, updateFileSystem } = useFileSystem();
   const addressBarRef = useRef<HTMLInputElement>(null);
   const addressListRef = useRef<HTMLDivElement>(null);
 
   const [showList, setShowList] = useState(false);
   const [suggestedFileNode, setSuggestedFileNode] = useState<FileNode[]>([]);
   const [fileNode, setFileNode] = useState<FileNode | null>(null);
+
+  const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
 
   const [highlightedFile, setHighlightedFile] = useState<string | null>(null);
 
@@ -46,6 +72,14 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
     {
       title: "File",
       children: [
+        {
+          title: "File",
+          onAction: () => console.log("pepo"),
+        },
+        {
+          title: "File",
+          onAction: () => console.log("pepo"),
+        },
         {
           title: "File",
           onAction: () => console.log("pepo"),
@@ -122,20 +156,41 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
         <TopBarActions actions={topBarActions} />
         <FileActions>
           <Divider style={{ margin: "2px", alignSelf: "stretch" }} />
-          <ToolbarAction />
-          <ToolbarAction />
-          <ToolbarAction />
+          <ToolbarAction
+            iconKey="go-previous"
+            title="Back"
+            actions={[{ title: "Lala", onAction: NOOP }]}
+          />
+          <ToolbarAction
+            iconKey="go-next"
+            title="Forward"
+            actions={[{ title: "Lala", onAction: NOOP }]}
+          />
+          <ToolbarAction iconKey="directory_explorer" title="Up" />
           <LongDivider style={{ height: "36px" }} />
-          <ToolbarAction />
-          <ToolbarAction />
-          <ToolbarAction />
+          <ToolbarAction iconKey="edit-cut" title="Cut" />
+          <ToolbarAction iconKey="edit-copy" title="Copy" />
+          <ToolbarAction iconKey="edit-paste" title="Paste" />
           <LongDivider style={{ height: "36px" }} />
-          <ToolbarAction />
+          <ToolbarAction iconKey="edit-undo" title="Undo" />
           <LongDivider style={{ height: "36px" }} />
-          <ToolbarAction />
-          <ToolbarAction />
+          <ToolbarAction
+            iconKey="edit-delete"
+            title="Delete"
+            onClick={() => {
+              if (selectedFile) {
+                fileSystem.removeNode(selectedFile.path);
+                updateFileSystem();
+              }
+            }}
+          />
+          <ToolbarAction iconKey="document-properties" title="Properties" />
           <LongDivider style={{ height: "36px" }} />
-          <ToolbarAction />
+          <ToolbarAction
+            iconKey="view-list"
+            title="Views"
+            actions={[{ title: "Lala", onAction: NOOP }]}
+          />
         </FileActions>
 
         <AddressBar>
@@ -160,35 +215,44 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                   }
                 }}
               />
-              {showList && (
-                <FileAddressList ref={addressListRef}>
-                  {suggestedFileNode?.map((v) => (
-                    <FileAddressItem
-                      key={v.id}
-                      onClick={() => {
-                        setFileNode(v);
+              {showList &&
+                !!suggestedFileNode.filter((v) => v.isDirectory).length && (
+                  <FileAddressList ref={addressListRef}>
+                    {suggestedFileNode
+                      ?.filter((v) => v.isDirectory)
+                      .map((v) => (
+                        <FileAddressItem
+                          key={v.id}
+                          onClick={() => {
+                            setFileNode(v);
 
-                        addressBarRef.current!.value = changeLastPathSegment(
-                          addressBarRef.current!.value,
-                          v.name,
-                        );
+                            addressBarRef.current!.value =
+                              changeLastPathSegment(
+                                addressBarRef.current!.value,
+                                v.name,
+                              );
 
-                        if (v.isDirectory) addressBarRef.current!.value += "/";
+                            if (v.isDirectory)
+                              addressBarRef.current!.value += "/";
 
-                        setSuggestedFileNode(
-                          fileSystem.searchNodes(addressBarRef.current!.value),
-                        );
+                            setSuggestedFileNode(
+                              fileSystem.searchNodes(
+                                addressBarRef.current!.value,
+                              ),
+                            );
 
-                        setShowList(false);
-                      }}
-                    >
-                      {v.name}
-                    </FileAddressItem>
-                  ))}
-                </FileAddressList>
-              )}
+                            setShowList(false);
+                          }}
+                        >
+                          {v.name}
+                        </FileAddressItem>
+                      ))}
+                  </FileAddressList>
+                )}
             </FileAddress>
-            <DefaultButton>A</DefaultButton>
+            <DefaultButton className="!p-0">
+              <IconSize iconKey="pan-down-symbolic" size="small" />
+            </DefaultButton>
           </InnerWrapper>
         </AddressBar>
       </WrapperActions>
@@ -208,7 +272,10 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                 src={IconResolver.resolve(v).small}
                 key={v.id}
                 active={highlightedFile === v.id}
-                onClick={(e) => setHighlightedFile(v.id)}
+                onClick={(e) => {
+                  setHighlightedFile(v.id);
+                  setSelectedFile(v);
+                }}
                 onDoubleClick={() => {
                   if (v.isDirectory) {
                     setFileNode(v);
@@ -226,7 +293,11 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                 <div className="shrink-0">
                   <img src={IconResolver.resolve(v).small} />
                 </div>
-                <span>{v.name}</span>
+                <span>
+                  {FileProcessor.getFileName(v.name, {
+                    excludeExtensions: ["lnk"],
+                  })}
+                </span>
               </FileItem>
             ))
           ) : fileNode?.content ? (
@@ -328,11 +399,12 @@ const AddressBar = styled.div`
 `;
 
 const FileActions = styled.div`
+  overflow: auto;
   border-top: ${themeStyles.baseBorderWhite};
   box-shadow: ${themeStyles.baseBorderShadowThin};
   display: flex;
   align-items: center;
-  padding: 2px 0;
+  padding: 4px 0;
 `;
 
 const WrapperActions = styled.div`
@@ -350,14 +422,35 @@ const Wrapper = styled.div`
   /* padding: 2px; */
 `;
 
+const ToolbarActionWrapper = styled.div`
+  display: flex;
+  align-items: stretch;
+
+  &:hover > div,
+  &:hover > button {
+    background: ${({ theme }) => theme.elementDefaultBackground};
+    box-shadow: ${({ theme }) => theme.buttonPixelatedBorder};
+  }
+
+  & > div {
+    // border: 1px solid transparent;
+  }
+`;
+
 const ToolbarButton = styled.button`
-  width: 52px;
+  min-width: 52px;
   height: 40px;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
   font-size: 12px;
+  padding: 0 4px;
+  // border: 1px solid transparent;
+
+  &:hover img {
+    filter: grayscale(0%);
+  }
 `;
 
 const ToolbarButtonIcon = styled.div`
@@ -369,9 +462,5 @@ const ToolbarButtonIcon = styled.div`
 
   img {
     filter: grayscale(100%);
-  }
-
-  &:hover img {
-    filter: grayscale(0%);
   }
 `;

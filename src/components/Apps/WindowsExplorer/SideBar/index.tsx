@@ -24,6 +24,7 @@ export default function SidebarNavigation({
       isRoot: true,
       path: "C:/WINDOWS/Desktop",
       isDirectory: true,
+      isExpanded: true,
       children: [
         {
           name: "My Computer",

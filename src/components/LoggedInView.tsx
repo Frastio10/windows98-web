@@ -81,7 +81,7 @@ export const LoggedInView = () => {
             setShortcutBoxCoordinate({ x: ev.clientX, y: ev.clientY });
           }}
         />
-        {activeWindows.map((w, i) => (
+        {activeWindows.map((w) => (
           <Window key={w.windowId} windowData={w} />
         ))}
 
