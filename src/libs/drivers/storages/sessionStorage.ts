@@ -60,7 +60,8 @@ export default class SessionStorageDriver extends StorageDriver {
       // const serializedValue = JSON.stringify(value);
       this.storage.setItem(key, value);
     } catch (error) {
-      logger.error("Error writing to local storage:", error);
+      // logger.error("Error writing to local storage:", error);
+      throw error;
     }
   }
 

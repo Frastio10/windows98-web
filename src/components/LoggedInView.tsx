@@ -3,17 +3,19 @@ import styled from "styled-components";
 import { useWindow } from "../hooks/os";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import Disk from "../libs/Disk";
+import { FileNode } from "../libs/FileSystem";
 import IconResolver from "../libs/IconResolver";
 import System from "../libs/System";
 import { Vector2D } from "../types";
+import { DialogResult, MessageBoxButtons } from "./Apps/MessageBox";
 import { DesktopIcon } from "./DesktopIcon";
 import { Box } from "./shared/Box";
 import { Taskbar } from "./Taskbar";
 import { Window } from "./Window";
 
 export const LoggedInView = () => {
-  const { activeWindows } = useWindow();
-  const { fileSystem } = useFileSystem();
+  const { activeWindows, closeWindowById } = useWindow();
+  const { fileSystem, updateFileSystem } = useFileSystem();
   const desktopFiles = fileSystem.getDesktopFiles();
   const [shortcutBoxCoordinate, setShortcutBoxCoordinate] =
     useState<Vector2D | null>(null);
@@ -65,16 +67,76 @@ export const LoggedInView = () => {
     return icons || [];
   };
 
-  // console.log(
-  //   IconResolver
-  //     .resolve
-  //     // fileSystem.getNodeByPath("C:/WINDOWS/Desktop/Notepad.exe")!,
-  //     (),
-  // );
+  const onDropFile = (ev: React.DragEvent<HTMLDivElement>) => {
+    ev.preventDefault();
+
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      [...ev.dataTransfer.items].forEach((item, i) => {
+        // If dropped items aren't files, reject them
+        if (item.kind === "file") {
+          const file = item.getAsFile();
+          if (!file) return;
+          const reader = new FileReader();
+
+          reader.readAsText(file); // To read it as plain text
+
+          reader.onload = () => {
+            const sameNameFile = desktopFiles?.children.find(
+              (f) => f.name === file.name,
+            );
+
+            if (sameNameFile) {
+              return System.messageBox(undefined, {
+                title: "Error",
+                description: `${file.name} already exists. Do you want to replace it?`,
+                buttons: MessageBoxButtons.OKCancel,
+                width: 380,
+                height: 120,
+                cb: (r) => {
+                  if (r.result === DialogResult.OK) {
+                    const newFile = fileSystem.writeFile(
+                      sameNameFile.path,
+                      reader.result,
+                    );
+                    if (!newFile) return;
+
+                    return closeWindowById(r.windowData.windowId);
+                  } else if (r.result === DialogResult.Cancel) {
+                    return closeWindowById(r.windowData.windowId);
+                  }
+                },
+              });
+            }
+
+            const fileNode = new FileNode(file.name, false, desktopFiles);
+            fileNode.content = reader.result;
+            desktopFiles?.addChild(fileNode);
+          };
+
+          reader.onerror = () => {
+            System.messageBox(undefined, {
+              title: "Error",
+              description: reader.error?.message || "",
+              cb: (r) => System.closeWindow(r.windowData.windowId),
+            });
+          };
+        }
+      });
+    } else {
+      [...ev.dataTransfer.files].forEach((file, i) => {
+        console.log(`… file[${i}].name = ${file.name}`);
+      });
+    }
+  };
 
   return (
     <Wrapper>
-      <Main className="bounds">
+      <Main
+        className="bounds"
+        onDragOver={(ev) => ev.preventDefault()}
+        onDrop={onDropFile}
+      >
         <EventHandlerOverlay
           onContextMenu={(ev) => {
             setShortcutBoxCoordinate(null);

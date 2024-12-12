@@ -46,7 +46,8 @@ export default class LocalStorageDriver extends StorageDriver {
       // const serializedValue = JSON.stringify(value);
       this.storage.setItem(key, value);
     } catch (error) {
-      console.error("Error writing to local storage:", error);
+      // console.error("Error writing to local storage:", error);
+      throw error;
     }
   }
 

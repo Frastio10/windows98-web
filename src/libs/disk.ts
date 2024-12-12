@@ -40,16 +40,20 @@ export default class Disk {
   }
 
   setJSON(key: string, val: any) {
-    this.setCache(key, val);
+    try {
+      this.setCache(key, val);
 
-    const string = JSON.stringify(val);
+      const string = JSON.stringify(val);
 
-    if (this.opts.compressString) {
-      const compressed = this.compressLZMA(string);
-      return this.storage.write(key, compressed);
+      if (this.opts.compressString) {
+        const compressed = this.compressLZMA(string);
+        return this.storage.write(key, compressed);
+      }
+
+      this.storage.write(key, string);
+    } catch (error) {
+      throw error;
     }
-
-    this.storage.write(key, string);
   }
 
   flush() {

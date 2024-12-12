@@ -2,6 +2,7 @@ import { DefaultTheme } from "styled-components";
 
 export const themeStyles = {
   defaultBackground: "#007379",
+  defaultBlue: "#0000AA",
   checkerBackground:
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAG0lEQVQYV2P8/////4MHDzIwHjhw4L+9vT0DAHAFCj6esq3FAAAAAElFTkSuQmCC",
 

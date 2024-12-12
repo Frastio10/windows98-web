@@ -85,6 +85,11 @@ font-smooth: never;
     outline-offset: -4px;
   }
 
+  ::selection {
+    color: #fff;
+    background: ${themeStyles.defaultBlue};
+  }
+
   ::-webkit-scrollbar-button {
     background-color: #c2c6ca;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAJCAYAAABaMo5wAAAAW0lEQVQ4T2NkGGSAcZC5h4FWDvrPwEC02ShqkR0EkkAHuBxMyEKYWYQ8jKEOXQOyo/A5BuZwqqvBZiA+3xMbilQLIWqlcUJRimwPzjRELcdQZA6hREeR4eRoBgBoXhAK6oiMhwAAAABJRU5ErkJggg==');

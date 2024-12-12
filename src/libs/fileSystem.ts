@@ -1,6 +1,7 @@
 import { FilePath } from "../types";
 import Disk from "./Disk";
 import { logger } from "./Logger";
+import System from "./System";
 
 const FILE_ID_PREFIX = "file-";
 export const STORAGE_KEY = "fs";
@@ -58,6 +59,15 @@ export class FileNode {
   }
 
   addChild(childNode: FileNode, updateDisk: boolean = true) {
+    // childNode.parent = this;
+    // childNode.path = this.path + "/" + childNode.name;
+
+    // if (childNode.children.length) {
+    //   for (let child of childNode.children) {
+    //     childNode.addChild(child, updateDisk);
+    //   }
+    // }
+
     this.children.push(childNode);
     this.updateDate();
     if (updateDisk) this.updateDisk();
@@ -132,11 +142,63 @@ export default class FileSystem {
     return result;
   }
 
+  copyNode(sourcePath: FilePath, destinationPath: FilePath) {
+    const sourceNode = this.getNodeByPath(sourcePath);
+    if (!sourceNode) {
+      logger.error(`Source node '${sourcePath}' not found`);
+      return null;
+    }
+
+    const destinationParentPath = destinationPath
+      .split("/")
+      .slice(0, -1)
+      .join("/");
+    const destinationName = destinationPath.split("/").pop() || sourceNode.name;
+    const destinationParent = this.getNodeByPath(destinationParentPath);
+
+    if (!destinationParent) {
+      logger.error(`Destination parent '${destinationParentPath}' not found`);
+      return null;
+    }
+
+    // Deep copy function to recursively copy nodes
+    const deepCopyNode = (node: FileNode, parentNode: FileNode) => {
+      const copiedNode = new FileNode(
+        destinationName || node.name,
+        node.isDirectory,
+        parentNode,
+      );
+
+      // Copy content and icon for files
+      if (!node.isDirectory) {
+        copiedNode.content = node.content;
+        copiedNode.icon = node.icon;
+      }
+
+      // Recursively copy children if it's a directory
+      if (node.isDirectory) {
+        for (const child of node.children) {
+          deepCopyNode(child, copiedNode);
+        }
+      }
+
+      parentNode.addChild(copiedNode);
+      return copiedNode;
+    };
+
+    const copiedNode = deepCopyNode(sourceNode, destinationParent);
+    this.updateStorageData();
+
+    logger.log(`Copied '${sourcePath}' to '${destinationPath}'`);
+    return copiedNode;
+  }
+
   static loadFilesFromArray(root: FileNode, fileArr: FileNode[]) {
     fileArr.forEach((file) => {
       const node = new FileNode(file.name, file.isDirectory, root, file.id);
       node.content = file.content;
       node.icon = file.icon;
+
       root.addChild(node);
 
       if (file.children && file.children.length)
@@ -149,11 +211,23 @@ export default class FileSystem {
   }
 
   updateStorageData() {
-    const jsonNode = FileSystem.extractNodeToJson(this.root);
-    const disk = Disk.getInstance();
+    try {
+      const jsonNode = FileSystem.extractNodeToJson(this.root);
+      const disk = Disk.getInstance();
 
-    disk.setJSON(STORAGE_KEY, jsonNode);
-    logger.log("Saved to disk.");
+      disk.setJSON(STORAGE_KEY, jsonNode);
+      logger.log("Saved to disk.");
+    } catch (error: any) {
+      System.messageBox(undefined, {
+        title: "Error",
+        description: error.message,
+        height: 150,
+        cb: (r) => {
+          System.closeWindow(r.windowData.windowId);
+          window.location.reload();
+        },
+      });
+    }
   }
 
   static getSavedFiles() {

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
+import api from "../../../api";
 import { useFileSystem } from "../../../hooks/os";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import { FileProcessor } from "../../../libs/FileProcessor";
@@ -150,6 +151,27 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
     return `${formattedSize} ${units[unitIndex]}`;
   }
 
+  const pasteFile = async () => {
+    const clipboardContent = await api.clipboard.readText();
+    const file = fileSystem.getNodeByPath(clipboardContent);
+
+    if (file && fileNode) {
+      // console.log(file);
+      // selectedFileaddChild(selectedFile, file);
+      // const newFile = fileSystem.createFileNode(
+      //   file.name,
+      //   file.isDirectory,
+      //   selectedFile.parent,
+      // );
+      // newFile.content = file.content;
+      fileSystem.copyNode(clipboardContent, fileNode.path);
+
+      // console.log(newFile);
+      // selectedFile?.children.push;
+      updateFileSystem();
+    }
+  };
+
   return (
     <Wrapper>
       <WrapperActions>
@@ -169,8 +191,20 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
           <ToolbarAction iconKey="directory_explorer" title="Up" />
           <LongDivider style={{ height: "36px" }} />
           <ToolbarAction iconKey="edit-cut" title="Cut" />
-          <ToolbarAction iconKey="edit-copy" title="Copy" />
-          <ToolbarAction iconKey="edit-paste" title="Paste" />
+          <ToolbarAction
+            iconKey="edit-copy"
+            title="Copy"
+            onClick={async () => {
+              if (selectedFile) {
+                await api.clipboard.writeText(selectedFile.path);
+              }
+            }}
+          />
+          <ToolbarAction
+            iconKey="edit-paste"
+            title="Paste"
+            onClick={pasteFile}
+          />
           <LongDivider style={{ height: "36px" }} />
           <ToolbarAction iconKey="edit-undo" title="Undo" />
           <LongDivider style={{ height: "36px" }} />

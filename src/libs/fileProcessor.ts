@@ -47,6 +47,18 @@ export class FileProcessor {
       return this;
     }
 
+    if (!this.fileMetadata.executables.length) {
+      System.messageBox(undefined, {
+        title: "Error!",
+        description: "There is no app that support this file extension.",
+        height: 120,
+        cb: (r) => {
+          System.closeWindow(r.windowData.windowId);
+        },
+      });
+      return;
+    }
+
     System.open(this.fileMetadata?.executables[0], args || this.file.path);
 
     return this;
@@ -84,7 +96,10 @@ export class FileProcessor {
     const registry = RegistryManager.getRegistryValue("SOFTWARE");
 
     const fileTypeInfo = registry.fileTypes[ext];
-    const defaultAppPath = fileTypeInfo.defaultApp.path;
+    const defaultAppPath = fileTypeInfo?.defaultApp?.path;
+    if (!defaultAppPath) {
+      return [];
+    }
 
     const executableFile =
       FileSystem.getInstance().getNodeByPath(defaultAppPath);
