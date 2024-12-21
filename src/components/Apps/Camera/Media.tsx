@@ -3,9 +3,13 @@ import React, {
   useEffect,
   useImperativeHandle,
   useRef,
+  useState,
 } from "react";
+import System from "../../../libs/System";
+import { NOOP } from "../../../utils";
 
 const Media = forwardRef((_, ref) => {
+  const [isReady, setIsReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const snapshotCanvas = useRef<HTMLCanvasElement>(
     document.createElement("canvas"),
@@ -23,15 +27,23 @@ const Media = forwardRef((_, ref) => {
           const settings = track.getSettings();
           snapshotCanvas.current.width = settings.width || 640;
           snapshotCanvas.current.height = settings.height || 480;
+          setIsReady(true);
         })
         .catch((error) => {
-          console.error("Error accessing the camera: ", error);
+          setIsReady(false);
+          System.messageBox(undefined, {
+            title: "Error!",
+            description: "Error accessing the camera: " + error.message,
+            width: 300,
+            height: 120,
+            cb: NOOP,
+          });
         });
     }
   }, []);
 
   const snapShot = () => {
-    if (!videoRef.current) return;
+    if (!videoRef.current || !isReady) return;
     const ctx = snapshotCanvas.current.getContext("2d")!;
     const cnv = snapshotCanvas.current;
 

@@ -65,15 +65,15 @@ export function Camera({ windowData }: AppProps<CameraProps>) {
       picturesFolder?.addChild(cameraFolder);
     }
 
-    const b64File = new FileNode(
-      generatePictureFileName("b64"),
+    const bngFile = new FileNode(
+      generatePictureFileName("bng"),
       false,
       cameraFolder,
     );
 
-    b64File.content = LZString.compressToUTF16(dataUrl);
+    bngFile.content = LZString.compressToUTF16(dataUrl);
 
-    cameraFolder.addChild(b64File);
+    cameraFolder.addChild(bngFile);
 
     updateFileSystem();
   };
