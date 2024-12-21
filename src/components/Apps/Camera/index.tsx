@@ -159,17 +159,18 @@ export function Camera({ windowData }: AppProps<CameraProps>) {
         )}
       </MediaWrapper>
       <div className="flex-shrink-0">
-        {pictures?.length && (
+        {!!pictures?.length && (
           <GalleryWrapper>
             <Gallery
               files={pictures || []}
+              selectedFile={currentImage}
               onSelectImage={(file) => setCurrentImage(file)}
             />
           </GalleryWrapper>
         )}
         <FooterWrapper>
           <div
-            className="w-12 h-12 bg-[#aa0000] rounded-full flex justify-center items-center"
+            className="w-12 h-12 bg-[#aa0000] rounded-full flex justify-center items-center cursor-pointer"
             onClick={handleSnapshot}
           >
             <svg

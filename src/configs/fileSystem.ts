@@ -146,6 +146,12 @@ export const INITIAL_FILES = [
             content:
               "Made with ❤️  by Frastio Agustian\n\nhttps://www.frast.dev\nhttps://github.com/frastio10",
           },
+
+          {
+            name: "Why Though.txt",
+            content:
+              "\nMay 7, 2023\n\nI’ve always loved the retro glow,\nA time I’ve never lived to know.\nWindows 98, a vintage scene,\nChunky icons, colors serene.\n\nThe startup chime, a soothing call,\nA simpler time—I feel it all.\nNot born to see its early light,\nBut here I am, caught in its sight.\n\nSo I built this world, a simulation,\nA nod to tech’s old foundation.\nTo push my skills, React and UI,\nAnd watch nostalgia come alive.\n\nA time machine, a challenge too,\nWindows 98, reborn anew.\n\n- Frastio Agustian -",
+          },
         ],
       },
       {
