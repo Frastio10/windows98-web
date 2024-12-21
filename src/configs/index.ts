@@ -12,6 +12,7 @@ import { INITIAL_Z_INDEX } from "./constants";
 import { icon, iconSize } from "../utils";
 import { logger } from "../libs/Logger";
 import { FileDialog } from "../components/Apps";
+import { Camera } from "../components/Apps/Camera";
 
 export const getApp = (appName: AppName) => {
   const app = APP_LIST.find((app) => app.appName === appName);
@@ -79,6 +80,21 @@ export const APP_LIST: App[] = [
       icon("directory_explorer", 2),
       icon("directory_explorer", 0),
     ],
+  },
+  {
+    appName: "camera",
+    component: Camera,
+    defaultTitle: "Camera",
+    appTitle: "Camera",
+    showTopBarIcon: true,
+    useDefaultExtraActions: false,
+    defaultPosition: "center",
+    allowMultipleInstances: false,
+    width: 650,
+    height: 700,
+    isResizable: true,
+    isDraggable: true,
+    icons: [icon("camera", 0), icon("camera", 1), icon("camera", 2)],
   },
   {
     appName: "notepad",

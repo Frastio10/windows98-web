@@ -230,9 +230,9 @@ export default class FileSystem {
     }
   }
 
-  static getSavedFiles() {
+  static async getSavedFiles() {
     const disk = Disk.getInstance();
-    const local = disk.getJSON(STORAGE_KEY);
+    const local = await disk.getJSON(STORAGE_KEY);
     if (!local) {
       return logger.log(
         "Saved data is not found. Loading from initial folders..",

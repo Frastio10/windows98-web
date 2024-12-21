@@ -25,8 +25,8 @@ export const BootLoader = () => {
   const isReadyToLoad =
     !isShutDown && isInitialized && isLoaded.current && !!typeof window;
 
-  const loadFileSystem = () => {
-    const initialFiles = FileSystem.getSavedFiles();
+  const loadFileSystem = async () => {
+    const initialFiles = await FileSystem.getSavedFiles();
     const rootFiles = initialFiles?.children || INITIAL_FILES;
 
     FileSystem.loadFilesFromArray(fileSystem.root, rootFiles);
@@ -34,9 +34,10 @@ export const BootLoader = () => {
     if (!initialFiles) fileSystem.updateStorageData();
   };
 
-  const versionCheck = () => {
-    let version = Disk.getInstance().get("version");
+  const versionCheck = async () => {
+    let version = await Disk.getInstance().get("version");
     const currentVersion = packageJson.version;
+    console.log(version);
     if (!version) {
       Disk.getInstance().set("version", currentVersion);
       version = currentVersion;
@@ -66,9 +67,9 @@ export const BootLoader = () => {
     }
   };
 
-  const initialLoad = () => {
+  const initialLoad = async () => {
     if (!isLoaded.current && localStorage) {
-      System.getInstance().loadDrivers();
+      await System.getInstance().loadDrivers();
       let installedVersion = Disk.getInstance().get("version");
       const currentVersion = packageJson.version;
       logger.log(
@@ -80,7 +81,7 @@ export const BootLoader = () => {
         versionCheck();
       }, 10000);
 
-      loadFileSystem();
+      await loadFileSystem();
     }
   };
 

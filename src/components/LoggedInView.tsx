@@ -10,6 +10,7 @@ import { Vector2D } from "../types";
 import { DialogResult, MessageBoxButtons } from "./Apps/MessageBox";
 import { DesktopIcon } from "./DesktopIcon";
 import { Box } from "./shared/Box";
+import { DefaultButton } from "./shared/Button";
 import { Taskbar } from "./Taskbar";
 import { Window } from "./Window";
 
@@ -162,9 +163,16 @@ export const LoggedInView = () => {
               left: shortcutBoxCoordinate.x,
               position: "absolute",
               width: "200px",
+              display: "flex",
+              justifyItems: "stretch",
+              flexDirection: "column",
+              textAlign: "left",
             }}
           >
-            Window
+            <DefaultButton>Window</DefaultButton>
+            <DefaultButton>Window</DefaultButton>
+            <DefaultButton>Window</DefaultButton>
+            <DefaultButton>Window</DefaultButton>
           </Box>
         )}
       </Main>

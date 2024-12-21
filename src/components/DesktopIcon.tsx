@@ -152,7 +152,7 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
           <IconWrapper src={getIcon(app!)} active={isSelected}>
             {getFileExtension(file.name) === FILE_EXTENSION.LNK && (
               <IconSize
-                className="absolute bottom-0  h-full z-[1] object-contain"
+                className="absolute bottom-0  h-full z-[1] object-contain pointer-events-none"
                 iconKey={"link_overlay"}
                 size="medium"
               />

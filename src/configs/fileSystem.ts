@@ -20,6 +20,12 @@ export const INITIAL_FILES = [
     isDirectory: true,
   },
   {
+    name: "Pictures",
+    isDirectory: true,
+    children: [],
+  },
+
+  {
     name: "Program Files",
     isDirectory: true,
     children: [
@@ -57,6 +63,16 @@ export const INITIAL_FILES = [
         },
         isDirectory: false,
       },
+      {
+        name: "camera.exe",
+        content: {
+          exe: "camera",
+          icon: "camera",
+          url: "../components/Apps/Camera",
+        },
+        isDirectory: false,
+      },
+
       {
         name: "explorer.exe",
         content: {
@@ -111,6 +127,15 @@ export const INITIAL_FILES = [
             content: {
               target: {
                 path: "C:/WINDOWS/explorer.exe",
+              },
+              icon: {},
+            },
+          },
+          {
+            name: "Camera.lnk",
+            content: {
+              target: {
+                path: "C:/WINDOWS/camera.exe",
               },
               icon: {},
             },

@@ -172,6 +172,12 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
     }
   };
 
+  const changeCurrentFolder = (file: FileNode) => {
+    if (!addressBarRef.current) return;
+    setFileNode(file);
+    addressBarRef.current.value = file.path;
+  };
+
   return (
     <Wrapper>
       <WrapperActions>
@@ -188,7 +194,11 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
             title="Forward"
             actions={[{ title: "Lala", onAction: NOOP }]}
           />
-          <ToolbarAction iconKey="directory_explorer" title="Up" />
+          <ToolbarAction
+            iconKey="directory_explorer"
+            title="Up"
+            onClick={() => changeCurrentFolder(fileNode?.parent || fileNode!)}
+          />
           <LongDivider style={{ height: "36px" }} />
           <ToolbarAction iconKey="edit-cut" title="Cut" />
           <ToolbarAction
@@ -312,9 +322,7 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                 }}
                 onDoubleClick={() => {
                   if (v.isDirectory) {
-                    setFileNode(v);
-                    if (addressBarRef.current)
-                      addressBarRef.current.value = v.path;
+                    changeCurrentFolder(v);
                     return;
                   }
 

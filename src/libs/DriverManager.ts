@@ -4,13 +4,13 @@ import { logger } from "./Logger";
 export default class DriverManager {
   private drivers: Map<string, Driver> = new Map();
 
-  load(driver: Driver, driverName: string): void {
+  async load(driver: Driver, driverName: string) {
     if (this.drivers.has(driverName)) {
       logger.log(`${driverName} is already loaded.`);
       return;
     }
     this.drivers.set(driverName, driver);
-    driver.initialize();
+    await driver.initialize();
     logger.log(`${driverName} loaded.`);
   }
 
@@ -25,7 +25,7 @@ export default class DriverManager {
     }
   }
 
-  getDriverStatus(driverName: string): string {
+  getDriverStatus(driverName: string) {
     const driver = this.drivers.get(driverName);
     return driver ? driver.getStatus() : `${driverName} not loaded.`;
   }
