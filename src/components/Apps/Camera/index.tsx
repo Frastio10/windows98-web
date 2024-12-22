@@ -83,12 +83,17 @@ export function Camera({ windowData }: AppProps<CameraProps>) {
     return cameraFolder?.children;
   };
 
-  const handleSnapshot = () => {
+  const handleSnapshot = async () => {
     if (currentImage) return setCurrentImage(null);
 
     if (mediaRef.current) {
       const dataUrl = mediaRef.current.snapShot();
       saveImage(dataUrl);
+
+      const audioManager = System.getInstance().audio();
+      await audioManager.loadAudio("/assets/audio/system/click.wav");
+      audioManager.play();
+
       // const img = document.createElement("img");
       // img.src = dataUrl;
       // document.getElementById("root")?.prepend(img);
