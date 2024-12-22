@@ -11,11 +11,7 @@ const Wolfenstein = () => {
   ];
   return (
     <Wrapper>
-      <iframe
-        width={"100%"}
-        height={"100%"}
-        src="http://localhost:5173/apps/wolf3d/index.html"
-      />
+      <iframe width={"100%"} height={"100%"} src="/apps/wolf3d/index.html" />
     </Wrapper>
   );
 };
