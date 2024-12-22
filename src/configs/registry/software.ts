@@ -57,17 +57,47 @@ const SOFTWARE_REGISTRY = {
       mimeType: "application/pdf",
       description: "PDF Document",
     },
+    bng: {
+      defaultIcon: {
+        source: "kodak_imaging",
+        sizes: [16, 32, 48, 256],
+        colorDepth: 32,
+        hasTransparency: true,
+      },
+      mimeType: "application/bng",
+      description: "BNG Image",
+    },
   },
   systemFolders: {
-    Documents: {
+    "C:": {
       defaultIcon: {
-        source: "document",
+        source: "harddrive",
         index: 0,
         sizes: [16, 32, 48, 256],
         colorDepth: 32,
         hasTransparency: true,
       },
-      path: "C:/WINDOWS/Documents",
+      path: "C:",
+    },
+    "My Computer": {
+      defaultIcon: {
+        source: "computer_explorer",
+        index: 0,
+        sizes: [16, 32, 48, 256],
+        colorDepth: 32,
+        hasTransparency: true,
+      },
+      path: undefined,
+    },
+    "My Documents": {
+      defaultIcon: {
+        source: "mydocs",
+        index: 0,
+        sizes: [16, 32, 48, 256],
+        colorDepth: 32,
+        hasTransparency: true,
+      },
+      path: "C:/My Documents",
     },
     Desktop: {
       defaultIcon: {

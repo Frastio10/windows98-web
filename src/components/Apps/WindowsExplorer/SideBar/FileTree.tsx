@@ -47,7 +47,9 @@ const FileTree: React.FC<FileTreeProps> = ({ data, onSelectPath = NOOP }) => {
         iconSrc = IconResolver.getIconSrc("directory_closed");
       }
 
-      if (isExpanded) iconSrc = IconResolver.getIconSrc("directory_open");
+      if (isExpanded && file && !IconResolver.isSpecialFolder(file)) {
+        iconSrc = IconResolver.getIconSrc("directory_open");
+      }
 
       if (node?.icon) {
         iconSrc = IconResolver.getIconSrc(node.icon);

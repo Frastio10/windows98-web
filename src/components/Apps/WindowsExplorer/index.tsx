@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
 import api from "../../../api";
-import { useFileSystem } from "../../../hooks/os";
+import { useFileSystem, useWindow } from "../../../hooks/os";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import { FileProcessor } from "../../../libs/FileProcessor";
 import { FileNode } from "../../../libs/FileSystem";
@@ -54,6 +54,7 @@ const ToolbarAction = ({
 
 export const WindowsExplorer = ({ windowData }: AppProps) => {
   const { fileSystem, updateFileSystem } = useFileSystem();
+  const { changeWindowTitle } = useWindow();
   const addressBarRef = useRef<HTMLInputElement>(null);
   const addressListRef = useRef<HTMLDivElement>(null);
 
@@ -131,8 +132,9 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
 
   const onSelectPathSidebar = (node: FileTreeNode) => {
     if (!addressBarRef.current) return;
-    setFileNode(node);
-    addressBarRef.current.value = node.path;
+    // setFileNode(node);
+    changeCurrentFolder(node);
+    // addressBarRef.current.value = node.path ;
   };
 
   function calculateStringSize(input: string) {
@@ -175,7 +177,11 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
   const changeCurrentFolder = (file: FileNode) => {
     if (!addressBarRef.current) return;
     setFileNode(file);
-    addressBarRef.current.value = file.path;
+    addressBarRef.current.value = file.path || file.name;
+    changeWindowTitle(
+      windowData.windowId,
+      `Exploring - (${file.path || file.name})`,
+    );
   };
 
   return (

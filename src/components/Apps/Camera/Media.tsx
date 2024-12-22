@@ -14,6 +14,7 @@ const Media = forwardRef((_, ref) => {
   const snapshotCanvas = useRef<HTMLCanvasElement>(
     document.createElement("canvas"),
   );
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -22,9 +23,11 @@ const Media = forwardRef((_, ref) => {
         .then((stream) => {
           if (!videoRef.current) return;
 
-          const track = stream.getVideoTracks()[0];
+          const mainTrack = stream.getVideoTracks()[0];
+          streamRef.current = stream;
           videoRef.current.srcObject = stream;
-          const settings = track.getSettings();
+
+          const settings = mainTrack.getSettings();
           snapshotCanvas.current.width = settings.width || 640;
           snapshotCanvas.current.height = settings.height || 480;
           setIsReady(true);
@@ -40,6 +43,20 @@ const Media = forwardRef((_, ref) => {
           });
         });
     }
+
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.srcObject = null;
+        videoRef.current.src = "";
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+        console.log(streamRef.current.getTracks());
+      }
+    };
   }, []);
 
   const snapShot = () => {
@@ -62,4 +79,3 @@ const Media = forwardRef((_, ref) => {
 });
 
 export default Media;
-// "react": "^18.2.0",

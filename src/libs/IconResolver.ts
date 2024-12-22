@@ -45,11 +45,37 @@ export default class IconResolver {
     }
 
     if (file.isDirectory) {
-      iconKey = "directory_closed";
+      const systemFolders = softwareRegistry.systemFolders;
+      const folderIconData = systemFolders[file.name];
+
+      if (folderIconData && file.path === folderIconData.path) {
+        iconKey = folderIconData.defaultIcon.source;
+      } else {
+        iconKey = "directory_closed";
+      }
     }
 
     if (!iconKey) iconKey = "file_windows";
 
     return IconResolver.getIconSrc(iconKey);
+  }
+
+  static isSpecialFolder(file: FileNode) {
+    const softwareRegistry = JSON.parse(
+      RegistryManager.getRegistry("SOFTWARE").content,
+    );
+
+    if (file.isDirectory) {
+      const systemFolders = softwareRegistry.systemFolders;
+      const folderIconData = systemFolders[file.name];
+
+      if (folderIconData && file.path === folderIconData.path) {
+        return true;
+      }
+
+      return false;
+    }
+
+    return false;
   }
 }
