@@ -72,6 +72,23 @@ export const INITIAL_FILES = [
         },
         isDirectory: false,
       },
+      {
+        name: "pinball.exe",
+        content: {
+          exe: "pinball",
+          icon: "pinball",
+        },
+        isDirectory: false,
+      },
+
+      {
+        name: "wolfenstein.exe",
+        content: {
+          exe: "wolfenstein",
+          icon: "WOLF3D",
+        },
+        isDirectory: false,
+      },
 
       {
         name: "explorer.exe",
@@ -136,6 +153,26 @@ export const INITIAL_FILES = [
             content: {
               target: {
                 path: "C:/WINDOWS/camera.exe",
+              },
+              icon: {},
+            },
+          },
+
+          {
+            name: "Pinball.lnk",
+            content: {
+              target: {
+                path: "C:/WINDOWS/pinball.exe",
+              },
+              icon: {},
+            },
+          },
+
+          {
+            name: "Wolfenstein.lnk",
+            content: {
+              target: {
+                path: "C:/WINDOWS/wolfenstein.exe",
               },
               icon: {},
             },

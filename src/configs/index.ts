@@ -13,6 +13,8 @@ import { icon, iconSize } from "../utils";
 import { logger } from "../libs/Logger";
 import { FileDialog } from "../components/Apps";
 import { Camera } from "../components/Apps/Camera";
+import SpaceCadetPinball from "../components/Apps/SpaceCadetPinball";
+import Wolfenstein from "../components/Apps/Wolfenstein";
 
 export const getApp = (appName: AppName) => {
   const app = APP_LIST.find((app) => app.appName === appName);
@@ -95,6 +97,44 @@ export const APP_LIST: App[] = [
     isResizable: true,
     isDraggable: true,
     icons: [icon("camera", 0), icon("camera", 1), icon("camera", 2)],
+  },
+  {
+    appName: "pinball",
+    component: SpaceCadetPinball,
+    defaultTitle: "Pinball",
+    appTitle: "Pinball",
+    showTopBarIcon: true,
+    useDefaultExtraActions: false,
+    defaultPosition: "center",
+    allowMultipleInstances: false,
+    width: 650,
+    height: 600,
+    isResizable: true,
+    isDraggable: true,
+    icons: [
+      iconSize("pinball", "small"),
+      iconSize("pinball", "medium"),
+      iconSize("pinball", "big"),
+    ],
+  },
+  {
+    appName: "wolfenstein",
+    component: Wolfenstein,
+    defaultTitle: "Wolfenstein",
+    appTitle: "Wolfenstein",
+    showTopBarIcon: true,
+    useDefaultExtraActions: false,
+    defaultPosition: "center",
+    allowMultipleInstances: false,
+    width: 650,
+    height: 600,
+    isResizable: true,
+    isDraggable: true,
+    icons: [
+      iconSize("pinball", "small"),
+      iconSize("pinball", "medium"),
+      iconSize("pinball", "big"),
+    ],
   },
   {
     appName: "notepad",

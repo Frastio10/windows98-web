@@ -44,7 +44,7 @@ export const LoggedInView = () => {
 
       const iconData = {
         x: index * 75 + (index > 0 ? 10 : 0),
-        y: 0,
+        y: 10,
         ...storedData[file.id],
       };
 
