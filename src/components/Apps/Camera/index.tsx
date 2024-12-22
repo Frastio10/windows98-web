@@ -153,7 +153,10 @@ export function Camera({ windowData }: AppProps<CameraProps>) {
       <TopBarActions actions={topBarActions} />
       <MediaWrapper>
         {currentImage ? (
-          <img src={LZString.decompressFromUTF16(currentImage.content)} />
+          <img
+            className="object-contain"
+            src={LZString.decompressFromUTF16(currentImage.content)}
+          />
         ) : (
           <Media ref={mediaRef} />
         )}
