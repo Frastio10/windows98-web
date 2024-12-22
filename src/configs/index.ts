@@ -131,9 +131,9 @@ export const APP_LIST: App[] = [
     isResizable: true,
     isDraggable: true,
     icons: [
-      iconSize("pinball", "small"),
-      iconSize("pinball", "medium"),
-      iconSize("pinball", "big"),
+      iconSize("WOLF3D", "small"),
+      iconSize("WOLF3D", "medium"),
+      iconSize("WOLF3D", "big"),
     ],
   },
   {

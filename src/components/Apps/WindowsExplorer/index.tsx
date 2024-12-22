@@ -343,7 +343,7 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
                   fp.run();
                 }}
               >
-                <div className="shrink-0">
+                <div className="shrink-0 w-4 h-4">
                   <img src={IconResolver.resolve(v).small} />
                 </div>
                 <span>
