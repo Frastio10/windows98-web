@@ -2,21 +2,22 @@ import { logger } from "../../Logger";
 
 export default class DeviceAudioDriver {
   private audioContext: AudioContext | null;
-  private audioBuffer: AudioBuffer | null;
+  private audioCache: Map<string, AudioBuffer>; // Cache for audio buffers
   private gainNode: GainNode | null;
+  private currentBuffer: AudioBuffer | null; // Track the current audio buffer
   initialized: boolean = false;
 
   constructor() {
     this.audioContext = null;
-    this.audioBuffer = null;
-    this.gainNode = null; // Initialize gain node to control volume
+    this.audioCache = new Map();
+    this.gainNode = null;
+    this.currentBuffer = null;
   }
 
-  // Initialize the AudioContext (a required object for managing audio)
   initialize() {
     if (window && window.AudioContext) {
       this.audioContext = new AudioContext();
-      this.gainNode = this.audioContext.createGain(); // Create a GainNode to control volume
+      this.gainNode = this.audioContext.createGain();
       this.initialized = true;
     } else {
       logger.error("AudioContext is not supported in this environment.");
@@ -29,8 +30,8 @@ export default class DeviceAudioDriver {
         .close()
         .then(() => {
           this.audioContext = null;
-          this.audioBuffer = null;
-          this.gainNode = null; // Clean up the gain node
+          this.audioCache.clear(); // Clear the cache
+          this.gainNode = null;
           this.initialized = false;
         })
         .catch((error) => {
@@ -42,43 +43,52 @@ export default class DeviceAudioDriver {
   }
 
   getStatus() {
-    if (this.initialized) return "ok";
-    else return "not ok";
+    return this.initialized ? "ok" : "not ok";
   }
 
-  // Load an audio file into the buffer
   async loadAudio(url: string) {
     if (!this.audioContext) {
       return logger.error("AudioDriver is not initialized");
     }
+
+    if (this.audioCache.has(url)) {
+      this.currentBuffer = this.audioCache.get(url) || null;
+      logger.info(`Audio already loaded from cache: ${url}`);
+      return;
+    }
+
     try {
       const response = await fetch(url);
       const arrayBuffer = await response.arrayBuffer();
-      this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-      logger.info("Audio loaded successfully");
+      const decodedBuffer =
+        await this.audioContext.decodeAudioData(arrayBuffer);
+
+      this.audioCache.set(url, decodedBuffer);
+      this.currentBuffer = decodedBuffer;
+
+      logger.info(`Audio loaded and cached: ${url}`);
     } catch (error) {
-      console.error("Error loading audio:", error);
+      logger.error("Error loading audio:", error);
     }
   }
 
-  // Play the loaded audio
   play() {
-    if (!this.audioContext || !this.audioBuffer || !this.gainNode) {
+    if (!this.audioContext || !this.currentBuffer || !this.gainNode) {
       return logger.error("AudioDriver is not initialized or no audio loaded");
     }
+
     try {
       const source = this.audioContext.createBufferSource();
-      source.buffer = this.audioBuffer;
-      source.connect(this.gainNode); // Connect the source to the gain node
-      this.gainNode.connect(this.audioContext.destination); // Connect the gain node to the destination (speakers)
+      source.buffer = this.currentBuffer;
+      source.connect(this.gainNode);
+      this.gainNode.connect(this.audioContext.destination);
       source.start();
       logger.info("Audio is now playing");
     } catch (error) {
-      console.error("Error playing audio:", error);
+      logger.error("Error playing audio:", error);
     }
   }
 
-  // Set the volume (gain value)
   setVolume(value: number) {
     if (!this.gainNode) {
       return logger.error("AudioDriver is not initialized");
@@ -86,25 +96,21 @@ export default class DeviceAudioDriver {
     this.gainNode.gain.setValueAtTime(
       value,
       this.audioContext?.currentTime || 0,
-    ); // Set volume (between 0 and 1)
+    );
     logger.info(`Volume set to ${value}`);
   }
 
-  // Pause the audio (if needed, this example does not handle pause directly, but could be extended)
   pause() {
     if (!this.audioContext) {
       return logger.error("AudioDriver is not initialized");
     }
-    // Implement pause functionality here
     logger.info("Audio paused (Functionality to be added)");
   }
 
-  // Stop the audio (can be extended for full stop behavior)
   stop() {
     if (!this.audioContext) {
       return logger.error("AudioDriver is not initialized");
     }
-    // Implement stop functionality here
     logger.info("Audio stopped (Functionality to be added)");
   }
 }

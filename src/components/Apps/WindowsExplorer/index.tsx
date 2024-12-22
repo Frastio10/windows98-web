@@ -6,6 +6,7 @@ import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import { FileProcessor } from "../../../libs/FileProcessor";
 import { FileNode } from "../../../libs/FileSystem";
 import IconResolver from "../../../libs/IconResolver";
+import System from "../../../libs/System";
 import { AppProps } from "../../../types";
 import { NOOP } from "../../../utils";
 import { DefaultButton } from "../../shared/Button";
@@ -174,7 +175,7 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
     }
   };
 
-  const changeCurrentFolder = (file: FileNode) => {
+  const changeCurrentFolder = async (file: FileNode) => {
     if (!addressBarRef.current) return;
     setFileNode(file);
     addressBarRef.current.value = file.path || file.name;
@@ -182,6 +183,10 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
       windowData.windowId,
       `Exploring - (${file.path || file.name})`,
     );
+
+    const audioManager = System.getInstance().audio();
+    await audioManager.loadAudio("/assets/audio/system/click.wav");
+    audioManager.play();
   };
 
   return (
