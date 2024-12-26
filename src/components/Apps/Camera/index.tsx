@@ -1,19 +1,10 @@
-import React, {
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import LZString from "lz-string";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useFileSystem, useWindow } from "../../../hooks/os";
-import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import { FileNode } from "../../../libs/FileSystem";
 import System from "../../../libs/System";
-import { AppProps, WindowData } from "../../../types";
-import { generateRandomString, iconSize } from "../../../utils";
-import { DefaultButton } from "../../shared/Button";
+import { AppProps } from "../../../types";
 import { themeStyles } from "../../shared/theme";
 import Gallery from "./Gallery";
 import Media from "./Media";
@@ -32,6 +23,8 @@ const SAVE_FOLDER_NAME = "Camera";
 export function Camera({ windowData }: AppProps<CameraProps>) {
   const { fileSystem, updateFileSystem } = useFileSystem();
   const { changeWindowTitle } = useWindow();
+
+  const [showFlash, setShowFlash] = useState(false);
 
   const [currentImage, setCurrentImage] = useState<FileNode | null>(null);
 
@@ -87,12 +80,17 @@ export function Camera({ windowData }: AppProps<CameraProps>) {
     if (currentImage) return setCurrentImage(null);
 
     if (mediaRef.current) {
+      setShowFlash(true);
       const dataUrl = mediaRef.current.snapShot();
       saveImage(dataUrl);
 
       const audioManager = System.getInstance().audio();
       await audioManager.loadAudio("/assets/audio/system/click.wav");
       audioManager.play();
+
+      setTimeout(() => {
+        setShowFlash(false);
+      }, 1000);
 
       // const img = document.createElement("img");
       // img.src = dataUrl;
@@ -156,6 +154,7 @@ export function Camera({ windowData }: AppProps<CameraProps>) {
   return (
     <Wrapper>
       <TopBarActions actions={topBarActions} />
+      <FlashOverlay blink={showFlash} />
       <MediaWrapper>
         {currentImage ? (
           <img
@@ -212,6 +211,27 @@ export function Camera({ windowData }: AppProps<CameraProps>) {
     </Wrapper>
   );
 }
+
+const blinkEffect = keyframes`
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+`;
+
+// Styled component for the flash overlay
+const FlashOverlay = styled.div<{ blink: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+  animation: ${({ blink }) => (blink ? blinkEffect : "none")} 1s ease-in-out;
+`;
 
 const FooterWrapper = styled.div`
   display: flex;

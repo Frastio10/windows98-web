@@ -4,7 +4,7 @@ import DEFAULT_REGISTRY from "./registry";
 
 const defaultSettings = {
   desktop: {
-    icons: {},
+    icons: [],
     iconsSrc: {
       txt: [
         iconSize("notepad_file", "small"),
@@ -73,6 +73,16 @@ export const INITIAL_FILES = [
         isDirectory: false,
       },
       {
+        name: "aboutMe.exe",
+        content: {
+          exe: "aboutMe",
+          icon: "face-cool",
+          url: "../components/Apps/Camera",
+        },
+        isDirectory: false,
+      },
+
+      {
         name: "pinball.exe",
         content: {
           exe: "pinball",
@@ -130,6 +140,25 @@ export const INITIAL_FILES = [
         name: "Desktop",
         isDirectory: true,
         children: [
+          {
+            name: "About Me.lnk",
+            content: {
+              target: {
+                path: "C:/WINDOWS/aboutMe.exe",
+              },
+              icon: {},
+            },
+          },
+          {
+            name: "About Me.lnk",
+            content: {
+              target: {
+                path: "https://google.com",
+              },
+              icon: {},
+            },
+          },
+
           {
             name: "Notepad.lnk",
             content: {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWindow } from "../hooks/os";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
@@ -15,6 +15,7 @@ import { Taskbar } from "./Taskbar";
 import { Window } from "./Window";
 
 export const LoggedInView = () => {
+  const mainRef = useRef<HTMLDivElement>(null);
   const { activeWindows, closeWindowById } = useWindow();
   const { fileSystem, updateFileSystem } = useFileSystem();
   const desktopFiles = fileSystem.getDesktopFiles();
@@ -39,23 +40,50 @@ export const LoggedInView = () => {
   }, []);
 
   const getDesktopIcons = () => {
+    if (!mainRef.current) return;
+
     const icons = desktopFiles?.children.map((file, index) => {
       let storedData = desktopSettings.icons;
 
-      const iconData = {
-        x: index * 75 + (index > 0 ? 10 : 0),
-        y: 10,
-        ...storedData[file.id],
+      const parentHeight = mainRef.current!.clientHeight;
+      const parentWidth = mainRef.current!.clientWidth;
+
+      const iconWidth = 75;
+      const iconHeight = 80;
+      const margin = 1;
+
+      const foundIndex = storedData.findIndex((d: any) => d.id === file.id);
+
+      // Calculate the number of icons that can fit in a column
+      const maxIconsInColumn = Math.floor(parentHeight / (iconHeight + margin));
+
+      const column = Math.floor(index / maxIconsInColumn);
+      const row = index % maxIconsInColumn;
+
+      let iconData = {
+        x: column * (iconWidth + margin),
+        y: row * (iconHeight + margin),
+        id: file.id,
+        ...(foundIndex >= 0 ? storedData[foundIndex] : {}),
       };
 
-      storedData[file.id] = iconData;
+      // If the icon exceeds the parent height, it will move to the next column
+      if (iconData.y > parentHeight - iconHeight - margin) {
+        iconData.y = 0;
+        iconData.x = (column + 1) * (iconWidth + margin); // Move to the next column
+      }
+
+      if (foundIndex >= 0) {
+        storedData[foundIndex] = iconData;
+      } else {
+        storedData.push(iconData);
+      }
 
       return {
         file,
         iconData,
       };
     });
-
     const newSettings = {
       ...fileSystem.getStoredSettings(),
       ...{
@@ -134,6 +162,7 @@ export const LoggedInView = () => {
   return (
     <Wrapper>
       <Main
+        ref={mainRef}
         className="bounds"
         onDragOver={(ev) => ev.preventDefault()}
         onDrop={onDropFile}
@@ -148,11 +177,11 @@ export const LoggedInView = () => {
           <Window key={w.windowId} windowData={w} />
         ))}
 
-        {getDesktopIcons().map((icon) => (
+        {getDesktopIcons()?.map((data) => (
           <DesktopIcon
-            key={icon.file.id}
-            file={icon.file}
-            position={{ x: icon.iconData.x, y: icon.iconData.y }}
+            key={data?.file.id}
+            file={data?.file}
+            position={{ x: data.iconData.x, y: data.iconData.y }}
           />
         ))}
 

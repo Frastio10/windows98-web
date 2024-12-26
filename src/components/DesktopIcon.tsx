@@ -33,7 +33,8 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
   const { fileProcessor, data, program, app } = useMemo(() => {
     const fileProcessor = new FileProcessor(file);
     const data = fileProcessor.read();
-    const program = data.fileMetadata.executables![0];
+
+    const program = data?.fileMetadata.executables![0];
 
     const app = getApp(program);
 
@@ -104,7 +105,9 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
   const handleDragIcon = (_: DraggableEvent, d: DraggableData) => {
     const storedData = fileSystem.getStoredSettings();
-    const iconSettings = storedData.desktop.icons[file.id];
+    const iconSettings = storedData.desktop.icons.find(
+      (v: any) => file.id === v.id,
+    );
 
     iconSettings.x = d.lastX;
     iconSettings.y = d.lastY;
