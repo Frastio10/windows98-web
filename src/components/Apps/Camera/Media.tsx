@@ -54,7 +54,6 @@ const Media = forwardRef((_, ref) => {
         streamRef.current.getTracks().forEach((track) => {
           track.stop();
         });
-        console.log(streamRef.current.getTracks());
       }
     };
   }, []);

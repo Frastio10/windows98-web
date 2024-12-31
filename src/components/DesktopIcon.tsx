@@ -10,6 +10,7 @@ import { useFileSystem } from "../hooks/zustand/useFileSystem";
 import { FileProcessor } from "../libs/FileProcessor";
 import { FileNode } from "../libs/FileSystem";
 import IconResolver from "../libs/IconResolver";
+import System from "../libs/System";
 import { App, AppName, Vector2D } from "../types";
 import { getFileExtension, iconSize } from "../utils";
 import { IconSize } from "./shared/icon";
@@ -33,7 +34,8 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
   const { fileProcessor, data, program, app } = useMemo(() => {
     const fileProcessor = new FileProcessor(file);
     const data = fileProcessor.read();
-    const program = data.fileMetadata.executables![0];
+
+    const program = data?.fileMetadata.executables![0]!;
 
     const app = getApp(program);
 
@@ -104,7 +106,9 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
 
   const handleDragIcon = (_: DraggableEvent, d: DraggableData) => {
     const storedData = fileSystem.getStoredSettings();
-    const iconSettings = storedData.desktop.icons[file.id];
+    const iconSettings = storedData.desktop.icons.find(
+      (v: any) => file.id === v.id,
+    );
 
     iconSettings.x = d.lastX;
     iconSettings.y = d.lastY;
@@ -137,17 +141,23 @@ export const DesktopIcon = ({ file, position }: DesktopIconProps) => {
         height: "85px",
       }}
       style={{
-        cursor: "auto !important",
+        cursor: "pointer !important",
       }}
       bounds=".bounds"
       // onDoubleClick={() => handleOpen(file)}
       onDragStop={handleDragIcon}
-      onClick={() => setIsSelected(true)}
     >
-      <Wrapper ref={wrapperRef}>
+      <Wrapper
+        ref={wrapperRef}
+        className="cursor-pointer"
+        onPointerDown={() => setIsSelected(true)}
+      >
         <div
           className="w-full flex justify-center flex-grow"
-          onDoubleClick={() => fileProcessor.run()}
+          // onDoubleClick={() => fileProcessor.run()}
+          onPointerDown={() => {
+            if (isSelected) fileProcessor.run();
+          }}
         >
           <IconWrapper src={getIcon(app!)} active={isSelected}>
             {getFileExtension(file.name) === FILE_EXTENSION.LNK && (

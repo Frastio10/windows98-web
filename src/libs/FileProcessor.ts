@@ -1,29 +1,37 @@
 import { EXTENSION_READERS } from "../configs/constants";
 import { FILE_EXTENSION } from "../configs/fileSystem";
-import { App, AppName } from "../types";
-import { log, NOOP } from "../utils";
+import { AppName } from "../types";
+import { log } from "../utils";
 import { FileNode } from "./FileSystem";
-import RegistryManager from "./RegistryManager";
 import System from "./System";
-import FileSystem from "./FileSystem";
-import { logger } from "./Logger";
+import { ExeFileHandler } from "./runners/ExeRunner";
+import { LnkFileHandler } from "./runners/LnkRunner";
+import { DefaultFileHandler } from "./runners/DefaultRunner";
 
 // the name FileReader is reserved :(
-type FileMetadata = {
+export type FileMetadata = {
   extension: string | null;
   executables?: AppName[];
   name: string | null;
 };
 
-type FileNameOptions = {
+export type FileNameOptions = {
   showAllExtensions?: boolean; // Show the full filename, including all extensions
   hideAllExtensions?: boolean; // Hide all extensions
   excludeExtensions?: string[]; // Exclude only specific extensions
 };
 
+export interface FileHandler {
+  file: FileNode;
+  fileMetadata: FileMetadata;
+  read(): FileHandler;
+  run(args?: any): void;
+}
+
 export class FileProcessor {
   file: FileNode;
   fileMetadata: FileMetadata;
+  handler: FileHandler;
 
   constructor(file: FileNode) {
     this.file = file;
@@ -31,101 +39,50 @@ export class FileProcessor {
       extension: FileProcessor.getFileExtension(this.file.name),
       name: FileProcessor.getFileNameOnly(this.file.name),
     };
+    this.handler = this.getHandler()!;
   }
 
-  run(args?: any) {
-    if (!this.fileMetadata.executables) {
-      return log("No supported programs.");
+  private getHandler() {
+    switch (this.fileMetadata.extension) {
+      case FILE_EXTENSION.EXE:
+        return new ExeFileHandler(this.file);
+
+      case FILE_EXTENSION.LNK:
+        return new LnkFileHandler(this.file);
+
+      default:
+        return new DefaultFileHandler(this.file);
     }
-
-    if (this.fileMetadata.extension == FILE_EXTENSION.EXE) {
-      return this.runExe(args);
-    }
-
-    if (this.fileMetadata.extension === FILE_EXTENSION.LNK) {
-      System.open(this.fileMetadata?.executables[0], args);
-      return this;
-    }
-
-    if (!this.fileMetadata.executables.length) {
-      System.messageBox(undefined, {
-        title: "Error!",
-        description: "There is no app that support this file extension.",
-        height: 120,
-        cb: (r) => {
-          System.closeWindow(r.windowData.windowId);
-        },
-      });
-      return;
-    }
-
-    System.open(this.fileMetadata?.executables[0], args || this.file.path);
-
-    return this;
   }
 
   read() {
-    this.fileMetadata.executables = this.findSupportedApps() as AppName[];
-
-    if (this.fileMetadata.extension === "exe") {
-      const exeData = this.readExe(this.file.content);
-      this.fileMetadata.executables = [exeData.appName as AppName];
+    const handler = this.handler;
+    if (handler) {
+      const data = handler.read();
+      this.fileMetadata = data.fileMetadata;
+      return data;
     }
-    return this;
   }
 
-  private findSupportedApps() {
-    const ext = this.fileMetadata.extension?.toLowerCase();
-    if (!ext) return ["notepad"];
-    if (ext === FILE_EXTENSION.EXE) return [];
-    if (ext == FILE_EXTENSION.LNK) {
-      const lnkFile = FileSystem.getInstance().getNodeByPath(
-        this.file.content.target.path,
-      );
-
-      if (!lnkFile) {
-        return [];
-      }
-
-      const fp = new FileProcessor(lnkFile);
-      const fileData = fp.read();
-      const exe = fileData.fileMetadata.executables;
-      return exe || [];
+  run(args?: any) {
+    const handler = this.handler;
+    if (handler) {
+      return handler.run(args);
+    } else {
+      log("No supported programs.");
     }
-
-    const registry = RegistryManager.getRegistryValue("SOFTWARE");
-
-    const fileTypeInfo = registry.fileTypes[ext];
-    const defaultAppPath = fileTypeInfo?.defaultApp?.path;
-    if (!defaultAppPath) {
-      return [];
-    }
-
-    const executableFile =
-      FileSystem.getInstance().getNodeByPath(defaultAppPath);
-
-    if (!executableFile) {
-      logger.error("Error");
-      return [];
-    }
-
-    const fp = new FileProcessor(executableFile);
-    const fileData = fp.read();
-    const exe = fileData.fileMetadata.executables;
-
-    return exe || [];
   }
 
-  private readExe(content: any) {
-    const appName = content.exe;
-
-    return {
-      appName,
-    };
-  }
-
-  runExe(args?: any) {
-    System.open(this.fileMetadata.executables![0], args || null);
+  static unsupportedModal() {
+    System.messageBox(undefined, {
+      title: "Error!",
+      description: "There is no app that support this file extension.",
+      height: 120,
+      cb: (r) => {
+        System.closeWindow(r.windowData.windowId);
+      },
+    });
+    return;
   }
 
   static getFileExtension(fileName: string) {

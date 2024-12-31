@@ -15,6 +15,8 @@ import { FileDialog } from "../components/Apps";
 import { Camera } from "../components/Apps/Camera";
 import SpaceCadetPinball from "../components/Apps/SpaceCadetPinball";
 import Wolfenstein from "../components/Apps/Wolfenstein";
+import Experience from "../components/Apps/Experience";
+import AboutMe from "../components/Apps/AboutMe";
 
 export const getApp = (appName: AppName) => {
   const app = APP_LIST.find((app) => app.appName === appName);
@@ -136,6 +138,27 @@ export const APP_LIST: App[] = [
       iconSize("WOLF3D", "big"),
     ],
   },
+
+  {
+    appName: "aboutMe",
+    component: AboutMe,
+    defaultTitle: "About Me",
+    appTitle: "About Me",
+    showTopBarIcon: true,
+    useDefaultExtraActions: false,
+    defaultPosition: "center",
+    allowMultipleInstances: false,
+    width: 650,
+    height: 600,
+    isResizable: true,
+    isDraggable: true,
+    icons: [
+      iconSize("face-cool", "small"),
+      iconSize("face-cool", "medium"),
+      iconSize("face-cool", "big"),
+    ],
+  },
+
   {
     appName: "notepad",
     component: Notepad,
