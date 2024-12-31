@@ -15,7 +15,6 @@ import { FileDialog } from "../components/Apps";
 import { Camera } from "../components/Apps/Camera";
 import SpaceCadetPinball from "../components/Apps/SpaceCadetPinball";
 import Wolfenstein from "../components/Apps/Wolfenstein";
-import Experience from "../components/Apps/Experience";
 import AboutMe from "../components/Apps/AboutMe";
 
 export const getApp = (appName: AppName) => {
