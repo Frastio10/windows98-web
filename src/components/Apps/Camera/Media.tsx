@@ -65,7 +65,7 @@ const Media = forwardRef((_, ref) => {
 
     ctx.drawImage(videoRef.current, 0, 0, cnv.width, cnv.height);
 
-    const url = snapshotCanvas.current.toDataURL("image/jpeg", 0.2);
+    const url = snapshotCanvas.current.toDataURL("image/jpeg", 0.7);
     return url;
   };
 

@@ -26,18 +26,26 @@ export const LogInForm = ({ windowData }: AppProps) => {
       </div>
       <div>
         <p>Type a user name and password to log on to Windows.</p>
+        <p>(PUT ANYTHING)</p>
         <FormGroup>
           <FormField>
             <p>
               <u>U</u>ser name
             </p>
-            <Input onChange={(e) => updatePassword(e.target.value)} />
+            <Input
+              onChange={(e) => updatePassword(e.target.value)}
+              defaultValue="User"
+            />
           </FormField>
           <FormField>
             <p>
               <u>P</u>assword
             </p>
-            <Input onChange={(e) => updatePassword(e.target.value)} />
+            <Input
+              onChange={(e) => updatePassword(e.target.value)}
+              type="password"
+              defaultValue="Helloworld69"
+            />
           </FormField>
         </FormGroup>
       </div>
@@ -78,6 +86,7 @@ const Input = styled.input`
   width: 140px;
   height: 25px;
   border: none;
+  padding: 4px;
   box-shadow: ${({ theme }) => theme.insetPixelatedBorder};
 `;
 

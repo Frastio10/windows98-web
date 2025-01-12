@@ -14,8 +14,6 @@ export class LnkFileHandler implements FileHandler {
       name: FileProcessor.getFileNameOnly(file.name),
       executables: [],
     };
-
-    console.log("created instance lnk");
   }
 
   run(args?: any) {
@@ -42,7 +40,6 @@ export class LnkFileHandler implements FileHandler {
     const lnkFile = FileSystem.getInstance().getNodeByPath(
       this.file.content.target.path,
     );
-    console.log(lnkFile);
     if (!lnkFile) return [];
 
     const fp = new FileProcessor(lnkFile);

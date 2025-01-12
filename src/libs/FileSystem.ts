@@ -210,12 +210,12 @@ export default class FileSystem {
     );
   }
 
-  updateStorageData() {
+  async updateStorageData() {
     try {
       const jsonNode = FileSystem.extractNodeToJson(this.root);
       const disk = Disk.getInstance();
 
-      disk.setJSON(STORAGE_KEY, jsonNode);
+      await disk.setJSON(STORAGE_KEY, jsonNode);
       logger.log("Saved to disk.");
     } catch (error: any) {
       System.messageBox(undefined, {

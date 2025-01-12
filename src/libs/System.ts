@@ -26,21 +26,23 @@ export default class System {
     return System._instance;
   }
 
-  private loadDriverModule(module: keyof typeof drivers) {
+  private async loadDriverModule(module: keyof typeof drivers) {
     const moduleDrivers = drivers[module];
     const driverArr = Object.entries(moduleDrivers);
-    driverArr.forEach(([key, value]) => {
-      value;
-      this.driverManager.load(new value(), key);
-    });
+    for (let [key, driver] of driverArr) {
+      await this.driverManager.load(new driver(), key);
+    }
+    // driverArr.forEach(([key, value]) => {
+    //     this.driverManager.load(new value(), key);
+    //  });
     logger.log(`${driverArr.length} of ${module} drivers are loaded.`);
   }
 
-  loadDrivers() {
+  async loadDrivers() {
     this.driverManager = new DriverManager();
-    this.loadDriverModule("storages");
-    this.loadDriverModule("cache");
-    this.loadDriverModule("audio");
+    await this.loadDriverModule("storages");
+    await this.loadDriverModule("cache");
+    await this.loadDriverModule("audio");
   }
 
   storage() {

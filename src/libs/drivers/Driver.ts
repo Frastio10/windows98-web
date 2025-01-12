@@ -1,7 +1,7 @@
 export default interface Driver {
   initialized: boolean;
 
-  initialize(): void;
+  initialize(): Promise<void> | void;
   terminate(): void;
   getStatus(): string;
 }

@@ -65,7 +65,9 @@ export default class IndexedDBDriver extends StorageDriver {
       const store = transaction.objectStore(this.storeName);
       const request = store.get(key);
 
+      console.time("START");
       request.onsuccess = () => {
+        console.timeEnd("START");
         resolve(request.result?.value ?? null);
       };
 
@@ -76,8 +78,9 @@ export default class IndexedDBDriver extends StorageDriver {
     });
   }
 
-  write(key: string, value: any) {
+  async write(key: string, value: any) {
     return new Promise<void>((resolve, reject) => {
+      console.time("Write");
       if (!this.db) {
         logger.error("IndexedDBDriver is not initialized");
         return reject("IndexedDBDriver is not initialized");
@@ -85,11 +88,11 @@ export default class IndexedDBDriver extends StorageDriver {
 
       const transaction = this.db.transaction(this.storeName, "readwrite");
       const store = transaction.objectStore(this.storeName);
-      console.log(value);
       const request = store.put({ key, value });
 
       request.onsuccess = () => {
         resolve();
+        console.timeEnd("Write");
       };
 
       request.onerror = () => {

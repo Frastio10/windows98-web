@@ -37,7 +37,6 @@ export const BootLoader = () => {
   const versionCheck = async () => {
     let version = await Disk.getInstance().get("version");
     const currentVersion = packageJson.version;
-    console.log(version);
     if (!version) {
       Disk.getInstance().set("version", currentVersion);
       version = currentVersion;

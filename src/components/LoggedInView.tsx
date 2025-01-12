@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useWindow } from "../hooks/os";
 import { useFileSystem } from "../hooks/zustand/useFileSystem";
@@ -42,69 +42,111 @@ export const LoggedInView = () => {
     return fileSystem.getStoredSettings().desktop;
   }, []);
 
-  useEffect(() => {
-    const calculateDesktopIcons = () => {
-      if (!mainRef.current) return [];
+  const getIconData = (file: FileNode, index: number) => {
+    if (!mainRef.current) {
+      return null; // Or return some default values.
+    }
+    let storedData = desktopSettings.icons;
 
-      const icons = desktopFiles?.children.map((file, index) => {
-        let storedData = desktopSettings.icons;
+    const parentHeight = mainRef.current!.clientHeight;
+    const parentWidth = mainRef.current!.clientWidth;
 
-        const parentHeight = mainRef.current!.clientHeight;
-        const parentWidth = mainRef.current!.clientWidth;
+    const iconWidth = 75;
+    const iconHeight = 80;
+    const margin = 1;
 
-        const iconWidth = 75;
-        const iconHeight = 80;
-        const margin = 1;
+    const foundIndex = storedData.findIndex((d: any) => d.id === file.id);
 
-        const foundIndex = storedData.findIndex((d: any) => d.id === file.id);
+    const maxIconsInColumn = Math.floor(parentHeight / (iconHeight + margin));
 
-        // Calculate the number of icons that can fit in a column
-        const maxIconsInColumn = Math.floor(
-          parentHeight / (iconHeight + margin),
-        );
+    const column = Math.floor(index / maxIconsInColumn);
+    const row = index % maxIconsInColumn;
 
-        const column = Math.floor(index / maxIconsInColumn);
-        const row = index % maxIconsInColumn;
-
-        let iconData = {
-          x: column * (iconWidth + margin),
-          y: row * (iconHeight + margin),
-          id: file.id,
-          ...(foundIndex >= 0 ? storedData[foundIndex] : {}),
-        };
-
-        // If the icon exceeds the parent height, it will move to the next column
-        if (iconData.y > parentHeight - iconHeight - margin) {
-          iconData.y = 0;
-          iconData.x = (column + 1) * (iconWidth + margin); // Move to the next column
-        }
-
-        if (foundIndex >= 0) {
-          storedData[foundIndex] = iconData;
-        } else {
-          storedData.push(iconData);
-        }
-
-        return {
-          file,
-          iconData,
-        };
-      });
-
-      const newSettings = {
-        ...fileSystem.getStoredSettings(),
-        ...{
-          desktop: desktopSettings,
-        },
-      };
-
-      fileSystem.updateStoredSettings(newSettings);
-
-      return icons || [];
+    let iconData = {
+      x: column * (iconWidth + margin),
+      y: row * (iconHeight + margin),
+      id: file.id,
+      ...(foundIndex >= 0 ? storedData[foundIndex] : {}),
     };
 
+    if (iconData.y > parentHeight - iconHeight - margin) {
+      iconData.y = 0;
+      iconData.x = (column + 1) * (iconWidth + margin);
+    }
+
+    if (foundIndex >= 0) {
+      storedData[foundIndex] = iconData;
+    } else {
+      storedData.push(iconData);
+    }
+
+    const newSettings = {
+      ...fileSystem.getStoredSettings(),
+      desktop: desktopSettings,
+    };
+
+    fileSystem.updateStoredSettings(newSettings);
+
+    return iconData;
+  };
+
+  const calculateDesktopIcons = useCallback(() => {
+    if (!mainRef.current) return [];
+
+    const icons = desktopFiles?.children.map((file, index) => {
+      let storedData = desktopSettings.icons;
+
+      const parentHeight = mainRef.current!.clientHeight;
+      const parentWidth = mainRef.current!.clientWidth;
+
+      const iconWidth = 75;
+      const iconHeight = 80;
+      const margin = 1;
+
+      const foundIndex = storedData.findIndex((d: any) => d.id === file.id);
+
+      const maxIconsInColumn = Math.floor(parentHeight / (iconHeight + margin));
+
+      const column = Math.floor(index / maxIconsInColumn);
+      const row = index % maxIconsInColumn;
+
+      let iconData = {
+        x: column * (iconWidth + margin),
+        y: row * (iconHeight + margin),
+        id: file.id,
+        ...(foundIndex >= 0 ? storedData[foundIndex] : {}),
+      };
+
+      if (iconData.y > parentHeight - iconHeight - margin) {
+        iconData.y = 0;
+        iconData.x = (column + 1) * (iconWidth + margin);
+      }
+
+      if (foundIndex >= 0) {
+        storedData[foundIndex] = iconData;
+      } else {
+        storedData.push(iconData);
+      }
+
+      return {
+        file,
+        iconData,
+      };
+    });
+
+    const newSettings = {
+      ...fileSystem.getStoredSettings(),
+      desktop: desktopSettings,
+    };
+
+    fileSystem.updateStoredSettings(newSettings);
+
+    return icons || [];
+  }, [desktopFiles, desktopSettings, fileSystem]);
+
+  useEffect(() => {
     setDesktopIcons(calculateDesktopIcons());
-  }, [mainRef.current, desktopFiles]); // Trigger effect when `mainRef` or `desktopFiles` change
+  }, [desktopFiles?.children, fileSystem, calculateDesktopIcons]);
 
   const onDropFile = (ev: React.DragEvent<HTMLDivElement>) => {
     ev.preventDefault();
@@ -187,13 +229,17 @@ export const LoggedInView = () => {
           <Window key={w.windowId} windowData={w} />
         ))}
 
-        {desktopIcons.map((data) => (
-          <DesktopIcon
-            key={data?.file.id}
-            file={data?.file}
-            position={{ x: data.iconData.x, y: data.iconData.y }}
-          />
-        ))}
+        {desktopFiles?.children.map((data, idx) => {
+          const iconData = getIconData(data, idx);
+          if (!iconData) return <></>;
+          return (
+            <DesktopIcon
+              key={data?.id}
+              file={data}
+              position={{ x: iconData.x, y: iconData.y }}
+            />
+          );
+        })}
 
         {shortcutBoxCoordinate && (
           <Box

@@ -171,7 +171,7 @@ export const WindowsExplorer = ({ windowData }: AppProps) => {
 
       // console.log(newFile);
       // selectedFile?.children.push;
-      updateFileSystem();
+      await updateFileSystem();
     }
   };
 

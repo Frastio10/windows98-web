@@ -7,7 +7,7 @@ interface DeviceSettings {
 }
 
 export const deviceSettings: DeviceSettings = {
-  storage: "localStorage",
+  storage: "indexedDBStorage",
   cacheStorage: "mapStorage",
   audio: "deviceAudio",
 };

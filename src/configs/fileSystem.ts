@@ -149,15 +149,6 @@ export const INITIAL_FILES = [
               icon: {},
             },
           },
-          {
-            name: "About Me.lnk",
-            content: {
-              target: {
-                path: "https://google.com",
-              },
-              icon: {},
-            },
-          },
 
           {
             name: "Notepad.lnk",
