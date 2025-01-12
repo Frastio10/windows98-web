@@ -55,6 +55,7 @@ export default class MapStorageDriver extends StorageDriver {
     if (!this.storage) {
       return logger.error("MapStorageDriver is not initialized");
     }
-    return this.storage.set(key, value);
+    this.storage.set(key, value);
+    return;
   }
 }

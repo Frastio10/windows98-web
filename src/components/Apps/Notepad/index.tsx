@@ -75,14 +75,14 @@ export const Notepad = ({ windowData }: AppProps) => {
         fileTypes: [txtFileType],
         defaultFileName: "Untitled",
         defaultFileType: txtFileType,
-        onResult: (e) => {
+        onResult: async (e) => {
           const file = fileSystem.writeFile(e.filePaths[0], value);
 
           if (!file) return;
 
           setCurrentFile(file);
           changeWindowTitle(windowData.windowId, file.name + " - Notepad");
-          updateFileSystem();
+          await updateFileSystem();
           setIsSaved(true);
         },
       });

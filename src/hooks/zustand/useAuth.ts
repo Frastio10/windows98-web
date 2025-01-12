@@ -11,7 +11,7 @@ interface AuthState {
 }
 
 export const useAuth = create<AuthState>((set) => ({
-  currentPassword: "",
+  currentPassword: "Helloworld69",
   isLoggedIn: localStorage.getItem("loggedIn") === "1" || false,
   isLoginError: false,
 

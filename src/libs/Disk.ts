@@ -21,7 +21,7 @@ export default class Disk {
 
     this.opts = {
       // @ts-ignore i know what i am doing typescript.
-      compressString: true,
+      compressString: false,
       ...opts,
     };
   }
@@ -66,11 +66,13 @@ export default class Disk {
     this.storage.delete(key);
   }
 
-  getJSON(key: string) {
+  async getJSON(key: string) {
     const cache = this.getCache(key);
-    if (cache) return cache;
+    if (cache) {
+      return cache;
+    }
 
-    let savedData = this.get(key);
+    let savedData = await this.get(key);
     if (!savedData) return null;
 
     if (this.opts.compressString) {
@@ -84,20 +86,20 @@ export default class Disk {
     return this.cache[key];
   }
 
-  get(key: string) {
+  async get(key: string) {
     const cache = this.getCache(key);
     if (cache) return cache;
 
-    return this.storage.read(key);
+    return await this.storage.read(key);
   }
 
   setCache(key: string, val: any) {
     this.cache[key] = val;
   }
 
-  set(key: string, val: string) {
+  async set(key: string, val: string) {
     this.setCache(key, val);
-    return this.storage.write(key, val);
+    return await this.storage.write(key, val);
   }
 
   public static getInstance(

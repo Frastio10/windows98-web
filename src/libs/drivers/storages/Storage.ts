@@ -8,7 +8,7 @@ export default abstract class StorageDriver implements Driver {
   abstract getStatus(): string;
 
   abstract read(key: string): any | null;
-  abstract write(key: string, value: any): void;
+  abstract write(key: string, value: any): Promise<void> | void;
   abstract delete(key: string): void;
   abstract clear(): void;
 }

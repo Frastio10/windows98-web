@@ -37,9 +37,8 @@ export const BootLoader = () => {
   const versionCheck = async () => {
     let version = await Disk.getInstance().get("version");
     const currentVersion = packageJson.version;
-    console.log(version);
     if (!version) {
-      Disk.getInstance().set("version", currentVersion);
+      // Disk.getInstance().set("version", currentVersion);
       version = currentVersion;
     }
 
@@ -54,10 +53,10 @@ export const BootLoader = () => {
           "Your current version is expired, this may cause an error in some programs if you don't reset your data. Reset your data?",
         height: 150,
         buttons: MessageBoxButtons.OK,
-        cb: (r) => {
+        cb: async (r) => {
           if (r.result === DialogResult.OK) {
-            Disk.getInstance().set("version", "");
-            Disk.getInstance().set("fs", "");
+            await Disk.getInstance().set("version", "");
+            await Disk.getInstance().set("fs", "");
 
             // fileSystem.updateStorageData();
             window.location.reload();
@@ -70,7 +69,7 @@ export const BootLoader = () => {
   const initialLoad = async () => {
     if (!isLoaded.current && localStorage) {
       await System.getInstance().loadDrivers();
-      let installedVersion = Disk.getInstance().get("version");
+      let installedVersion = await Disk.getInstance().get("version");
       const currentVersion = packageJson.version;
       logger.log(
         `Installed Version: ${installedVersion}; Latest Version: ${currentVersion}; Status: ${currentVersion === installedVersion ? "\x1b[36mup-to-date\x1b[0m" : "\x1b[31mnot up-to-date\x1b[0m"};`,

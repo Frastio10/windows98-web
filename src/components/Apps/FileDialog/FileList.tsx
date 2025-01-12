@@ -86,7 +86,8 @@ const InnerWrapper = styled.div`
   box-shadow: ${({ theme }) => theme.insetPixelatedBorder};
   width: 100%;
   padding: 2px;
-  height: 100%;
+  height: 80%;
+  overflow: auto;
   background: #fff;
   display: flex;
   flex-direction: column;
